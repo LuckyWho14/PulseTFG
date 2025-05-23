@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="PulseTFG.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:PulseTFG"
+    Shell.FlyoutBehavior="Disabled"
+    FlyoutBackgroundColor="{StaticResource MoradoPrincipal}"
+    FlyoutBackdrop="{StaticResource FondoNegro}"
+    Title="PulseTFG">
+    
+    <!-- Menú lateral flyout-->
+    <!-- Header -->
+    <Shell.FlyoutHeader>
+        <StackLayout  Margin="20">
+            <Label Text="Hola! Usuario" TextColor="White" FontSize="40" FontFamily="AntonRegular" FontAttributes="Italic" HorizontalOptions="Center" />
+        </StackLayout>
+    </Shell.FlyoutHeader>
+    
+    <!-- Footer -->
+    <Shell.FlyoutFooter >
+        <StackLayout Padding="30">
+            <Image Source="logo2_pulse.png" HeightRequest="60"></Image>
+            <Label Text="© 2025 - Lucky Sotelo - Diego Juara" HorizontalOptions="Center"/>
+        </StackLayout>
+    </Shell.FlyoutFooter>
+    
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Padding="15">
+                <Label 
+                    Text="{Binding Title}" 
+                    FontSize="25" 
+                    FontFamily="AntonRegular"
+                    FontAttributes="None"
+                    TextColor="White" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <!-- Elementos del menú -->
+    <FlyoutItem Title="Mis entrenamientos" >
+        <ShellContent ContentTemplate="{DataTemplate local:MisEntrenosPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Glosario ejercicios" >
+        <ShellContent ContentTemplate="{DataTemplate local:InfoEjerPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Información personal" >
+        <ShellContent ContentTemplate="{DataTemplate local:InfoPersPage}" />
+    </FlyoutItem>
+
+    <!-- Direcciones de las páginas(ocultas del flyout) -->
+    <TabBar IsEnabled="False">
+       
+        <ShellContent
+                ContentTemplate="{DataTemplate local:InicioPage}"
+                Route="InicioPage"    
+                />
+
+        <ShellContent
+                ContentTemplate="{DataTemplate local:HistorialPage}"
+                Route="HistorialPage"     
+                />
+
+        <ShellContent
+                ContentTemplate="{DataTemplate local:RelojPage}"
+                Route="RelojPage" 
+                />
+    </TabBar>
+    
+
+
+</Shell>

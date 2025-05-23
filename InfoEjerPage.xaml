@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PulseTFG.InfoEjerPage"
+             xmlns:local="clr-namespace:PulseTFG"
+             Shell.NavBarIsVisible="False"
+             
+             BackgroundColor="{StaticResource FondoNegro}"
+             FlyoutItem.IsVisible="True">
+    
+    <Grid 
+    RowDefinitions="*,4*,*" 
+    ColumnDefinitions="*">
+
+        <!-- Título -->
+        <Label 
+        Text="Ejercicios" 
+        TextColor="{StaticResource MoradoPrincipal}"
+        FontFamily="AntonRegular"
+        Grid.Row="0"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        FontSize="40"
+        FontAttributes="Italic"/>
+
+        <!-- Cuerpo -->
+        <Grid Grid.Row="1"
+              RowDefinitions="*,4*">
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="100" Grid.Row="0">
+                <Label Text="Todos los músculos"/>
+                <Label Text="Filtros:"/>
+                <Label Text="Grupo Muscular"/>
+                <Label Text="Músculo"/>
+                <Label Text="Herramienta"/>
+                <Label Text="Favoritos"/>
+            </HorizontalStackLayout>
+
+            <CollectionView ItemsSource="{Binding ListaVideos}" Grid.Row="1">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="10" ColumnSpacing="10">
+
+                            <!-- Checkbox: favorito -->
+                            <StackLayout Orientation="Vertical" Spacing="20" Grid.Column="0">
+                                <Label Text="{Binding Nombre}" VerticalOptions="Center" FontAttributes="Bold"/>
+                                <CheckBox 
+                                      IsChecked="{Binding EsFavorito}" />
+                            </StackLayout>
+                            <!-- Descripción del video -->
+                            <Label Grid.Column="1"
+                                   Text="{Binding Descripcion}"
+                                   VerticalOptions="Center" />
+
+                            <!-- Thumbnail de YouTube -->
+                            <Image Grid.Column="2"
+                                   Source="{Binding ThumbnailUrl}"
+                                   WidthRequest="100"
+                                   HeightRequest="60"
+                                   Aspect="AspectFill">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnThumbnailTapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid x:Name="VideoOverlay"
+              BackgroundColor="#80000000"
+              IsVisible="False"
+              Grid.RowSpan="2"
+              VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand">
+
+                <Grid>
+                    <!-- Fondo "clicable" alrededor del WebView -->
+                    <BoxView BackgroundColor="Transparent"
+                             InputTransparent="False">
+                        <BoxView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnOverlayTapped"/>
+                        </BoxView.GestureRecognizers>
+                    </BoxView>
+
+                    <!-- WebView centrado (sin gestos) -->
+                    <WebView x:Name="VideoWebView"
+                             WidthRequest="350"
+                             HeightRequest="250"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center" />
+                </Grid>
+
+            </Grid>
+            <!-- Menú Barra-->
+        </Grid>
+            <local:MenuBarra Grid.Row="2"/>
+
+    </Grid>
+</ContentPage>

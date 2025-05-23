@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PulseTFG"
+             x:Class="PulseTFG.RelojPage"
+             Shell.TabBarIsVisible="False" 
+             BackgroundColor="{StaticResource FondoNegro}">
+    <Grid 
+        RowDefinitions="*,4*,*"
+        ColumnDefinitions="*">
+        
+        <!-- Título -->
+        <Label
+            Text="Reloj"
+            TextColor="{StaticResource MoradoPrincipal}"
+            FontFamily="AntonRegular"
+            Grid.Row="0"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            FontAttributes="Italic"
+            FontSize="40"/>
+
+        <!-- Cuerpo -->
+        <Grid
+            Grid.Row="1"
+            RowDefinitions="*,4*"
+            ColumnDefinitions="*,*"
+            >
+            
+            <!-- Bloque cronómetro -->
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Text="Cronómetro"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                FontSize="32"
+                TextColor="{StaticResource MoradoPrincipal}"
+                FontFamily="AntonRegular"/>
+
+            <Border
+                Grid.Row="1"
+                Grid.Column="0"
+                Stroke="{StaticResource MoradoPrincipal}" StrokeThickness="2"
+                WidthRequest="500"
+                HeightRequest="300">
+                
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30" />
+                </Border.StrokeShape>
+
+                <Grid
+                    RowDefinitions="3*,*,*"
+                    ColumnDefinitions="*"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    RowSpacing="20"
+                    >
+                    <Label x:Name="TimeLabel"
+                           Text="00:00.00"
+                           FontSize="40"
+                           TextColor="{StaticResource AzulCian}"
+                           FontFamily="AntonRegular"
+                           HorizontalOptions="Center"
+                           WidthRequest="200"
+                           Margin="0,0,-20,20"/>
+
+                    <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" Spacing="20"
+                                           >
+                        <Button Text="Pausa" 
+                                WidthRequest="100"
+                                FontSize="25"
+                                TextColor="White"
+                                FontFamily="AntonRegular"
+                                Clicked="OnPauseClicked" 
+                                CornerRadius="20"
+                                BackgroundColor="{StaticResource NaranjaPausa}"/>
+                        <Button Text="Start" 
+                                FontSize="25"
+                                WidthRequest="100"
+                                TextColor="White"
+                                FontFamily="AntonRegular"
+                                Clicked="OnStartClicked" 
+                                CornerRadius="20"
+                                BackgroundColor="{StaticResource VerdePlay}"/>
+                    </HorizontalStackLayout>
+
+                    <Button Margin="0,0,0,0"
+                        Text="Stop" Grid.Row="2"
+                            HorizontalOptions="Center"
+                            Clicked="OnStopClicked"
+                            WidthRequest="100"
+                            FontSize="25"
+                            TextColor="White"
+                            FontFamily="AntonRegular"
+                            CornerRadius="20"
+                            BackgroundColor="{StaticResource RojoStop}"/>
+
+                </Grid>
+            </Border>
+            
+            <!-- Bloque temporizador -->
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                Text="Temporizador"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                FontSize="32"
+                TextColor="{StaticResource MoradoPrincipal}"
+                FontFamily="AntonRegular"/>
+
+            <Grid
+                Grid.Row="1"
+                Grid.Column="1"
+                RowDefinitions="*,*,*,*,*"
+                ColumnDefinitions="*,*"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                RowSpacing="20"
+                ColumnSpacing="20"
+                >
+
+                <!-- Display del temporizador -->
+                <Label x:Name="TimerLabel"
+                       TextColor="{StaticResource AzulCian}"
+                       FontFamily="AntonRegular"
+                       Text="00:00.00"
+                       FontSize="40"
+                       Grid.ColumnSpan="2"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" 
+                       MinimumWidthRequest="200"/>
+
+                <!-- Temporizador personalizado -->
+                <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" HorizontalOptions="Center">
+                    <Stepper x:Name="StepperMinutos"
+                             Minimum="1" 
+                             Maximum="60"
+                             Increment="1"
+                             ValueChanged="OnStepperValueChanged" 
+                             Margin="0,0,10,0"
+                             BackgroundColor="{StaticResource MoradoPrincipal}"/>
+                    <Label x:Name="LabelTiempoPersonalizado" Text="1 min"  FontSize="25" VerticalOptions="Center"/>
+                    <Image Source="play_icon.png" WidthRequest="30">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPlayPersonalizado" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <!-- Temporizadores predefinidos -->
+
+                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" HorizontalOptions="Center">
+                    <Label Text="10min" FontSize="25" VerticalOptions="Center"/>
+                    <Image Source="play_icon.png" WidthRequest="30">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPlay10Min" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" HorizontalOptions="Center">
+                    <Label Text="5min" FontSize="25" VerticalOptions="Center"/>
+                    <Image Source="play_icon.png" WidthRequest="30">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPlay5Min" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="3" Grid.Column="0" HorizontalOptions="Center">
+                    <Label Text="3min" FontSize="25" VerticalOptions="Center"/>
+                    <Image Source="play_icon.png" WidthRequest="30">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPlay3Min" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="3" Grid.Column="1" HorizontalOptions="Center">
+                    <Label Text="1min" FontSize="25" VerticalOptions="Center"/>
+                    <Image Source="play_icon.png" WidthRequest="30">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPlay1Min" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <!-- Botones de pausa y stop -->
+                <Button Grid.Row="4" Grid.Column="0" Text="Pausa" Clicked="OnPauseClickedT" 
+                        BackgroundColor="{StaticResource NaranjaPausa}"
+                        TextColor="White" FontSize="25"
+                        FontFamily="AntonRegular"/>
+                <Button Grid.Row="4" Grid.Column="1" Text="Stop" Clicked="OnStopClickedT" 
+                        BackgroundColor="{StaticResource RojoStop}"
+                        TextColor="White" FontSize="25"
+                        FontFamily="AntonRegular"/>
+
+            </Grid>
+
+        </Grid>
+        
+        <!-- Barra menú -->
+        <local:MenuBarra Grid.Row="2"/>
+
+    </Grid>
+</ContentPage>

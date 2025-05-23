@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PulseTFG.InfoPersPage"
+             xmlns:local="clr-namespace:PulseTFG"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource FondoNegro}"
+             FlyoutItem.IsVisible="True">
+    
+    <Grid 
+        RowDefinitions="*,4*,*" 
+        ColumnDefinitions="*">
+
+        <!-- Título -->
+        <Label 
+        Text="Información personal" 
+        TextColor="{StaticResource MoradoPrincipal}"
+        FontFamily="AntonRegular"
+        Grid.Row="0"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        FontSize="40"
+        FontAttributes="Italic"/>
+
+        <!-- Cuerpo -->
+        <Grid Grid.Row="1"
+              RowDefinitions="*,*"
+              ColumnDefinitions="*,*">
+            
+            <Grid Grid.Row="0" Grid.Column="0"
+                  RowDefinitions="*,*,*,*,*,*"
+                  ColumnDefinitions="*,*"
+                  HorizontalOptions="Center"
+                  ColumnSpacing="20">
+                
+                <!-- Nombre -->
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Nombre:"/>
+                <Label Grid.Row="0" Grid.Column="1"
+                       Text="Lucky Sotelo"/>
+
+                <!-- Email -->
+                <Label Grid.Row="1" Grid.Column="0"
+                       Text="Email:"/>
+                <Label Grid.Row="1" Grid.Column="1"
+                       Text="mr.sotelo96@gmail.com"/>
+
+                <!-- Cumpleaños -->
+                <Label Grid.Row="2" Grid.Column="0"
+                       Text="Cumpleaños: "/>
+                <Label Grid.Row="2" Grid.Column="1"
+                       Text="14-Marzo-1996"/>
+
+                <!-- Altura -->
+                <Label Grid.Row="3" Grid.Column="0"
+                       Text="Altura: "/>
+                <Label Grid.Row="3" Grid.Column="1"
+                       Text="1.75" x:Name="Altura"/>
+
+                <!-- Peso -->
+                <Label Grid.Row="4" Grid.Column="0"
+                       Text="Peso: "/>
+                <Label Grid.Row="4" Grid.Column="1"
+                       Text="80" x:Name="Peso"/>
+
+                <!-- IMC -->
+                <Label Grid.Row="5" Grid.Column="0"
+                       Text="IMC: "/>
+                <Label Grid.Row="5" Grid.Column="1"
+                       Text="0" x:Name="IMC"/>
+            </Grid>
+            
+            <!-- Logo -->
+            <Image Grid.Row="0" Grid.Column="1"
+                   Source="logo1_pulse.png" HeightRequest="250"/>
+            
+            <!-- Info IMC -->
+            <Grid Grid.Row="1" Grid.ColumnSpan="2"
+                  RowDefinitions="*"
+                  ColumnDefinitions="*,*,*,*,*,*"
+                  ColumnSpacing="10"
+                  Padding="30"
+                  Margin="0,30,0,0">
+                <StackLayout Grid.Column="0">
+                    <Label Text="&lt; 18.5 – Bajo peso:" FontAttributes="Bold"/>
+                    <Label Text="Posible desnutrición; revisar alimentación y salud."/>
+                </StackLayout>
+                <StackLayout Grid.Column="1">
+                    <Label Text="18.5 – 24.9 – Peso normal:" FontAttributes="Bold"/>
+                    <Label Text="Estado saludable; mantener buenos hábitos."/>
+                </StackLayout>
+                <StackLayout Grid.Column="2">
+                    <Label Text="25 – 29.9 – Sobrepeso:" FontAttributes="Bold"/>
+                    <Label Text="Riesgo moderado; mejorar alimentación y ejercicio."/>
+                </StackLayout>
+                <StackLayout Grid.Column="3">
+                    <Label Text="30 – 34.9 – Obesidad I:" FontAttributes="Bold"/>
+                    <Label Text="Riesgo alto de enfermedades; requiere cambios."/>
+                </StackLayout>
+                <StackLayout Grid.Column="4">
+                    <Label Text="35 – 39.9 – Obesidad II:" FontAttributes="Bold"/>
+                    <Label Text="Riesgo mayor; se recomienda atención médica."/>
+                </StackLayout>
+                <StackLayout Grid.Column="5">
+                    <Label Text="&gt; 40 – Obesidad mórbida" FontAttributes="Bold"/>
+                    <Label Text="Riesgo muy alto; necesita intervención profesional."/>
+                </StackLayout>
+                
+            </Grid>
+        </Grid>
+        <!-- Menú Barra-->
+        <local:MenuBarra Grid.Row="2"/>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PulseTFG.MenuBarra">
+    <Grid  
+        Grid.Row="1" BackgroundColor="{StaticResource MoradoPrincipal}"
+        ColumnDefinitions="*,*,*,*" RowDefinitions="*">
+
+
+        <!-- Botón para el inicio -->
+        <Image Source="casa_icon.png" WidthRequest="65" Grid.Column="1">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnIcon1Tapped" />
+            </Image.GestureRecognizers>
+        </Image>
+
+        <!-- Botón para el historial -->
+        <Image Source="historial_icon.png" WidthRequest="65" Grid.Column="2">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnIcon2Tapped" />
+            </Image.GestureRecognizers>
+        </Image>
+
+        <!-- Botón para el reloj -->
+        <Image Source="reloj_icon.png" WidthRequest="65" Grid.Column="3">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnIcon3Tapped" />
+            </Image.GestureRecognizers>
+        </Image>
+
+        <!-- Botón para más cosas -->
+        <Image Source="persona_icon.png" WidthRequest="65" Grid.Column="0">
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnIcon4Tapped" />
+            </Image.GestureRecognizers>
+        </Image>
+        
+    </Grid>
+</ContentView>
