@@ -12,8 +12,17 @@ public partial class InicioPage : ContentPage
 
         ListaEjercicios = new ObservableCollection<Ejercicio>
         {
-            new Ejercicio { Nombre = "Sentadillas", Intensidad = "Alta", Hecho = false, Repeticiones = 10, Series = 3, Kg = 60 },
-            new Ejercicio { Nombre = "Press Banca", Intensidad = "Media", Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Sentadillas", Intensidad = 5, Hecho = true, Repeticiones = 10, Series = 3, Kg = 60 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
+            new Ejercicio { Nombre = "Press Banca", Intensidad = 10, Hecho = false, Repeticiones = 8, Series = 4, Kg = 40 },
         };
 
         EjerciciosList.ItemsSource = ListaEjercicios;

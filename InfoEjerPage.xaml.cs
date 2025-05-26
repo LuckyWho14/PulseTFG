@@ -18,6 +18,15 @@ public partial class InfoEjerPage : ContentPage
                 EsFavorito = false },
             new Ejercicio { Nombre="Sentadillas",
                 VideoId = "VQRLujxTm3c", Descripcion = "Trabaja piernas y glúteos. Coloca la barra sobre la parte alta de la espalda (no en el cuello), mantén el pecho arriba y la espalda recta, baja controladamente flexionando caderas y rodillas hasta que los muslos estén paralelos al suelo o más abajo si puedes, y sube empujando con fuerza desde los talones.",
+                EsFavorito = true },
+            new Ejercicio { Nombre="Sentadillas",
+                VideoId = "VQRLujxTm3c", Descripcion = "Trabaja piernas y glúteos. Coloca la barra sobre la parte alta de la espalda (no en el cuello), mantén el pecho arriba y la espalda recta, baja controladamente flexionando caderas y rodillas hasta que los muslos estén paralelos al suelo o más abajo si puedes, y sube empujando con fuerza desde los talones.",
+                EsFavorito = true },
+            new Ejercicio { Nombre="Sentadillas",
+                VideoId = "VQRLujxTm3c", Descripcion = "Trabaja piernas y glúteos. Coloca la barra sobre la parte alta de la espalda (no en el cuello), mantén el pecho arriba y la espalda recta, baja controladamente flexionando caderas y rodillas hasta que los muslos estén paralelos al suelo o más abajo si puedes, y sube empujando con fuerza desde los talones.",
+                EsFavorito = true },
+            new Ejercicio { Nombre="Sentadillas",
+                VideoId = "VQRLujxTm3c", Descripcion = "Trabaja piernas y glúteos. Coloca la barra sobre la parte alta de la espalda (no en el cuello), mantén el pecho arriba y la espalda recta, baja controladamente flexionando caderas y rodillas hasta que los muslos estén paralelos al suelo o más abajo si puedes, y sube empujando con fuerza desde los talones.",
                 EsFavorito = true }
         };
 

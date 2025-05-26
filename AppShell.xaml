@@ -67,6 +67,23 @@
                 ContentTemplate="{DataTemplate local:RelojPage}"
                 Route="RelojPage" 
                 />
+        
+        <ShellContent
+                ContentTemplate="{DataTemplate local:LoginPage}"
+                Route="LoginPage" 
+                />
+        
+        <ShellContent
+                ContentTemplate="{DataTemplate local:RegistroPage}"
+                Route="RegistroPage" 
+                />
+        
+        <ShellContent
+                ContentTemplate="{DataTemplate local:ContraseniaOlvidadaPage}"
+                Route="ContraseniaOlvidadaPage" 
+                />
+        
+        
     </TabBar>
     
 

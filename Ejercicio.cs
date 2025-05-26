@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PulseTFG
 {
@@ -13,6 +14,12 @@ namespace PulseTFG
         public string VideoId { get; set; }
         public string Descripcion { get; set; }
         public bool EsFavorito { get; set; }
+        // Para cambiar el icono
+        public ICommand ToggleFavoritoCommand => new Command(() =>
+        {
+            EsFavorito = !EsFavorito;
+            OnPropertyChanged(nameof(EsFavorito));
+        });
 
         public string ThumbnailUrl
         {
@@ -25,8 +32,8 @@ namespace PulseTFG
 
         public string Nombre { get; set; }
 
-        private string intensidad;
-        public string Intensidad
+        private int intensidad;
+        public int Intensidad
         {
             get => intensidad;
             set
@@ -46,6 +53,7 @@ namespace PulseTFG
                 OnPropertyChanged(nameof(Hecho));
             }
         }
+        
 
         private int repeticiones;
         public int Repeticiones

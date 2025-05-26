@@ -6,7 +6,7 @@
         {
             InitializeComponent();
 
-            GoToAsync("//InicioPage").ConfigureAwait(false);
+            GoToAsync("//LoginPage").ConfigureAwait(false);
 
         }
 
