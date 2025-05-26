@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PulseTFG.Api.Models
+namespace PulseTFG.Models
 {
     public class Rutina
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PulseTFG.Api.Models
+namespace PulseTFG.Models
 {
     public class Ejercicio
     {
@@ -19,7 +19,10 @@ namespace PulseTFG.Api.Models
         public string Descripcion { get; set; }
 
         [Required]
-        public string Video { get; set; }
+        public string VideoId { get; set; }
+
+        [Required]
+        public bool EsFavorito { get; set; }
 
     }
 }

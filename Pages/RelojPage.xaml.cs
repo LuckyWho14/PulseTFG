@@ -1,6 +1,6 @@
 using System.Timers;
 
-namespace PulseTFG;
+namespace PulseTFG.Pages;
 
 public partial class RelojPage : ContentPage
 {

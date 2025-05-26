@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PulseTFG.Api.Models
+namespace PulseTFG.Models
 {
     public class Entrenamiento_ejercicio
     {

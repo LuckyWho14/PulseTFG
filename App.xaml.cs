@@ -1,4 +1,6 @@
-﻿namespace PulseTFG
+﻿using PulseTFG.Pages;
+
+namespace PulseTFG
 {
     public partial class App : Application
     {
