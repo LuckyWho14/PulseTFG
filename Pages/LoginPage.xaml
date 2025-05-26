@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PulseTFG.Pages.LoginPage"
+             Title="LoginPage"
+             xmlns:local="clr-namespace:PulseTFG.Pages"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False" >
+
+    <ContentPage.BindingContext>
+        <local:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid ColumnDefinitions="*,*">
+        <!-- Bloque izq -->
+        <Grid RowDefinitions="*,Auto,*" RowSpacing="20">
+
+            <Image Source="logo1_pulse.png" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center" 
+                   HeightRequest="150"/>
+
+            <Label Text="Organiza tu propia rutina de entrenamiento o elige uno de los entrenamientos predefinidos"
+                   Grid.Row="1"
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center" 
+                   FontSize="24" 
+                   WidthRequest="500"/>
+
+            <Label Text="Consigue tus metas!"
+                   Grid.Row="2"
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center"
+                   />
+        </Grid>
+
+        <!-- Bloque login -->
+        <Grid RowDefinitions="Auto,4*,*" RowSpacing="20" Grid.Column="1" BackgroundColor="{StaticResource MoradoPrincipal}">
+
+            <Label Text="Bienvenido" TextColor="{StaticResource AzulCian}" HorizontalOptions="Center" FontSize="30" Margin="20"/>
+
+            <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10" Grid.Row="1">
+                <Entry Placeholder="Email" Text="{Binding Email}" Keyboard="Email" PlaceholderColor="White" x:Name="email"/>
+                <Entry Placeholder="Contraseña" Text="{Binding Password}" IsPassword="True" PlaceholderColor="White" x:Name="password" 
+                    Completed="PasswordEntry_Completed"/>
+
+                <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+
+                <StackLayout BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10"/>
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+                    <Button Text="Registro" BackgroundColor="Transparent" TextColor="White" Clicked="Registro_clicked"/>
+                    <Label Text="|"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Center" 
+                           TextColor="White"/>
+                    <Button Text="Olvidé mi contraseña" BackgroundColor="Transparent" TextColor="White" Clicked="Olvidaste_clicked"/>
+                </HorizontalStackLayout>
+            </StackLayout>
+
+            <Button Grid.Row="2" Text="Iniciar Sesión" Command="{Binding LoginCommand}"
+                    BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
+                    FontFamily="AntonRegular" FontAttributes="Italic" Padding="5" 
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" 
+                    x:Name="LoginButton"
+                    />
+        </Grid>
+    </Grid>
+</ContentPage>
