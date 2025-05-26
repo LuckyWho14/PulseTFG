@@ -2,8 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PulseTFG"
+<<<<<<< HEAD:HistorialPage.xaml
              x:Class="PulseTFG.HistorialPage"
              x:Name="HistorialPageRef"
+=======
+             x:Class="PulseTFG.Pages.HistorialPage"
+>>>>>>> modificacion de la estructura de la solucion; Creación de carpetas y corrección de errores:Pages/HistorialPage.xaml
              Shell.TabBarIsVisible="False" 
              BackgroundColor="{StaticResource FondoNegro}">
     <Grid 

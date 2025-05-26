@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PulseTFG.Api.Models
+namespace PulseTFG.Models
 {
     public class Trabajo
     {
         [Key]
         public int IdTrabajo { get; set; }
+
+        [Key]
+        public string Nombre { get; set; }
 
         [Required]
         public int Peso { get; set; }
@@ -22,7 +25,10 @@ namespace PulseTFG.Api.Models
         public int Serie { get; set; }
 
         [Required]
-        public int Intensidad { get; set; }
+        public string Intensidad { get; set; }
+
+        [Required]
+        public bool Hecho { get; set; }
 
         // Claves foráneas
         public int? IdEntrenamiento { get; set; }

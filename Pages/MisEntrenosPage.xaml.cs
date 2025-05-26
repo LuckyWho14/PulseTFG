@@ -1,4 +1,4 @@
-namespace PulseTFG;
+namespace PulseTFG.Pages;
 
 public partial class MisEntrenosPage : ContentPage
 {
