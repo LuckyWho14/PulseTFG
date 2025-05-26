@@ -29,38 +29,46 @@
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="100" Grid.Row="0">
                 <Label Text="Todos los músculos"/>
                 <Label Text="Filtros:"/>
-                <Label Text="Grupo Muscular"/>
                 <Label Text="Músculo"/>
-                <Label Text="Herramienta"/>
                 <Label Text="Favoritos"/>
             </HorizontalStackLayout>
+            <StackLayout BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10" Margin="20"/>
 
-            <CollectionView ItemsSource="{Binding ListaVideos}" Grid.Row="1">
+            <CollectionView ItemsSource="{Binding ListaVideos}" Grid.Row="1" SelectionMode="Single" >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="10" ColumnSpacing="10">
+                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="10" ColumnSpacing="30" RowDefinitions="2*,*">
 
                             <!-- Checkbox: favorito -->
                             <StackLayout Orientation="Vertical" Spacing="20" Grid.Column="0">
-                                <Label Text="{Binding Nombre}" VerticalOptions="Center" FontAttributes="Bold"/>
-                                <CheckBox 
-                                      IsChecked="{Binding EsFavorito}" />
+                                <Label Text="{Binding Nombre}" VerticalOptions="Center" FontFamily="AntonRegular" FontAttributes="Italic" Padding="10" FontSize="20"/>
+                                <Image 
+                                    x:Name="FavoritoIcono"
+                                    Source="{Binding EsFavorito, Converter={StaticResource FavoritoImagenConverter}}" 
+                                    WidthRequest="50"
+                                    Margin="0,-20,0,0">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ToggleFavoritoCommand}" />
+                                    </Image.GestureRecognizers>
+                                </Image>
                             </StackLayout>
                             <!-- Descripción del video -->
                             <Label Grid.Column="1"
                                    Text="{Binding Descripcion}"
-                                   VerticalOptions="Center" />
+                                   VerticalOptions="Center"/>
 
                             <!-- Thumbnail de YouTube -->
                             <Image Grid.Column="2"
                                    Source="{Binding ThumbnailUrl}"
-                                   WidthRequest="100"
-                                   HeightRequest="60"
+                                   WidthRequest="150"
+                                   HeightRequest="100"
                                    Aspect="AspectFill">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnThumbnailTapped" />
                                 </Image.GestureRecognizers>
                             </Image>
+
+                            <StackLayout Grid.Row="1" Grid.ColumnSpan="3" BackgroundColor="{StaticResource VerdeLima}" HeightRequest="5" Margin="15"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -74,7 +82,7 @@
               HorizontalOptions="FillAndExpand">
 
                 <Grid>
-                    <!-- Fondo "clicable" alrededor del WebView -->
+                    <!-- Fondo "clicable" alrededor del WebView para cerrar el video -->
                     <BoxView BackgroundColor="Transparent"
                              InputTransparent="False">
                         <BoxView.GestureRecognizers>
@@ -82,10 +90,10 @@
                         </BoxView.GestureRecognizers>
                     </BoxView>
 
-                    <!-- WebView centrado (sin gestos) -->
+                    <!-- WebView centrado -->
                     <WebView x:Name="VideoWebView"
-                             WidthRequest="350"
-                             HeightRequest="250"
+                             WidthRequest="550"
+                             HeightRequest="350"
                              HorizontalOptions="Center"
                              VerticalOptions="Center" />
                 </Grid>
