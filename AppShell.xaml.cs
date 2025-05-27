@@ -1,14 +1,21 @@
-﻿namespace PulseTFG
+﻿using PulseTFG.AuthService;
+using Microsoft.Maui.Storage;
+using PulseTFG.ViewModel;
+
+namespace PulseTFG
 {
     public partial class AppShell : Shell
     {
+        readonly FirebaseAuthService _auth = new();
+
         public AppShell()
         {
             InitializeComponent();
 
-            GoToAsync("//LoginPage").ConfigureAwait(false);
-
+            // Cargar el ViewModel de Logout
+            BindingContext = new LoggoutViewModel();
         }
+
 
     }
 }

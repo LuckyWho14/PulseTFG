@@ -62,7 +62,7 @@ namespace PulseTFG.ViewModel
                     "OK");
 
                 // Navegar a login
-                await Shell.Current.GoToAsync("///LoginPage");
+                await Shell.Current.GoToAsync("///LoginPage"); 
             }
             catch (Exception ex)
             {
