@@ -86,16 +86,32 @@
                 ContentTemplate="{DataTemplate local:RegistroPage}"
                 Route="RegistroPage" 
                 />
-        
+
         <ShellContent
                 ContentTemplate="{DataTemplate local:ContraseniaOlvidadaPage}"
                 Route="ContraseniaOlvidadaPage" 
                 />
-        <ShellContent
-                ContentTemplate="{DataTemplate local:CreadorRutinaPage}"
-                Route="CreadorRutinaPage" 
+        <ShellContent 
+                ContentTemplate="{DataTemplate local:CrearRutinaSelecTipoPage}"
+                Route="CrearRutinaSelecTipoPage" 
                 />
-
+        <ShellContent 
+                ContentTemplate="{DataTemplate local:CrearRutinaPredetPage}"
+                Route="CrearRutinaPredetPage" 
+                />
+        <ShellContent
+                ContentTemplate="{DataTemplate local:CrearRutinaPredetSinglePage}"
+                Route="CrearRutinaPredetSinglePage" 
+                />
+        <ShellContent
+                ContentTemplate="{DataTemplate local:CrearRutinaPersPage}"
+                Route="CrearRutinaPersPage" 
+                />
+        <ShellContent
+                ContentTemplate="{DataTemplate local:CrearRutinaCrearEntreno}"
+                Route="CrearRutinaCrearEntreno" 
+                />
+        
     </TabBar>
     
 

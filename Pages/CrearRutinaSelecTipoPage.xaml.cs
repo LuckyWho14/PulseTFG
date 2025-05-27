@@ -2,10 +2,10 @@ using PulseTFG.ViewModel;
 
 namespace PulseTFG.Pages;
 
-public partial class CreadorRutinaPage : ContentPage
+public partial class CrearRutinaSelecTipoPage : ContentPage
 {
     RoutineCreatorViewModel _vm;
-    public CreadorRutinaPage()
+    public CrearRutinaSelecTipoPage()
 	{
 		InitializeComponent();
 

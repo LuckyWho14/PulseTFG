@@ -1,4 +1,4 @@
-﻿using PulseTFG.AuthService;
+﻿using PulseTFG.FirebaseService;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;

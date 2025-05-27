@@ -1,4 +1,4 @@
-namespace PulseTFG;
+namespace PulseTFG.Elementos;
 
 public partial class MenuBarra : ContentView
 {

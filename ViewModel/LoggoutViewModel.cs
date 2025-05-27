@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 using Microsoft.Maui.Controls;
-using PulseTFG.AuthService;
+using PulseTFG.FirebaseService;
 using PulseTFG.Pages;
 
 namespace PulseTFG.ViewModel

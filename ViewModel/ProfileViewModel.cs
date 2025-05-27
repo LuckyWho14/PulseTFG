@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Controls;
-using PulseTFG.AuthService;
+using PulseTFG.FirebaseService;
 using PulseTFG.Models;
 
 namespace PulseTFG.ViewModel
@@ -13,6 +13,7 @@ namespace PulseTFG.ViewModel
     public class ProfileViewModel : INotifyPropertyChanged
     {
         readonly FirebaseAuthService _auth = new();
+        readonly FirebaseFirestoreService _firestore = new();
         const string PrefsUserUidKey = "firebase_user_uid";
 
         public ProfileViewModel()
@@ -80,7 +81,7 @@ namespace PulseTFG.ViewModel
             if (string.IsNullOrEmpty(uid))
                 return;
 
-            var u = await _auth.ObtenerUsuarioAsync(uid);
+            var u = await _firestore.ObtenerUsuarioAsync(uid);
 
             Nombre = u.NombreCompleto;
             Email = u.Email;
@@ -106,7 +107,7 @@ namespace PulseTFG.ViewModel
                 return;
 
             // Llamamos al servicio para actualizar solo el campo 'peso'
-            await _auth.ActualizarCampoUsuarioAsync(uid, "peso", Peso);
+            await _firestore.ActualizarCampoUsuarioAsync(uid, "peso", Peso);
         }
 
         #region INotifyPropertyChanged
