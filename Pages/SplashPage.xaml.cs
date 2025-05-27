@@ -1,4 +1,4 @@
-﻿using PulseTFG.AuthService;
+﻿using PulseTFG.FirebaseService;
 
 namespace PulseTFG.Pages;
 

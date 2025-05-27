@@ -1,5 +1,5 @@
 ﻿using PulseTFG.Pages;
-using PulseTFG.AuthService;
+using PulseTFG.FirebaseService;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
@@ -10,6 +10,8 @@ namespace PulseTFG
     {
         // Instancia de tu servicio de Auth
         readonly FirebaseAuthService _authService = new();
+        // Instancia de tu servicio de Firestore
+        readonly FirebaseFirestoreService _firestoreService = new();
 
         // Estas claves deben coincidir con las de FirebaseAuthService
         const string PrefsIdTokenKey = "firebase_id_token";
@@ -28,37 +30,35 @@ namespace PulseTFG
 
         async Task InitAppAsync()
         {
-            // 2.1) Tiempo para que se vea el splash
             await Task.Delay(1500);
 
-            // 2.2) Leer el idToken de Preferences
             var idToken = Preferences.Get(PrefsIdTokenKey, null);
             var uid = Preferences.Get(PrefsUserUidKey, null);
 
-            // 2.3) Comprobar con Firebase si sigue siendo válido
             var esValido =
                 !string.IsNullOrEmpty(idToken) &&
                 !string.IsNullOrEmpty(uid) &&
                 await _authService.TokenEsValidoAsync(idToken);
 
-            // 2.4) Según el resultado, montar la raíz adecuada
             if (esValido)
             {
-                // Sesión activa → mostrar la AppShell con tu contenido protegido
+                bool tieneRutinas = await _firestoreService.UsuarioTieneRutinasAsync(uid);
+
                 MainPage = new AppShell();
-                await Shell.Current.GoToAsync("//InicioPage");
+
+                if (tieneRutinas)
+                    await Shell.Current.GoToAsync("//InicioPage");
+                else
+                    await Shell.Current.GoToAsync("//CreadorRutinaPage");
             }
             else
             {
-                // No hay sesión → limpiar cualquier token residual
                 Preferences.Remove(PrefsIdTokenKey);
                 Preferences.Remove(PrefsRefreshTokenKey);
                 Preferences.Remove(PrefsUserUidKey);
 
-                // Y mostrar siempre el LoginPage dentro de un NavigationPage
                 MainPage = new AppShell();
                 await Shell.Current.GoToAsync("//LoginPage");
-
             }
         }
     }

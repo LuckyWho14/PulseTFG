@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Controls;
-using PulseTFG.AuthService;
+using PulseTFG.FirebaseService;
 using PulseTFG.Models;
 
 namespace PulseTFG.ViewModel
@@ -13,6 +13,7 @@ namespace PulseTFG.ViewModel
     public class RoutineCreatorViewModel : INotifyPropertyChanged
     {
         readonly FirebaseAuthService _auth = new();
+        readonly FirebaseFirestoreService _firestore = new();
         public RoutineCreatorViewModel()
         {
             FechaCreacion = DateTime.UtcNow;
@@ -46,6 +47,12 @@ namespace PulseTFG.ViewModel
             get => activo;
             set => SetProperty(ref activo, value);
         }
+        private bool tipo = true;
+        public bool Tipo
+        {
+            get => tipo;
+            set => SetProperty(ref tipo, value);
+        }
 
         public DateTime FechaCreacion { get; }
         public DateTime Actualizado { get; }
@@ -77,13 +84,14 @@ namespace PulseTFG.ViewModel
                 Nombre = Nombre,
                 Descripcion = Descripcion ?? "",
                 Activo = Activo,
+                Tipo = Tipo,
                 FechaCreacion = FechaCreacion,
                 Actualizado = Actualizado
             };
 
             try
             {
-                var creada = await _auth.CrearRutinaAsync(uid, r);
+                var creada = await _firestore.CrearRutinaAsync(uid, r);
                 Mensaje = "Rutina creada: " + creada.Nombre;
                 // mensaje de éxito, puedes navegar a otra página o actualizar la UI
                 await Application.Current.MainPage.DisplayAlert("Éxito", "Rutina creada correctamente", "OK");
@@ -111,7 +119,7 @@ namespace PulseTFG.ViewModel
             }
 
             // Llama a tu servicio para recuperar la lista
-            var lista = await _auth.ObtenerRutinasUsuarioAsync(uid);
+            var lista = await _firestore.ObtenerRutinasUsuarioAsync(uid);
             TieneRutinas = lista != null && lista.Count > 0;
         }
 

@@ -1,4 +1,4 @@
-﻿using PulseTFG.AuthService;
+﻿using PulseTFG.FirebaseService;
 using Microsoft.Maui.Storage;
 using PulseTFG.ViewModel;
 

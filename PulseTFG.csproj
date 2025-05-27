@@ -72,8 +72,11 @@
 	  <Compile Update="EntrenoPredefPage.xaml.cs">
 	    <DependentUpon>EntrenoPredefPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\CreadorRutinaPage.xaml.cs">
-	    <DependentUpon>CreadorRutinaPage.xaml</DependentUpon>
+	  <Compile Update="Pages\CrearRutinaPersPage.xaml.cs">
+	    <DependentUpon>CrearRutinaPersPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\CrearRutinaSelecTipoPage.xaml.cs">
+	    <DependentUpon>CrearRutinaSelecTipoPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -84,16 +87,25 @@
 	  <MauiXaml Update="Elementos\MenuBarra.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Elementos\TipoRutina.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="InicioPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ContraseniaOlvidadaPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\CreadorRutinaPage.xaml">
+	  <MauiXaml Update="Pages\CrearRutinaCrearEntreno.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CrearRutinaPersPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CrearRutinaPredetPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CrearRutinaPredetSinglePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CrearRutinaSelecTipoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\HistorialPage.xaml">
