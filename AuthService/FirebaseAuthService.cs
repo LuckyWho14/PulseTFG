@@ -6,6 +6,7 @@ using Microsoft.Maui.Storage;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Net.Http.Headers;
 
 namespace PulseTFG.AuthService;
 
@@ -311,5 +312,81 @@ public class FirebaseAuthService
 
         var resp = await _httpClient.SendAsync(req);
         resp.EnsureSuccessStatusCode();
+    }
+
+    /// <summary>
+    /// Obtiene las rutinas asociadas a un usuario específico desde Firestore.
+    /// </summary>
+    public async Task<List<Rutina>> ObtenerRutinasUsuarioAsync(string uid)
+    {
+        var url =
+          $"https://firestore.googleapis.com/v1/projects/pulsetfg-6642a/databases/(default)" +
+          $"/documents/usuarios/{uid}/rutinas";
+        var req = new HttpRequestMessage(HttpMethod.Get, url);
+        var idToken = Preferences.Get(PrefsIdTokenKey, null);
+        req.Headers.Authorization =
+            new AuthenticationHeaderValue("Bearer", idToken);
+
+        var resp = await _httpClient.SendAsync(req);
+        if (!resp.IsSuccessStatusCode) return new List<Rutina>();
+
+        var json = await resp.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var list = new List<Rutina>();
+        foreach (var docElem in doc.RootElement.GetProperty("documents").EnumerateArray())
+        {
+            var name = docElem.GetProperty("name").GetString();
+            var fields = docElem.GetProperty("fields");
+            list.Add(new Rutina
+            {
+                IdRutina = name.Substring(name.LastIndexOf('/') + 1),
+                Nombre = fields.GetProperty("nombre").GetProperty("stringValue").GetString(),
+                Descripcion = fields.GetProperty("descripcion").GetProperty("stringValue").GetString(),
+                Activo = fields.GetProperty("activo").GetProperty("booleanValue").GetBoolean(),
+                FechaCreacion = DateTime.Parse(fields.GetProperty("fechaCreacion").GetProperty("timestampValue").GetString()),
+                Actualizado = DateTime.Parse(fields.GetProperty("actualizado").GetProperty("timestampValue").GetString())
+            });
+        }
+        return list;
+    }
+
+    /// <summary>
+    /// Crea una nueva rutina asociada a un usuario específico en Firestore.
+    /// </summary>
+    public async Task<Rutina> CrearRutinaAsync(string uid, Rutina r)
+    {
+        var url =
+          $"https://firestore.googleapis.com/v1/projects/pulsetfg-6642a/databases/(default)" +
+          $"/documents/usuarios/{uid}/rutinas?documentId={Guid.NewGuid()}";
+
+        var docData = new
+        {
+            fields = new Dictionary<string, object>
+        {
+            { "nombre",        new { stringValue = r.Nombre } },
+            { "descripcion",   new { stringValue = r.Descripcion } },
+            { "activo",        new { booleanValue = r.Activo } },
+            { "fechaCreacion", new { timestampValue = r.FechaCreacion.ToUniversalTime().ToString("o") } },
+            { "actualizado",   new { timestampValue = r.Actualizado.ToUniversalTime().ToString("o") } }
+        }
+        };
+
+        var json = JsonSerializer.Serialize(docData);
+        var req = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
+        };
+        var token = Preferences.Get("firebase_id_token", null);
+        req.Headers.Authorization =
+            new AuthenticationHeaderValue("Bearer", token);
+
+        var resp = await _httpClient.SendAsync(req);
+        resp.EnsureSuccessStatusCode();
+
+        var respJson = await resp.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(respJson);
+        var name = doc.RootElement.GetProperty("name").GetString();
+        r.IdRutina = name[(name.LastIndexOf('/') + 1)..];
+        return r;
     }
 }

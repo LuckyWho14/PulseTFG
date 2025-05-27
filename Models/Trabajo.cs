@@ -9,7 +9,7 @@ namespace PulseTFG.Models
 {
     public class Trabajo
     {
-        public int IdTrabajo { get; set; }
+        public string IdTrabajo { get; set; }
         public int IdEjercicio { get; set; }
         public string NombreEjercicio { get; set; }
 

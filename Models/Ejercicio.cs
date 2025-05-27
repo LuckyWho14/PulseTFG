@@ -11,7 +11,7 @@ namespace PulseTFG.Models
 {
     public class Ejercicio : INotifyPropertyChanged
     {
-        public int IdEjercicio { get; set; }
+        public string IdEjercicio { get; set; }
 
         private string nombre;
         public string Nombre

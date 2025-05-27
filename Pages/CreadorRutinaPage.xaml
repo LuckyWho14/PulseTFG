@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PulseTFG.Pages.CreadorRutinaPage"
+             xmlns:local="clr-namespace:PulseTFG"
+             xmlns:elem="clr-namespace:PulseTFG.Elementos"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False" 
+             BackgroundColor="{StaticResource FondoNegro}"
+             FlyoutItem.IsVisible="True">
+    <Grid 
+        RowDefinitions="*,4*,*" 
+        ColumnDefinitions="*">
+
+        <!-- Título -->
+        <Label 
+        Text="Creador Rutina" 
+        TextColor="{StaticResource MoradoPrincipal}"
+        FontFamily="AntonRegular"
+        Grid.Row="0"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        FontSize="40"
+        FontAttributes="Italic"/>
+
+
+        <!-- Cuerpo -->
+        <elem:TipoRutina Grid.Row="1" IsVisible="True"/>
+        <elem:CreadorRutina Grid.Row="1" IsVisible="False"/>
+        
+        <!-- Menú Barra-->
+        <local:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
+
+    </Grid>
+</ContentPage>
