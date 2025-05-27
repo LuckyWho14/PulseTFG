@@ -14,7 +14,7 @@ namespace PulseTFG
         // Estas claves deben coincidir con las de FirebaseAuthService
         const string PrefsIdTokenKey = "firebase_id_token";
         const string PrefsRefreshTokenKey = "firebase_refresh_token";
-
+        const string PrefsUserUidKey = "firebase_user_uid";
         public App()
         {
             InitializeComponent();
@@ -33,10 +33,12 @@ namespace PulseTFG
 
             // 2.2) Leer el idToken de Preferences
             var idToken = Preferences.Get(PrefsIdTokenKey, null);
+            var uid = Preferences.Get(PrefsUserUidKey, null);
 
             // 2.3) Comprobar con Firebase si sigue siendo válido
             var esValido =
                 !string.IsNullOrEmpty(idToken) &&
+                !string.IsNullOrEmpty(uid) &&
                 await _authService.TokenEsValidoAsync(idToken);
 
             // 2.4) Según el resultado, montar la raíz adecuada
@@ -51,6 +53,7 @@ namespace PulseTFG
                 // No hay sesión → limpiar cualquier token residual
                 Preferences.Remove(PrefsIdTokenKey);
                 Preferences.Remove(PrefsRefreshTokenKey);
+                Preferences.Remove(PrefsUserUidKey);
 
                 // Y mostrar siempre el LoginPage dentro de un NavigationPage
                 MainPage = new AppShell();

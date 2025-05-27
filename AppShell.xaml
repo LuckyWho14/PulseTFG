@@ -20,6 +20,15 @@
     <!-- Footer -->
     <Shell.FlyoutFooter >
         <StackLayout Padding="30">
+            <Button
+                  Text="Cerrar sesión"
+                  Command="{Binding LogoutCommand}"
+                  Margin="20"
+                  HorizontalOptions="CenterAndExpand"
+                  BackgroundColor="{StaticResource RojoStop}"
+                  TextColor="White"
+                  CornerRadius="8" 
+                    />
             <Image Source="logo2_pulse.png" HeightRequest="60"></Image>
             <Label Text="© 2025 - Lucky Sotelo - Diego Juara" HorizontalOptions="Center"/>
         </StackLayout>
@@ -49,10 +58,7 @@
     <FlyoutItem Title="Información personal" >
         <ShellContent ContentTemplate="{DataTemplate local:InfoPersPage}" />
     </FlyoutItem>
-    <MenuItem 
-            Text="Cerrar sesión" 
-            IconImageSource="logout.png" 
-            Command="{Binding LogoutCommand}" />
+    
     <!-- Direcciones de las páginas(ocultas del flyout) -->
     <TabBar IsEnabled="False">
        
