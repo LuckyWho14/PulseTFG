@@ -11,22 +11,16 @@ namespace PulseTFG.Models
     public class Usuario
     {
         [Key]
-        public int IdUsuario { get; set; }
+        public string Uid { get; set; }
 
         [Required]
-        public string Nombre { get; set; }
-
-        [Required]
-        public string Apellidos { get; set; }
+        public string NombreCompleto { get; set; }
 
         [Required, EmailAddress]
         public string Email { get; set; }
 
         [Required]
-        public DateTime Fnac { get; set; }
-
-        [Required]
-        public string Sexo { get; set; }
+        public DateTime FechaNacimiento { get; set; }
 
         [Required]
         public float Altura { get; set; }
