@@ -1,8 +1,9 @@
 
 using System.Collections.ObjectModel;
+using PulseTFG.Models;
 
 
-namespace PulseTFG;
+namespace PulseTFG.Pages;
 
 public partial class InfoEjerPage : ContentPage
 {

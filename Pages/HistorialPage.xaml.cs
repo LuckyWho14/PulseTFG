@@ -1,6 +1,10 @@
+<<<<<<< HEAD:HistorialPage.xaml.cs
 using System.Collections.ObjectModel;
 
 namespace PulseTFG;
+=======
+namespace PulseTFG.Pages;
+>>>>>>> origin/ClasesBBDD:Pages/HistorialPage.xaml.cs
 
 public partial class HistorialPage : ContentPage
 {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PulseTFG.InicioPage"
+             x:Class="PulseTFG.Pages.InicioPage"
              xmlns:local="clr-namespace:PulseTFG"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" 
@@ -24,6 +24,7 @@
         
 
         <!-- Cuerpo -->
+<<<<<<< HEAD:InicioPage.xaml
         <StackLayout Grid.Row="1">
 
             <StackLayout BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10" Margin="20"/>
@@ -34,6 +35,13 @@
                             HorizontalOptions="Center">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
+=======
+        <ListView x:Name="TrabajoList" HasUnevenRows="True" SeparatorVisibility="Default"
+                  Grid.Row="1" HorizontalOptions="Center">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+>>>>>>> origin/ClasesBBDD:Pages/InicioPage.xaml
                         <Grid 
                                 RowDefinitions="2*,*,*"
                                 ColumnDefinitions="*,2*,*,*,*,*"
@@ -56,6 +64,7 @@
 
 
                             <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="3">
+<<<<<<< HEAD:InicioPage.xaml
                                 <Stepper Value="{Binding Repeticiones}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="100"/>
                                 <Label Text="Reps:" VerticalOptions="Center" FontAttributes="Bold"/>
                                 <Label Text="{Binding Repeticiones}" VerticalOptions="Center" FontSize="20"/>
@@ -99,8 +108,23 @@
                             </StackLayout>
 
                             <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="5" Grid.Row="1">
+=======
+                                <Stepper Value="{Binding Repeticion}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="100"/>
+                                <Label Text="Reps:" VerticalOptions="Center"/>
+                                <Label Text="{Binding Repeticion}" VerticalOptions="Center"/>
+                            </StackLayout>
+
+                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="4">
+                                <Stepper Value="{Binding Serie}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="20"/>
+                                <Label Text="Series:" VerticalOptions="Center"/>
+                                <Label Text="{Binding Serie}" VerticalOptions="Center"/>
+                            </StackLayout>
+
+                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="5">
+                                <Stepper Value="{Binding Peso}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="300" Increment="1"/>
+>>>>>>> origin/ClasesBBDD:Pages/InicioPage.xaml
                                 <Label Text="KG:" VerticalOptions="Center"/>
-                                <Label Text="{Binding Kg}" VerticalOptions="Center"/>
+                                <Label Text="{Binding Peso}" VerticalOptions="Center"/>
                             </StackLayout>
                             
                             <!-- Separador -->
