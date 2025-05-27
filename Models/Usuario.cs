@@ -10,33 +10,14 @@ namespace PulseTFG.Models
 {
     public class Usuario
     {
-        [Key]
         public string Uid { get; set; }
-
-        [Required]
         public string NombreCompleto { get; set; }
-
-        [Required, EmailAddress]
         public string Email { get; set; }
-
-        [Required]
         public DateTime FechaNacimiento { get; set; }
-
-        [Required]
         public double Altura { get; set; }
-
-        [Required]
         public double Peso { get; set; }
+        public double IMC => Peso / Math.Pow(Altura / 100, 2);
 
-        [Required]
-        public float IMC { get; set; }
-
-
-        // Claves foráneas
-        public int? IdRutina { get; set; }
-
-        public int? IdEntrenamiento { get; set; }
-
-
+        public DateTime FechaCreacion { get; set; }
     }
 }
