@@ -3,14 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PulseTFG.Pages.LoginPage"
              Title="LoginPage"
-             xmlns:local="clr-namespace:PulseTFG.Pages"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" >
 
-    <ContentPage.BindingContext>
-        <local:LoginViewModel />
-    </ContentPage.BindingContext>
-
+   
     <Grid ColumnDefinitions="*,*">
         <!-- Bloque izq -->
         <Grid RowDefinitions="*,Auto,*" RowSpacing="20">

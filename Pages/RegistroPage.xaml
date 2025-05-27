@@ -2,14 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PulseTFG.Pages.RegistroPage"
-             xmlns:local="clr-namespace:PulseTFG.Pages"
              Title="RegistroPage"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" >
 
-    <ContentPage.BindingContext>
-        <local:RegisterViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView>
 

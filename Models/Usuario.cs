@@ -23,10 +23,10 @@ namespace PulseTFG.Models
         public DateTime FechaNacimiento { get; set; }
 
         [Required]
-        public float Altura { get; set; }
+        public double Altura { get; set; }
 
         [Required]
-        public float Peso { get; set; }
+        public double Peso { get; set; }
 
         [Required]
         public float IMC { get; set; }

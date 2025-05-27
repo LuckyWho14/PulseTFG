@@ -1,10 +1,13 @@
 namespace PulseTFG.Pages;
+using PulseTFG.ViewModel;
 
 public partial class RegistroPage : ContentPage
 {
     public RegistroPage()
     {
         InitializeComponent();
+
+        BindingContext = new RegisterViewModel();
     }
 
     private void Olvidada_clicked(object sender, EventArgs e)

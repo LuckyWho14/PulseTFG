@@ -2,11 +2,15 @@
 
 namespace PulseTFG.Pages;
 
+using PulseTFG.ViewModel;
+
 public partial class LoginPage : ContentPage
 {
     public LoginPage()
     {
         InitializeComponent();
+
+        BindingContext = new LoginViewModel();
     }
     private void PasswordEntry_Completed(object sender, EventArgs e)
     {

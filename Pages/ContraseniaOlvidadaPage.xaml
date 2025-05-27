@@ -3,13 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PulseTFG.Pages.ContraseniaOlvidadaPage"
              Title="ContraseniaOlvidadaPage"
-             xmlns:local="clr-namespace:PulseTFG.Pages"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" >
 
-    <ContentPage.BindingContext>
-        <local:PulseTFG.ViewModel.RecuperarContrasenaViewModel />
-    </ContentPage.BindingContext>
 
     <Grid ColumnDefinitions="*,*">
         <!-- Bloque izq -->
