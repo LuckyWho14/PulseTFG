@@ -6,7 +6,7 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource FondoNegro}"
              FlyoutItem.IsVisible="True">
-    
+    <!-- TODO: IMC -->
     <Grid 
         RowDefinitions="*,4*,*" 
         ColumnDefinitions="*">
@@ -67,9 +67,11 @@
                            HorizontalTextAlignment="Center"
                            VerticalOptions="Center"
                            x:Name="Peso"
-                           TextChanged="OnPesoChanged"/>
+                           />
+                    <!--  
                     <Button Text="−" Clicked="DisminuirPeso" VerticalOptions="Center"/>
                     <Button Text="+" Clicked="AumentarPeso" VerticalOptions="Center"/>
+                    -->
                 </HorizontalStackLayout>
 
                 <!-- IMC -->

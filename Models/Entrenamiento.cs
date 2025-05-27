@@ -10,22 +10,9 @@ namespace PulseTFG.Models
 {
     public class Entrenamiento
     {
-        [Key]
         public int IdEntrenamiento { get; set; }
-
-        [Required]
         public string Nombre { get; set; }
-
-        [Required]
-        public DateTime Fecha { get; set; }
-
-        [Required]
-        public string Notas { get; set; }
-
-        [Required]
-        public int Intensidad_global { get; set; }
-
-        // Claves foráneas
-        public int? IdRutina_entrenamiento { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public DateTime Actualizado { get; set; }
     }
 }

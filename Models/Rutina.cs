@@ -11,16 +11,11 @@ namespace PulseTFG.Models
 {
     public class Rutina
     {
-        [Key]
         public int IdRutina { get; set; }
-
-        [Required]
         public string Nombre { get; set; }
-
-        [Required]
         public string Descripcion { get; set; }
-
-        // Claves foráneas
-        public int IdRutina_entrenamiento { get; set; }
+        public bool Activo { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public DateTime Actualizado { get; set; }
     }
 }

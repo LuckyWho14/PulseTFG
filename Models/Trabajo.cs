@@ -9,30 +9,17 @@ namespace PulseTFG.Models
 {
     public class Trabajo
     {
-        [Key]
         public int IdTrabajo { get; set; }
+        public int IdEjercicio { get; set; }
+        public string NombreEjercicio { get; set; }
 
-        [Key]
-        public string Nombre { get; set; }
-
-        [Required]
         public int Peso { get; set; }
-
-        [Required]
         public int Repeticion { get; set; }
-
-        [Required]
         public int Serie { get; set; }
-
-        [Required]
-        public string Intensidad { get; set; }
-
-        [Required]
+        public int Intensidad { get; set; }
         public bool Hecho { get; set; }
+        public string Notas { get; set; }
 
-        // Claves foráneas
-        public int? IdEntrenamiento { get; set; }
-
-        public int? IdEjercicio { get; set; }
+        public DateTime Fecha { get; set; }
     }
 }
