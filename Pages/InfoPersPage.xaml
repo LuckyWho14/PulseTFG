@@ -6,121 +6,126 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource FondoNegro}"
              FlyoutItem.IsVisible="True">
-    <!-- TODO: IMC -->
-    <Grid 
-        RowDefinitions="*,4*,*" 
-        ColumnDefinitions="*">
+    <ScrollView>
 
-        <!-- Título -->
-        <Label 
-        Text="Información personal" 
-        TextColor="{StaticResource MoradoPrincipal}"
-        FontFamily="AntonRegular"
-        Grid.Row="0"
-        VerticalOptions="Center"
-        HorizontalOptions="Center"
-        FontSize="40"
-        FontAttributes="Italic"/>
+        <Grid 
+            RowDefinitions="*,4*,*" 
+            ColumnDefinitions="*">
 
-        <!-- Cuerpo -->
-        <Grid Grid.Row="1"
-              RowDefinitions="*,*"
-              ColumnDefinitions="*,*">
-            
-            <Grid Grid.Row="0" Grid.Column="0"
-                  RowDefinitions="*,*,*,*,2*,*"
-                  ColumnDefinitions="*,*"
-                  HorizontalOptions="Center"
-                  ColumnSpacing="20">
-                
-                <!-- Nombre -->
-                <Label Grid.Row="0" Grid.Column="0"
-                       Text="Nombre:"/>
-                <Label Grid.Row="0" Grid.Column="1"
-                       Text="Lucky Sotelo"/>
+            <!-- Título -->
+            <Label 
+            Text="Información personal" 
+            TextColor="{StaticResource MoradoPrincipal}"
+            FontFamily="AntonRegular"
+            Grid.Row="0"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            FontSize="40"
+            FontAttributes="Italic"/>
 
-                <!-- Email -->
-                <Label Grid.Row="1" Grid.Column="0"
-                       Text="Email:"/>
-                <Label Grid.Row="1" Grid.Column="1"
-                       Text="mr.sotelo96@gmail.com"/>
+            <!-- Cuerpo -->
+            <Grid Grid.Row="1"
+                  RowDefinitions="Auto,*"
+                  ColumnDefinitions="*,*">
 
-                <!-- Cumpleaños -->
-                <Label Grid.Row="2" Grid.Column="0"
-                       Text="Cumpleaños: "/>
-                <Label Grid.Row="2" Grid.Column="1"
-                       Text="14-Marzo-1996"/>
+                <Grid Grid.Row="0" Grid.Column="0"
+                      RowDefinitions="*,*,*,*,Auto,*,*"
+                      ColumnDefinitions="*,*"
+                      HorizontalOptions="Center"
+                      ColumnSpacing="20"
+                      >
 
-                <!-- Altura -->
-                <Label Grid.Row="3" Grid.Column="0"
-                       Text="Altura: "/>
-                <Label Grid.Row="3" Grid.Column="1"
-                       Text="1.75" x:Name="Altura"/>
+                    <!-- Nombre -->
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Text="Nombre:"/>
+                    <Label Grid.Row="0" Grid.Column="1"
+                           Text="{Binding Nombre}"/>
 
-                <!-- Peso -->
-                <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" Spacing="20">
-                    <Label Text="Peso: " WidthRequest="85"/>
-                    <Entry Text="{Binding PesoTexto, Mode=TwoWay, StringFormat='{0:F2}'}"
-                           Keyboard="Numeric"
-                           WidthRequest="60"
-                           Margin="0,0,0,0"
-                           HorizontalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           x:Name="Peso"
-                           />
-                    <!--  
-                    <Button Text="−" Clicked="DisminuirPeso" VerticalOptions="Center"/>
-                    <Button Text="+" Clicked="AumentarPeso" VerticalOptions="Center"/>
-                    -->
-                </HorizontalStackLayout>
+                    <!-- Email -->
+                    <Label Grid.Row="1" Grid.Column="0"
+                           Text="Email:"/>
+                    <Label Grid.Row="1" Grid.Column="1"
+                           Text="{Binding Email}"/>
 
-                <!-- IMC -->
-                <Label Grid.Row="5" Grid.Column="0"
-                       Text="IMC: "/>
-                <Label Grid.Row="5" Grid.Column="1"
-                       Text="0" x:Name="IMC"/>
+                    <!-- Cumpleaños -->
+                    <Label Grid.Row="2" Grid.Column="0"
+                           Text="Cumpleaños: "/>
+                    <Label Grid.Row="2" Grid.Column="1"
+                           Text="{Binding FechaNacimiento, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+
+                    <!-- Altura -->
+                    <Label Grid.Row="3" Grid.Column="0"
+                           Text="Altura: "/>
+                    <Label Grid.Row="3" Grid.Column="1"
+                           Text="{Binding Altura}" x:Name="Altura"/>
+
+                    <!-- Peso -->
+                    <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" Spacing="20">
+                        <Label Text="Peso: " WidthRequest="85"/>
+                        <Entry Text="{Binding Peso, Mode=TwoWay}"
+                               Keyboard="Numeric"
+                               WidthRequest="60"
+                               HorizontalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               x:Name="Peso"
+                               />
+
+                        <Button Text="−" Command="{Binding DecreasePesoCommand}" VerticalOptions="Center"/>
+                        <Button Text="+" Command="{Binding IncreasePesoCommand}" VerticalOptions="Center"/>
+
+                    </HorizontalStackLayout>
+
+                    <!-- IMC -->
+                    <Label Grid.Row="5" Grid.Column="0"
+                           Text="IMC: "/>
+                    <Label Grid.Row="5" Grid.Column="1"
+                           Text="{Binding IMC, StringFormat='{0:F2}'}" x:Name="IMC"/>
+                    <Button Grid.Row="6" Text="Guardar cambios" HorizontalOptions="Center"
+                            Grid.ColumnSpan="2" BackgroundColor="{StaticResource MoradoPrincipal}"
+                            TextColor="White" Command="{Binding GuardarPesoCommand}"/>
+                </Grid>
+
+                <!-- Logo -->
+                <Image Grid.Row="0" Grid.Column="1"
+                       Source="logo1_pulse.png" HeightRequest="250"/>
+
+                <!-- Info IMC -->
+                <Grid Grid.Row="1" Grid.ColumnSpan="2"
+                      RowDefinitions="*"
+                      ColumnDefinitions="*,*,*,*,*,*"
+                      ColumnSpacing="10"
+                      Padding="30"
+                      Margin="0,30,0,0">
+                    <StackLayout Grid.Column="0">
+                        <Label Text="&lt; 18.5 – Bajo peso:" FontAttributes="Bold"/>
+                        <Label Text="Posible desnutrición; revisar alimentación y salud."/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="1">
+                        <Label Text="18.5 – 24.9 – Peso normal:" FontAttributes="Bold"/>
+                        <Label Text="Estado saludable; mantener buenos hábitos."/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="2">
+                        <Label Text="25 – 29.9 – Sobrepeso:" FontAttributes="Bold"/>
+                        <Label Text="Riesgo moderado; mejorar alimentación y ejercicio."/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="3">
+                        <Label Text="30 – 34.9 – Obesidad I:" FontAttributes="Bold"/>
+                        <Label Text="Riesgo alto de enfermedades; requiere cambios."/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="4">
+                        <Label Text="35 – 39.9 – Obesidad II:" FontAttributes="Bold"/>
+                        <Label Text="Riesgo mayor; se recomienda atención médica."/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="5">
+                        <Label Text="&gt; 40 – Obesidad mórbida" FontAttributes="Bold"/>
+                        <Label Text="Riesgo muy alto; necesita intervención profesional."/>
+                    </StackLayout>
+
+                </Grid>
             </Grid>
-            
-            <!-- Logo -->
-            <Image Grid.Row="0" Grid.Column="1"
-                   Source="logo1_pulse.png" HeightRequest="250"/>
-            
-            <!-- Info IMC -->
-            <Grid Grid.Row="1" Grid.ColumnSpan="2"
-                  RowDefinitions="*"
-                  ColumnDefinitions="*,*,*,*,*,*"
-                  ColumnSpacing="10"
-                  Padding="30"
-                  Margin="0,30,0,0">
-                <StackLayout Grid.Column="0">
-                    <Label Text="&lt; 18.5 – Bajo peso:" FontAttributes="Bold"/>
-                    <Label Text="Posible desnutrición; revisar alimentación y salud."/>
-                </StackLayout>
-                <StackLayout Grid.Column="1">
-                    <Label Text="18.5 – 24.9 – Peso normal:" FontAttributes="Bold"/>
-                    <Label Text="Estado saludable; mantener buenos hábitos."/>
-                </StackLayout>
-                <StackLayout Grid.Column="2">
-                    <Label Text="25 – 29.9 – Sobrepeso:" FontAttributes="Bold"/>
-                    <Label Text="Riesgo moderado; mejorar alimentación y ejercicio."/>
-                </StackLayout>
-                <StackLayout Grid.Column="3">
-                    <Label Text="30 – 34.9 – Obesidad I:" FontAttributes="Bold"/>
-                    <Label Text="Riesgo alto de enfermedades; requiere cambios."/>
-                </StackLayout>
-                <StackLayout Grid.Column="4">
-                    <Label Text="35 – 39.9 – Obesidad II:" FontAttributes="Bold"/>
-                    <Label Text="Riesgo mayor; se recomienda atención médica."/>
-                </StackLayout>
-                <StackLayout Grid.Column="5">
-                    <Label Text="&gt; 40 – Obesidad mórbida" FontAttributes="Bold"/>
-                    <Label Text="Riesgo muy alto; necesita intervención profesional."/>
-                </StackLayout>
-                
-            </Grid>
+            <!-- Menú Barra-->
+            <local:MenuBarra Grid.Row="2"/>
+
         </Grid>
-        <!-- Menú Barra-->
-        <local:MenuBarra Grid.Row="2"/>
-
-    </Grid>
+    </ScrollView>
 </ContentPage>

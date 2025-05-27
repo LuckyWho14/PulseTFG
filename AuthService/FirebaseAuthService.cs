@@ -18,6 +18,9 @@ public class FirebaseAuthService
     private const string PrefsIdTokenKey = "firebase_id_token";
     private const string PrefsRefreshTokenKey = "firebase_refresh_token";
 
+    // Key para almacenar el UID del usuario
+    private const string PrefsUserUidKey = "firebase_user_uid";
+
     public class AuthResponse
     {
         [JsonPropertyName("idToken")]
@@ -67,6 +70,9 @@ public class FirebaseAuthService
         Preferences.Set(PrefsIdTokenKey, result.IdToken);
         Preferences.Set(PrefsRefreshTokenKey, result.RefreshToken);
 
+        // Guardar UID del usuario
+        Preferences.Set(PrefsUserUidKey, result.LocalId);
+
         return result.IdToken;
     }
 
@@ -92,6 +98,9 @@ public class FirebaseAuthService
         // Guardar tokens localmente
         Preferences.Set(PrefsIdTokenKey, result.IdToken);
         Preferences.Set(PrefsRefreshTokenKey, result.RefreshToken);
+
+        // Guardar UID del usuario
+        Preferences.Set(PrefsUserUidKey, result.LocalId);
 
         return result;
     }
@@ -224,5 +233,83 @@ public class FirebaseAuthService
         // Borrar datos locales
         Preferences.Remove(PrefsIdTokenKey);
         Preferences.Remove(PrefsRefreshTokenKey);
+        Preferences.Remove(PrefsUserUidKey);
+    }
+
+    /// <summary>
+    /// Obtiene los datos del usuario desde Firestore.
+    /// </summary>
+    
+    public async Task<Usuario> ObtenerUsuarioAsync(string uid)
+    {
+        var url =
+          $"https://firestore.googleapis.com/v1/projects/pulsetfg-6642a/databases/(default)"
+        + $"/documents/usuarios/{uid}";
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        // Usa el mismo idToken que guardaste en login
+        var idToken = Preferences.Get(PrefsIdTokenKey, null);
+        if (string.IsNullOrEmpty(idToken))
+            throw new InvalidOperationException("No hay token válido.");
+
+        request.Headers.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", idToken);
+
+        var resp = await _httpClient.SendAsync(request);
+        resp.EnsureSuccessStatusCode();
+
+        var json = await resp.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+        var f = doc.RootElement.GetProperty("fields");
+
+        return new Usuario
+        {
+            Uid = uid,
+            NombreCompleto = f.GetProperty("nombreCompleto").GetProperty("stringValue").GetString(),
+            Email = f.GetProperty("email").GetProperty("stringValue").GetString(),
+            FechaNacimiento = DateTime.Parse(
+                                  f.GetProperty("fechaNacimiento")
+                                   .GetProperty("timestampValue")
+                                   .GetString()
+                              ),
+            Altura = f.GetProperty("altura").GetProperty("doubleValue").GetDouble(),
+            Peso = f.GetProperty("peso").GetProperty("doubleValue").GetDouble(),
+            FechaCreacion = DateTime.Parse(
+                                  f.GetProperty("fechaCreacion")
+                                   .GetProperty("timestampValue")
+                                   .GetString()
+                              )
+        };
+    }
+
+    /// <summary>
+    /// Actualiza un único campo del documento de usuario en Firestore.
+    /// </summary>
+    public async Task ActualizarCampoUsuarioAsync(string uid, string campo, object valor)
+    {
+        // Endpoint con máscara para solo el campo que quieres tocar
+        var url =
+          $"https://firestore.googleapis.com/v1/projects/pulsetfg-6642a/databases/(default)" +
+          $"/documents/usuarios/{uid}?updateMask.fieldPaths={campo}";
+
+        var docData = new
+        {
+            fields = new Dictionary<string, object>
+        {
+            { campo, new { doubleValue = Convert.ToDouble(valor) } }
+        }
+        };
+        var json = JsonSerializer.Serialize(docData);
+
+        var req = new HttpRequestMessage(HttpMethod.Patch, url)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
+        };
+        var idToken = Preferences.Get("firebase_id_token", null);
+        req.Headers.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", idToken);
+
+        var resp = await _httpClient.SendAsync(req);
+        resp.EnsureSuccessStatusCode();
     }
 }

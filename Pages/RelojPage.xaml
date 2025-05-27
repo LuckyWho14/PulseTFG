@@ -50,7 +50,7 @@
                 </Border.StrokeShape>
 
                 <Grid
-                    RowDefinitions="3*,*,*"
+                    RowDefinitions="Auto,*,*"
                     ColumnDefinitions="*"
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
@@ -113,7 +113,7 @@
             <Grid
                 Grid.Row="1"
                 Grid.Column="1"
-                RowDefinitions="*,*,*,*,*"
+                RowDefinitions="Auto,*,*,*,Auto"
                 ColumnDefinitions="*,*"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
@@ -191,11 +191,11 @@
                 <Button Grid.Row="4" Grid.Column="0" Text="Pausa" Clicked="OnPauseClickedT" 
                         BackgroundColor="{StaticResource NaranjaPausa}"
                         TextColor="White" FontSize="25"
-                        FontFamily="AntonRegular"/>
+                        FontFamily="AntonRegular" CornerRadius="20"/>
                 <Button Grid.Row="4" Grid.Column="1" Text="Stop" Clicked="OnStopClickedT" 
                         BackgroundColor="{StaticResource RojoStop}"
                         TextColor="White" FontSize="25"
-                        FontFamily="AntonRegular"/>
+                        FontFamily="AntonRegular" CornerRadius="20"/>
 
             </Grid>
 
