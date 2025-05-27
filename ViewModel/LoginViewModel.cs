@@ -40,7 +40,11 @@ public class LoginViewModel : INotifyPropertyChanged
             // Aquí guardar token seguro y navegar a siguiente página
             await Application.Current.MainPage.DisplayAlert("Éxito", "Usuario autenticado", "OK");
 
-            await Shell.Current.GoToAsync("///InicioPage");
+            var shell = new AppShell();
+
+            // 2) Reemplazas la raíz de la app
+            Application.Current.MainPage = shell;
+            await Shell.Current.GoToAsync("//InicioPage");
         }
         catch (Exception ex)
         {

@@ -49,7 +49,10 @@
     <FlyoutItem Title="Información personal" >
         <ShellContent ContentTemplate="{DataTemplate local:InfoPersPage}" />
     </FlyoutItem>
-
+    <MenuItem 
+            Text="Cerrar sesión" 
+            IconImageSource="logout.png" 
+            Command="{Binding LogoutCommand}" />
     <!-- Direcciones de las páginas(ocultas del flyout) -->
     <TabBar IsEnabled="False">
        
