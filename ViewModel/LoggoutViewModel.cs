@@ -11,6 +11,7 @@ namespace PulseTFG.ViewModel
 
         public ICommand LogoutCommand => new Command(async () =>
         {
+            Shell.Current.FlyoutIsPresented = false;
 
             await _authService.SignOutAsync();
 

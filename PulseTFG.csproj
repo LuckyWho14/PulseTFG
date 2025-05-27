@@ -63,7 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="MenuBarra.xaml.cs">
+	  <Compile Update="Elementos\MenuBarra.xaml.cs">
 	    <DependentUpon>MenuBarra.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="EntrenoPersoPage.xaml.cs">
@@ -72,16 +72,28 @@
 	  <Compile Update="EntrenoPredefPage.xaml.cs">
 	    <DependentUpon>EntrenoPredefPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\CreadorRutinaPage.xaml.cs">
+	    <DependentUpon>CreadorRutinaPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="MenuBarra.xaml">
+	  <MauiXaml Update="Elementos\CreadorRutina.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Elementos\MenuBarra.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Elementos\TipoRutina.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="InicioPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ContraseniaOlvidadaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CreadorRutinaPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\HistorialPage.xaml">
