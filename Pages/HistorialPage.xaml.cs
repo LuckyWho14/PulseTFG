@@ -1,8 +1,3 @@
-<<<<<<< HEAD:HistorialPage.xaml.cs
-using System.Collections.ObjectModel;
-
-namespace PulseTFG;
-=======
 namespace PulseTFG.Pages;
 >>>>>>> modificacion de la estructura de la solucion; Creación de carpetas y corrección de errores:Pages/HistorialPage.xaml.cs
 

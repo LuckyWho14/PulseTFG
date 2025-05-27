@@ -2,8 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PulseTFG"
-<<<<<<< HEAD:HistorialPage.xaml
-             x:Class="PulseTFG.HistorialPage"
+             x:Class="PulseTFG.Pages.HistorialPage"
              x:Name="HistorialPageRef"
 =======
              x:Class="PulseTFG.Pages.HistorialPage"
