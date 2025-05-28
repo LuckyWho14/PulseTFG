@@ -58,10 +58,7 @@ namespace PulseTFG.Models
             }
         }
 
-        public ICommand ToggleFavoritoCommand => new Command(() =>
-        {
-            EsFavorito = !EsFavorito;
-        });
+        public ICommand ToggleFavoritoCommand { get; set; }
 
         public string ThumbnailUrl => $"https://img.youtube.com/vi/{VideoId}/0.jpg";
 

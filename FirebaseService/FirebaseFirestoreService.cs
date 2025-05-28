@@ -30,6 +30,7 @@ namespace PulseTFG.FirebaseService
         // Key para almacenar el UID del usuario
         private const string PrefsUserUidKey = "firebase_user_uid";
 
+        // Comprobar si el usuario tiene rutinas asociadas en Firestore.
         public async Task<bool> UsuarioTieneRutinasAsync(string uid)
         {
             using var client = new HttpClient();
@@ -196,5 +197,141 @@ namespace PulseTFG.FirebaseService
             r.IdRutina = name[(name.LastIndexOf('/') + 1)..];
             return r;
         }
+
+        /// <summary>
+        /// Obtiene una lista de ejercicios filtrados por favoritos y grupo muscular.
+        /// </summary>
+        public async Task<List<Ejercicio>> ObtenerEjerciciosFiltradosAsync(bool soloFavoritos, string grupoMuscular)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("🔍 [FIRESTORE] Entrando en ObtenerEjerciciosFiltradosAsync");
+
+                var token = Preferences.Get("firebase_id_token", null);
+                var uid = Preferences.Get("firebase_user_uid", null);
+                var listaEjercicios = new List<Ejercicio>();
+                var favoritosIds = new HashSet<string>();
+
+                // 🔸 Intentar obtener favoritos del usuario
+                var favUrl = $"{FirestoreBaseUrl}/usuarios/{uid}/favoritos";
+                var favReq = new HttpRequestMessage(HttpMethod.Get, favUrl);
+                favReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var favResp = await _httpClient.SendAsync(favReq);
+                if (favResp.IsSuccessStatusCode)
+                {
+                    var favJson = await favResp.Content.ReadAsStringAsync();
+                    using var favDoc = JsonDocument.Parse(favJson);
+
+                    if (favDoc.RootElement.TryGetProperty("documents", out var documentosFav))
+                    {
+                        foreach (var fav in documentosFav.EnumerateArray())
+                        {
+                            var favId = fav.GetProperty("name").GetString();
+                            favoritosIds.Add(favId.Substring(favId.LastIndexOf('/') + 1));
+                        }
+
+                        System.Diagnostics.Debug.WriteLine("✅ Favoritos descargados correctamente");
+                        System.Diagnostics.Debug.WriteLine($"🎯 Total favoritos encontrados: {favoritosIds.Count}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("ℹ️ El usuario no tiene favoritos todavía.");
+                    }
+                }
+
+                // 🔸 Obtener ejercicios
+                var url = $"{FirestoreBaseUrl}/ejercicios";
+                var req = new HttpRequestMessage(HttpMethod.Get, url);
+                req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var resp = await _httpClient.SendAsync(req);
+                if (!resp.IsSuccessStatusCode) return listaEjercicios;
+
+                var json = await resp.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+
+                System.Diagnostics.Debug.WriteLine("📥 Procesando ejercicios...");
+
+                foreach (var ejercicioDoc in doc.RootElement.GetProperty("documents").EnumerateArray())
+                {
+                    var id = ejercicioDoc.GetProperty("name").GetString().Split('/').Last();
+                    var f = ejercicioDoc.GetProperty("fields");
+
+                    string grupo = f.TryGetProperty("GrupoMuscular", out var g)
+                        ? g.GetProperty("stringValue").GetString()
+                        : "";
+
+                    if (!string.IsNullOrEmpty(grupoMuscular) && grupoMuscular != "Todos" && grupo != grupoMuscular)
+                        continue;
+
+                    if (soloFavoritos && !favoritosIds.Contains(id))
+                        continue;
+
+                    var nombre = f.TryGetProperty("Nombre", out var n) ? n.GetProperty("stringValue").GetString() : "(sin nombre)";
+                    var descripcion = f.TryGetProperty("Descripcion", out var desc) ? desc.GetProperty("stringValue").GetString() : "";
+                    var videoId = f.TryGetProperty("VideoId", out var v) ? v.GetProperty("stringValue").GetString() : "";
+
+                    var ejercicio = new Ejercicio
+                    {
+                        IdEjercicio = id,
+                        Nombre = nombre,
+                        Descripcion = descripcion,
+                        VideoId = videoId,
+                        EsFavorito = favoritosIds.Contains(id)
+                    };
+
+                    System.Diagnostics.Debug.WriteLine($"✅ Añadido ejercicio: {ejercicio.Nombre}");
+                    listaEjercicios.Add(ejercicio);
+                }
+
+                return listaEjercicios;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR EN FIRESTORE: {ex.Message}");
+            }
+
+            return new List<Ejercicio>();
+        }
+
+
+
+
+        /// <summary>
+        /// Agrega un ejercicio a la lista de favoritos del usuario en Firestore.
+        /// </summary>
+        public async Task AgregarFavoritoAsync(string uid, string ejercicioId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/favoritos?documentId={ejercicioId}";
+            var data = new { fields = new Dictionary<string, object>() }; // Documento vacío
+            var json = JsonSerializer.Serialize(data);
+
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
+
+        /// <summary>
+        /// Elimina un ejercicio de la lista de favoritos del usuario en Firestore.
+        /// </summary>
+        public async Task EliminarFavoritoAsync(string uid, string ejercicioId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/favoritos/{ejercicioId}";
+
+            var req = new HttpRequestMessage(HttpMethod.Delete, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
+
+
     }
 }
