@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PulseTFG.Pages.CrearRutinaPersPage"
-             xmlns:local="clr-namespace:PulseTFG.Elementos"
+             xmlns:elem="clr-namespace:PulseTFG.Elementos"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" 
              BackgroundColor="{StaticResource FondoNegro}"
@@ -13,21 +13,127 @@
     ColumnDefinitions="*">
 
         <!-- Título -->
-        <Label 
-                Text="Creador Rutina" 
-                TextColor="{StaticResource MoradoPrincipal}"
-                FontFamily="AntonRegular"
-                Grid.Row="0"
-                VerticalOptions="Center"
-                HorizontalOptions="Center"
-                FontSize="40"
-                FontAttributes="Italic"/>
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="10">
+            
+            <Label 
+                    Text="Creador Rutina" 
+                    TextColor="{StaticResource MoradoPrincipal}"
+                    FontFamily="AntonRegular"
+                    Grid.Row="0"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    FontSize="40"
+                    FontAttributes="Italic"/>
+            <Button Text="Volver" HorizontalOptions="Center" VerticalOptions="Center"
+                    Clicked="OnVolverClicked" BackgroundColor="Transparent" TextColor="{StaticResource RojoStop}"/>
+        </HorizontalStackLayout>
 
         <!-- Cuerpo -->
-        
-        
+        <Grid Grid.Row="1"
+              RowDefinitions="Auto,Auto,*"
+              ColumnDefinitions="*"
+              HorizontalOptions="Center"
+              RowSpacing="10"
+              ColumnSpacing="40"
+              >
+            <Grid
+                Grid.Row="0"
+                RowDefinitions="*,*,*"
+                ColumnDefinitions="Auto,*"
+                RowSpacing="10"
+                ColumnSpacing="40"
+                HorizontalOptions="Center">
+                
+                <!-- NOMBRE -->
+                <Label Text="Nombre:" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" FontSize="15"/>
+                <HorizontalStackLayout Grid.Row="0" Grid.Column="1" Spacing="10">
+                    <Label Text="{Binding NombreRutina}" VerticalOptions="Center" WidthRequest="200" FontFamily="AntonRegular" TextColor="{StaticResource MoradoPrincipal}"
+                           FontSize="20" FontAttributes="Italic"/>
+                    <Button Text="Cambiar" Clicked="CambiarNombre_Clicked" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
+                            FontFamily="AntonRegular" CharacterSpacing="0.5" FontSize="15"/>
+                </HorizontalStackLayout>
+
+                <!-- DESCRIPCIÓN -->
+                <Label Text="Descripción:" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" FontSize="15"/>
+                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="10">
+                    <Label Text="{Binding DescripcionRutina}" VerticalOptions="Center" WidthRequest="200"/>
+                    <Button Text="Cambiar" Clicked="CambiarDescripcion_Clicked" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
+                            FontFamily="AntonRegular" CharacterSpacing="0.5" FontSize="15"/>
+                </HorizontalStackLayout>
+
+                <!-- DÍAS DE ENTRENAMIENTO -->
+                <Label Text="Días:" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" FontSize="15"/>
+                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="70" HorizontalOptions="Center">
+                    <Label Text="{Binding DiasEntrenamiento}" VerticalOptions="Center" FontSize="20" FontFamily="AntonRegular" FontAttributes="Italic"/>
+                    <Stepper Minimum="1" Maximum="7" Increment="1"
+                             Value="{Binding DiasEntrenamiento, Mode=TwoWay}" 
+                             ValueChanged="Stepper_ValueChanged"
+                             BackgroundColor="{StaticResource MoradoPrincipal}" 
+                     />
+                </HorizontalStackLayout>
+            </Grid>
+            
+            <!-- Botón guardar rutina -->
+            <Button Grid.Row="1" Text="Guardar rutina" HorizontalOptions="Center" VerticalOptions="Center"
+                    Grid.ColumnSpan="2" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
+                    Margin="10" FontFamily="AntonRegular" FontSize="20"
+                    CharacterSpacing="0.5"/>
+            
+            <!-- Entrenamientos -->
+            <CollectionView Grid.Row="2" Grid.ColumnSpan="2"
+                            ItemsSource="{Binding DiasEntrenamientoLista}"
+                            SelectionMode="Single" 
+                            Margin="10"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="FillAndExpand">
+                
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
+                </CollectionView.ItemsLayout>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            ColumnDefinitions="2*,*"
+                            Margin="20"
+                                >
+                            <Frame BorderColor="{StaticResource MoradoPrincipal}" 
+                                   CornerRadius="20"
+                                   Padding="10"
+                                   Margin="10"
+                                   HasShadow="True"
+                                   WidthRequest="200">
+                                
+                                    <Label Text="{Binding Nombre}" 
+                                           FontSize="20" 
+                                           TextColor="White"
+                                           FontFamily="AntonRegular" 
+                                           HorizontalOptions="Center"/>
+                            </Frame>
+
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="10" Grid.Column="1" VerticalOptions="Center">
+                                <Button Text="Editar" 
+                                            BackgroundColor="{StaticResource VerdeLima}" 
+                                            TextColor="{StaticResource MoradoPrincipal}"
+                                            FontFamily="AntonRegular"
+                                            Clicked="EditarDia_Clicked"/>
+                                <Button Text="Borrar" 
+                                            BackgroundColor="{StaticResource RojoStop}" 
+                                            TextColor="White"
+                                            FontFamily="AntonRegular"
+                                            Clicked="BorrarDia_Clicked"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+        </Grid>
+
+
         <!-- Menú Barra-->
-        <local:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
+        <elem:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
 
     </Grid>
 </ContentPage>

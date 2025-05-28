@@ -1,11 +1,11 @@
 using PulseTFG.ViewModel;
 namespace PulseTFG.Pages;
 
-public partial class CrearRutinaPredetSinglePage : ContentPage
+public partial class CrearRutinaCrearEntrenoPage : ContentPage
 {
     RoutineCreatorViewModel _vm;
 
-    public CrearRutinaPredetSinglePage()
+    public CrearRutinaCrearEntrenoPage()
     {
         InitializeComponent();
         _vm = new RoutineCreatorViewModel();

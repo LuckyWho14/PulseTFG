@@ -8,6 +8,8 @@ namespace PulseTFG.ViewModel;
 public class LoginViewModel : INotifyPropertyChanged
 {
     private readonly FirebaseAuthService _authService = new();
+    private readonly FirebaseFirestoreService _firestoreService = new();
+    const string PrefsUserUidKey = "firebase_user_uid";
 
     private string email;
     public string Email
@@ -36,6 +38,7 @@ public class LoginViewModel : INotifyPropertyChanged
         {
             ErrorMessage = string.Empty;
             var token = await _authService.LoginAsync(Email, Password);
+            var uid = Preferences.Get(PrefsUserUidKey, null);
 
             // Aquí guardar token seguro y navegar a siguiente página
             await Application.Current.MainPage.DisplayAlert("Éxito", "Usuario autenticado", "OK");
@@ -43,8 +46,15 @@ public class LoginViewModel : INotifyPropertyChanged
             var shell = new AppShell();
 
             // 2) Reemplazas la raíz de la app
+            bool tieneRutinas = await _firestoreService.UsuarioTieneRutinasAsync(uid);
+
+            
             Application.Current.MainPage = shell;
-            await Shell.Current.GoToAsync("//InicioPage");
+            if (tieneRutinas)
+                await Shell.Current.GoToAsync("//InicioPage");
+            else
+                await Shell.Current.GoToAsync("//CrearRutinaSelecTipoPage");
+
         }
         catch (Exception ex)
         {

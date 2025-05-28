@@ -108,8 +108,8 @@
                 Route="CrearRutinaPersPage" 
                 />
         <ShellContent
-                ContentTemplate="{DataTemplate local:CrearRutinaCrearEntreno}"
-                Route="CrearRutinaCrearEntreno" 
+                ContentTemplate="{DataTemplate local:CrearRutinaCrearEntrenoPage}"
+                Route="CrearRutinaCrearEntrenoPage" 
                 />
         
     </TabBar>

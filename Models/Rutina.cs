@@ -14,7 +14,7 @@ namespace PulseTFG.Models
         public string IdRutina { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
-        public bool Tipo { get; set; }
+        public bool Predet { get; set; }
         public bool Activo { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime Actualizado { get; set; }

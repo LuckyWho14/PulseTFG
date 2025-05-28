@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PulseTFG.Pages.CrearRutinaPredetPage"
-             xmlns:local="clr-namespace:PulseTFG.Elementos"
+             xmlns:elem="clr-namespace:PulseTFG.Elementos"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" 
              BackgroundColor="{StaticResource FondoNegro}"
@@ -27,7 +27,7 @@
 
 
         <!-- Menú Barra-->
-        <local:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
+        <elem:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
 
     </Grid>
 </ContentPage>
