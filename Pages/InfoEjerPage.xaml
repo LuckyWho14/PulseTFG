@@ -25,23 +25,30 @@
 
         <!-- Cuerpo -->
         <Grid Grid.Row="1"
-              RowDefinitions="*,4*">
+              RowDefinitions="Auto,20,2*">
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="100" Grid.Row="0">
-                <Label Text="Todos los músculos"/>
-                <Label Text="Filtros:"/>
-                <Label Text="Músculo"/>
-                <Label Text="Favoritos"/>
+                
+                <Button Text="Todos los ejercicios" Command="{Binding LimpiarFiltrosCommand}" VerticalOptions="Center"/>
+                
+                <StackLayout>
+                    <Label Text="Favorito:" VerticalOptions="Center"/>
+                    <Switch IsToggled="{Binding SoloFavoritos}" />
+                </StackLayout>
+                
+                <Picker Title="Grupo muscular"
+                        ItemsSource="{Binding GruposMusculares}"
+                        SelectedItem="{Binding GrupoSeleccionado}" />
             </HorizontalStackLayout>
-            <StackLayout BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10" Margin="20"/>
-
-            <CollectionView ItemsSource="{Binding ListaVideos}" Grid.Row="1" SelectionMode="Single" >
+            <StackLayout Grid.Row="1" BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10"/>
+            
+            <CollectionView ItemsSource="{Binding ListaEjercicios}" Grid.Row="2" SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="Auto,*,Auto" Padding="10" ColumnSpacing="30" RowDefinitions="2*,*">
-
+                        <Grid ColumnDefinitions="250,*,Auto" Padding="10" ColumnSpacing="30" RowDefinitions="2*,*">
+                            
                             <!-- Checkbox: favorito -->
-                            <StackLayout Orientation="Vertical" Spacing="20" Grid.Column="0">
-                                <Label Text="{Binding Nombre}" VerticalOptions="Center" FontFamily="AntonRegular" FontAttributes="Italic" Padding="10" FontSize="20"/>
+                            <VerticalStackLayout Spacing="20" Grid.Column="0">
+                                <Label Text="{Binding Nombre}" VerticalOptions="Center" FontFamily="AntonRegular" FontAttributes="Italic" Padding="10" FontSize="25"/>
                                 <Image 
                                     x:Name="FavoritoIcono"
                                     Source="{Binding EsFavorito, Converter={StaticResource FavoritoImagenConverter}}" 
@@ -51,11 +58,11 @@
                                         <TapGestureRecognizer Command="{Binding ToggleFavoritoCommand}" />
                                     </Image.GestureRecognizers>
                                 </Image>
-                            </StackLayout>
+                            </VerticalStackLayout>
                             <!-- Descripción del video -->
                             <Label Grid.Column="1"
                                    Text="{Binding Descripcion}"
-                                   VerticalOptions="Center"/>
+                                   VerticalOptions="Center" FontSize="17"/>
 
                             <!-- Thumbnail de YouTube -->
                             <Image Grid.Column="2"
@@ -73,6 +80,13 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <Label Text="No tienes ejercicios que mostrar ❗"
+                   TextColor="White"
+                   FontSize="18"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.Row="2"
+                   IsVisible="{Binding ListaVacia}" />
 
             <Grid x:Name="VideoOverlay"
               BackgroundColor="#80000000"
