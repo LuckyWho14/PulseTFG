@@ -136,12 +136,21 @@ namespace PulseTFG.FirebaseService
                 new AuthenticationHeaderValue("Bearer", idToken);
 
             var resp = await _httpClient.SendAsync(req);
-            if (!resp.IsSuccessStatusCode) return new List<Rutina>();
+            if (!resp.IsSuccessStatusCode)
+                return new List<Rutina>();
 
             var json = await resp.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(json);
             var list = new List<Rutina>();
-            foreach (var docElem in doc.RootElement.GetProperty("documents").EnumerateArray())
+
+            // ✅ Verifica si hay rutinas antes de acceder a "documents"
+            if (!doc.RootElement.TryGetProperty("documents", out var documentos))
+            {
+                // No hay rutinas
+                return new List<Rutina>();
+            }
+
+            foreach (var docElem in documentos.EnumerateArray())
             {
                 var name = docElem.GetProperty("name").GetString();
                 var fields = docElem.GetProperty("fields");
@@ -155,8 +164,10 @@ namespace PulseTFG.FirebaseService
                     Actualizado = DateTime.Parse(fields.GetProperty("actualizado").GetProperty("timestampValue").GetString())
                 });
             }
+
             return list;
         }
+
 
         /// <summary>
         /// Crea una nueva rutina asociada a un usuario específico en Firestore.

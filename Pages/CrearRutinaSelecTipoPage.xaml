@@ -26,9 +26,10 @@
         <!-- Cuerpo -->
         <Grid
             Grid.Row="1"
-            RowDefinitions="*,Auto" 
+            RowDefinitions="Auto,Auto,Auto" 
             HorizontalOptions="Center"
-            VerticalOptions="Center">
+            VerticalOptions="Center"
+            >
             <Label Text="Elige el tipo de rutina" 
                    TextColor="{StaticResource MoradoPrincipal}"
                    FontFamily="AntonRegular"
@@ -59,7 +60,7 @@
                            VerticalOptions="Center"/>
                     <Button Text="Elegir" Grid.Column="0" Grid.Row="2"
                             HorizontalOptions="Center" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}"
-                            VerticalOptions="Center"/>
+                            VerticalOptions="Center" Clicked="OnElegirPredefinidoClicked"/>
                     <Label Text="Recomendado para principiantes" Grid.Column="0" Grid.Row="3"
                            HorizontalOptions="Center" TextColor="LightGray" FontAttributes="Italic"
                            VerticalOptions="End" Margin="0,30,0,0"/>
@@ -79,15 +80,22 @@
                            VerticalOptions="Center"/>
                     <Button Text="Elegir" Grid.Column="1" Grid.Row="2"
                             HorizontalOptions="Center" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}"
-                            VerticalOptions="Center"/>
+                            VerticalOptions="Center" Clicked="OnElegirPersonalizadoClicked"/>
                     <Label Text="Recomendado para avanzados" Grid.Column="1" Grid.Row="3"
                            HorizontalOptions="Center" TextColor="LightGray" FontAttributes="Italic"
                            VerticalOptions="End" Margin="0,30,0,0"/>
                 </Grid>
-
             </Grid>
-        </Grid>
 
+            <Button Text="Cancelar" Grid.Row="2"
+                    IsVisible="{Binding NoTieneRutinas}"
+                    Clicked="OnCancelarClicked"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    BackgroundColor="{StaticResource RojoStop}"
+                    TextColor="White"
+                    Margin="20"/>
+        </Grid>
         <!-- Menú Barra-->
         <elem:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
 

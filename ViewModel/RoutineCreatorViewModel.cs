@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Maui.Storage;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using PulseTFG.FirebaseService;
 using PulseTFG.Models;
 
@@ -14,101 +15,20 @@ namespace PulseTFG.ViewModel
     {
         readonly FirebaseAuthService _auth = new();
         readonly FirebaseFirestoreService _firestore = new();
-        public RoutineCreatorViewModel()
-        {
-            FechaCreacion = DateTime.UtcNow;
-            Actualizado = DateTime.UtcNow;
-        }
-        
-        bool tieneRutinas;
+
+        private bool tieneRutinas;
         public bool TieneRutinas
         {
             get => tieneRutinas;
-            set => SetProperty(ref tieneRutinas, value);
-        }
-        
-        private string nombre;
-        public string Nombre
-        {
-            get => nombre;
-            set => SetProperty(ref nombre, value);
-        }
-
-        private string descripcion;
-        public string Descripcion
-        {
-            get => descripcion;
-            set => SetProperty(ref descripcion, value);
-        }
-
-        private bool activo = true;
-        public bool Activo
-        {
-            get => activo;
-            set => SetProperty(ref activo, value);
-        }
-        private bool tipo = true;
-        public bool Tipo
-        {
-            get => tipo;
-            set => SetProperty(ref tipo, value);
-        }
-
-        public DateTime FechaCreacion { get; }
-        public DateTime Actualizado { get; }
-
-        private string mensaje;
-        public string Mensaje
-        {
-            get => mensaje;
-            set => SetProperty(ref mensaje, value);
-        }
-
-        public ICommand CreateRoutineCommand => new Command(async () =>
-        {
-            if (string.IsNullOrWhiteSpace(Nombre))
+            set
             {
-                Mensaje = "El nombre es obligatorio";
-                return;
+                if (SetProperty(ref tieneRutinas, value))
+                    OnPropertyChanged(nameof(NoTieneRutinas));
             }
+        }
 
-            var uid = Preferences.Get("firebase_user_uid", null);
-            if (uid == null)
-            {
-                Mensaje = "Usuario no autenticado";
-                return;
-            }
+        public bool NoTieneRutinas => TieneRutinas;
 
-            var r = new Rutina
-            {
-                Nombre = Nombre,
-                Descripcion = Descripcion ?? "",
-                Activo = Activo,
-                Tipo = Tipo,
-                FechaCreacion = FechaCreacion,
-                Actualizado = Actualizado
-            };
-
-            try
-            {
-                var creada = await _firestore.CrearRutinaAsync(uid, r);
-                Mensaje = "Rutina creada: " + creada.Nombre;
-                // mensaje de éxito, puedes navegar a otra página o actualizar la UI
-                await Application.Current.MainPage.DisplayAlert("Éxito", "Rutina creada correctamente", "OK");
-
-                // lleva a la pagina inicial
-                await Shell.Current.GoToAsync("//InicioPage");
-            }
-            catch (Exception ex)
-            {
-                Mensaje = "Error: " + ex.Message;
-            }
-        });
-
-        /// <summary>
-        /// Inicializa el ViewModel comprobando si el usuario tiene rutinas.
-        /// </summary>
-        /// <returns></returns>
         public async Task InitializeAsync()
         {
             var uid = Preferences.Get("firebase_user_uid", null);
@@ -118,20 +38,113 @@ namespace PulseTFG.ViewModel
                 return;
             }
 
-            // Llama a tu servicio para recuperar la lista
             var lista = await _firestore.ObtenerRutinasUsuarioAsync(uid);
             TieneRutinas = lista != null && lista.Count > 0;
         }
 
+        private string nombreRutina = "Mi rutina personalizada";
+        public string NombreRutina
+        {
+            get => nombreRutina;
+            set { nombreRutina = value; OnPropertyChanged(); }
+        }
+
+        private string descripcionRutina = "Descripción personalizada";
+        public string DescripcionRutina
+        {
+            get => descripcionRutina;
+            set { descripcionRutina = value; OnPropertyChanged(); }
+        }
+
+        // NUEVO: Lista de entrenamientos por día
+        public ObservableCollection<Entrenamiento> DiasEntrenamientoLista { get; set; } = new();
+
+        private int diasEntrenamiento = 1;
+        public int DiasEntrenamiento
+        {
+            get => diasEntrenamiento;
+            set
+            {
+                if (SetProperty(ref diasEntrenamiento, value))
+                {
+                    // se puede usar si necesitas reaccionar directamente
+                }
+            }
+        }
+
+        public ICommand CambiarDiasCommand { get; }
+
+        public RoutineCreatorViewModel()
+        {
+            CambiarDiasCommand = new Command<int>(async (nuevoValor) => await ActualizarDiasEntrenamiento(nuevoValor));
+
+            // Siempre hay al menos un entrenamiento
+            DiasEntrenamientoLista.Add(new Entrenamiento
+            {
+                Nombre = "Día 1",
+                FechaCreacion = DateTime.Now
+            });
+        }
+
+        private async Task ActualizarDiasEntrenamiento(int nuevoValor)
+        {
+            if (nuevoValor > DiasEntrenamientoLista.Count)
+            {
+                for (int i = DiasEntrenamientoLista.Count; i < nuevoValor; i++)
+                {
+                    DiasEntrenamientoLista.Add(new Entrenamiento
+                    {
+                        Nombre = $"Día {i + 1}",
+                        FechaCreacion = DateTime.Now
+                    });
+                }
+            }
+            else if (nuevoValor < DiasEntrenamientoLista.Count)
+            {
+                for (int i = DiasEntrenamientoLista.Count - 1; i >= nuevoValor; i--)
+                {
+                    var entrenamiento = DiasEntrenamientoLista[i];
+
+                    if (EntrenamientoTieneContenido(entrenamiento))
+                    {
+                        var confirmar = await Application.Current.MainPage.DisplayAlert(
+                            "Confirmar borrado",
+                            $"¿Eliminar {entrenamiento.Nombre} con ejercicios asignados?",
+                            "Sí", "No");
+
+                        if (!confirmar)
+                            return;
+                    }
+
+                    DiasEntrenamientoLista.RemoveAt(i);
+                }
+            }
+
+            DiasEntrenamiento = nuevoValor;
+        }
+
+        public bool EntrenamientoTieneContenido(Entrenamiento entrenamiento)
+        {
+            // Aquí va la lógica real para saber si tiene contenido
+            // Por ahora devolvemos false (vacío)
+            return false;
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
-        bool SetProperty<T>(ref T backing, T value, [CallerMemberName] string p = null)
+
+        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "")
         {
-            if (Equals(backing, value)) return false;
-            backing = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            OnPropertyChanged(propertyName);
             return true;
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
     }
 }

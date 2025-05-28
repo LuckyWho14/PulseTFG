@@ -49,7 +49,7 @@ namespace PulseTFG
                 if (tieneRutinas)
                     await Shell.Current.GoToAsync("//InicioPage");
                 else
-                    await Shell.Current.GoToAsync("//CreadorRutinaPage");
+                    await Shell.Current.GoToAsync("//CrearRutinaSelecTipoPage");
             }
             else
             {
