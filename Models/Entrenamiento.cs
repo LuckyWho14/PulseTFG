@@ -12,6 +12,12 @@ namespace PulseTFG.Models
 {
     public class Entrenamiento : INotifyPropertyChanged
     {
+        public Entrenamiento()
+        {
+            IdEntrenamiento = Guid.NewGuid().ToString();
+            TrabajoEsperado = new ObservableCollection<TrabajoEsperado>();
+        }
+
         public string IdEntrenamiento { get; set; }
 
         private string nombre;
@@ -31,11 +37,24 @@ namespace PulseTFG.Models
         public DateTime FechaCreacion { get; set; }
         public DateTime Actualizado { get; set; }
 
-        public ObservableCollection<TrabajoEsperado> TrabajoEsperado { get; set; } = new();
+        private ObservableCollection<TrabajoEsperado> trabajoEsperado;
+        public ObservableCollection<TrabajoEsperado> TrabajoEsperado
+        {
+            get => trabajoEsperado;
+            set
+            {
+                if (trabajoEsperado != value)
+                {
+                    trabajoEsperado = value;
+                    OnPropertyChanged(nameof(TrabajoEsperado));
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 
 }

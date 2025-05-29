@@ -72,9 +72,6 @@
 	  <Compile Update="EntrenoPredefPage.xaml.cs">
 	    <DependentUpon>EntrenoPredefPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\CrearRutinaCrearEntrenoPage.xaml.cs">
-	    <DependentUpon>CrearRutinaCrearEntrenoPage.xaml</DependentUpon>
-	  </Compile>
 	  <Compile Update="Pages\CrearRutinaPersPage.xaml.cs">
 	    <DependentUpon>CrearRutinaPersPage.xaml</DependentUpon>
 	  </Compile>
@@ -91,9 +88,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ContraseniaOlvidadaPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\CrearRutinaCrearEntrenoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\CrearRutinaPersPage.xaml">
