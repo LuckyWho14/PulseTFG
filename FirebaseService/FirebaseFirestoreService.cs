@@ -433,7 +433,20 @@ namespace PulseTFG.FirebaseService
             var resp = await _httpClient.SendAsync(req);
             resp.EnsureSuccessStatusCode();
         }
-    }
+        public async Task<int> ObtenerEntrenamientosCountAsync(string uid, string rutinaId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode) return 0;
+            using var doc = JsonDocument.Parse(await resp.Content.ReadAsStringAsync());
+            return doc.RootElement.TryGetProperty("documents", out var docs)
+                ? docs.GetArrayLength()
+                : 0;
+        }
 
+    }
 }
 
