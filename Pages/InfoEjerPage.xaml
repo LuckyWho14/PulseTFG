@@ -28,7 +28,8 @@
               RowDefinitions="Auto,20,2*">
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="100" Grid.Row="0">
                 
-                <Button Text="Todos los ejercicios" Command="{Binding LimpiarFiltrosCommand}" VerticalOptions="Center"/>
+                <Button Text="Todos" Command="{Binding LimpiarFiltrosCommand}" VerticalOptions="Center" BackgroundColor="{StaticResource MoradoPrincipal}" TextColor="White" 
+                        FontFamily="AntonRegular" CharacterSpacing="0.5" FontSize="20"/>
                 
                 <StackLayout>
                     <Label Text="Favorito:" VerticalOptions="Center"/>

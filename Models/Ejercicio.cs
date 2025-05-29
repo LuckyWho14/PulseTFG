@@ -12,7 +12,7 @@ namespace PulseTFG.Models
     public class Ejercicio : INotifyPropertyChanged
     {
         public string IdEjercicio { get; set; }
-
+        public string GrupoMuscular { get; set; }   
         private string nombre;
         public string Nombre
         {

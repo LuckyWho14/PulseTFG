@@ -130,6 +130,23 @@ namespace PulseTFG.ViewModel
             return false;
         }
 
+        public ObservableCollection<string> GruposMusculares { get; set; } = new()
+    {
+        "Todos", "Pecho", "Espalda", "Pierna", "Hombro", "Bíceps", "Tríceps", "Abdomen"
+    };
+
+        private Entrenamiento _entrenamientoActual;
+        public Entrenamiento EntrenamientoActual
+        {
+            get => _entrenamientoActual;
+            set
+            {
+                _entrenamientoActual = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -143,7 +160,7 @@ namespace PulseTFG.ViewModel
             return true;
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
     }

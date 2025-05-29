@@ -86,9 +86,9 @@
                            VerticalOptions="End" Margin="0,30,0,0"/>
                 </Grid>
             </Grid>
-
+             <!-- IsVisible="{Binding NoTieneRutinas}" -->
             <Button Text="Cancelar" Grid.Row="2"
-                    IsVisible="{Binding NoTieneRutinas}"
+                    IsVisible="Visible"
                     Clicked="OnCancelarClicked"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
