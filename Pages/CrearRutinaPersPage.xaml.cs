@@ -11,7 +11,7 @@ public partial class CrearRutinaPersPage : ContentPage
     public CrearRutinaPersPage()
     {
         InitializeComponent();
-        _vm = new RoutineCreatorViewModel();
+        _vm = AppState.RoutineCreatorVM;
         BindingContext = _vm;
     }
 
@@ -78,14 +78,16 @@ public partial class CrearRutinaPersPage : ContentPage
     {
         if (sender is Button btn && btn.BindingContext is Entrenamiento entrenamiento)
         {
-            var parametros = new Dictionary<string, object>
-        {
-            { "Entrenamiento", entrenamiento }
-        };
-
-            await Shell.Current.GoToAsync(nameof(CrearRutinaCrearEntrenoPage), parametros);
-
+            AppState.RoutineCreatorVM.EntrenamientoActual = entrenamiento;
+            await Navigation.PushAsync(new CrearRutinaCrearEntrenoPage());
         }
     }
+
+
+
+
+
+
+
 
 }

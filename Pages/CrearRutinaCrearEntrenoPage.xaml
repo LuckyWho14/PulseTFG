@@ -51,14 +51,22 @@
                             FontSize="20"
                             VerticalOptions="Center"/>
                 </HorizontalStackLayout>
-
-                <!-- Botón Añadir -->
-                <Button Text="Añadir ejercicio"
-                        Grid.Row="1"
-                        VerticalOptions="End"
-                        BackgroundColor="Transparent"
-                        TextColor="{StaticResource MoradoPrincipal}"
-                        Clicked="MostrarPopup_Clicked"/>
+                <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center">
+                    
+                    <!-- Botón Añadir -->
+                    <Button Text="Añadir ejercicio"
+                            VerticalOptions="End"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource MoradoPrincipal}"
+                            Clicked="MostrarPopup_Clicked"/>
+                    
+                    <!--  Botón para resetear la lista  -->
+                    <Button Text="Resetear lista"
+                            VerticalOptions="End"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource NaranjaPausa}"
+                            Clicked="ResetearLista_Clicked"/>
+                </HorizontalStackLayout>
 
                 <!-- Frame listado -->
                 <Frame Grid.Row="2"
@@ -67,9 +75,11 @@
                        BackgroundColor="{StaticResource FondoNegro}"
                        CornerRadius="15"
                        Padding="10"
-                       WidthRequest="600">
-                    
-                    <CollectionView ItemsSource="{Binding EntrenamientoActual.TrabajoEsperado}" Margin="10">
+                       WidthRequest="600"
+                       VerticalOptions="FillAndExpand"
+                       >
+
+                    <CollectionView ItemsSource="{Binding EntrenamientoActual.TrabajoEsperado}" Margin="10" VerticalScrollBarVisibility="Always">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
                         </CollectionView.ItemsLayout>
@@ -118,37 +128,41 @@
                    VerticalOptions="Center"
                    WidthRequest="400">
 
-                <VerticalStackLayout Spacing="15">
-                    <Label Text="Añadir ejercicio" FontSize="22" TextColor="Black" HorizontalOptions="Center"/>
+                <VerticalStackLayout Spacing="15" VerticalOptions="FillAndExpand">
+                    <Label Text="Añadir ejercicio" FontSize="22" TextColor="{StaticResource AzulCian}" 
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="CenterAndExpand"/>
 
-                    <Label Text="Grupo muscular:" FontSize="18"/>
-                    <Picker x:Name="GrupoMuscularPicker" SelectedIndexChanged="GrupoMuscularPicker_SelectedIndexChanged"/>
-
-                    <HorizontalStackLayout Spacing="10">
-                        <Label Text="Solo favoritos" FontSize="16"/>
-                        <Switch x:Name="FavoritosSwitch" Toggled="FavoritosSwitch_Toggled"/>
-                    </HorizontalStackLayout>
-                    
-                    <Label Text="Ejercicio:" FontSize="18"/>
-                    <Picker x:Name="EjercicioPicker" ItemDisplayBinding="{Binding Nombre}" />
-                    
                     <HorizontalStackLayout>
-                        <Label Text="Series:" FontSize="18" WidthRequest="120"/>
-                        <Label Text="{Binding Source={x:Reference SeriesStepper}, Path=Value}" FontSize="16" HorizontalOptions="Center"/>
-                        <Stepper x:Name="SeriesStepper" Minimum="1" Maximum="20" Increment="1" Value="3"/>
+                        <Label Text="Grupo muscular:" FontSize="18" WidthRequest="150" FontAttributes="Bold"/>
+                        <Picker x:Name="GrupoMuscularPicker" SelectedIndexChanged="GrupoMuscularPicker_SelectedIndexChanged" WidthRequest="100"/>
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout>
-                        <Label Text="Repeticiones:" FontSize="18" WidthRequest="120"/>
-                        <Label Text="{Binding Source={x:Reference RepeticionesStepper}, Path=Value}" FontSize="16" HorizontalOptions="Center" WidthRequest="50"/>
-                        <Stepper x:Name="RepeticionesStepper" Minimum="1" Maximum="50" Increment="1" Value="12" />
+                        <Label Text="Solo favoritos" FontSize="16" HorizontalOptions="Start" WidthRequest="150" FontAttributes="Bold"/>
+                        <Switch x:Name="FavoritosSwitch" Toggled="FavoritosSwitch_Toggled" HorizontalOptions="End"/>
+                    </HorizontalStackLayout>
+                    
+                    <HorizontalStackLayout>
+                        <Label Text="Ejercicio:" FontSize="18" WidthRequest="150" FontAttributes="Bold"/>
+                        <Picker x:Name="EjercicioPicker" ItemDisplayBinding="{Binding Nombre}" />
+                    </HorizontalStackLayout>
+                    
+                    <HorizontalStackLayout>
+                        <Label Text="Series:" FontSize="18" WidthRequest="150" FontAttributes="Bold"/>
+                        <Label Text="{Binding Source={x:Reference SeriesStepper}, Path=Value}" FontSize="20" HorizontalOptions="Center" WidthRequest="50" VerticalOptions="Center"/>
+                        <Stepper x:Name="SeriesStepper" Minimum="1" Maximum="20" Increment="1" Value="3" BackgroundColor="{StaticResource AzulCian}"/>
                     </HorizontalStackLayout>
 
-
+                    <HorizontalStackLayout>
+                        <Label Text="Repeticiones:" FontSize="18" WidthRequest="150" FontAttributes="Bold"/>
+                        <Label Text="{Binding Source={x:Reference RepeticionesStepper}, Path=Value}" FontSize="20" HorizontalOptions="Center" WidthRequest="50" VerticalOptions="Center"/>
+                        <Stepper x:Name="RepeticionesStepper" Minimum="1" Maximum="50" Increment="1" Value="12" BackgroundColor="{StaticResource AzulCian}"/>
+                    </HorizontalStackLayout>
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-                        <Button Text="Aceptar" Clicked="AceptarPopup_Clicked" BackgroundColor="Green" TextColor="White"/>
-                        <Button Text="Cancelar" Clicked="CancelarPopup_Clicked" BackgroundColor="Gray" TextColor="White"/>
+                        <Button Text="Aceptar" Clicked="AceptarPopup_Clicked" BackgroundColor="{StaticResource VerdePlay}" TextColor="White" FontAttributes="Bold"/>
+                        <Button Text="Cancelar" Clicked="CancelarPopup_Clicked" BackgroundColor="{StaticResource RojoStop}" TextColor="White" FontAttributes="Bold"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 

@@ -95,7 +95,8 @@ namespace PulseTFG.ViewModel
                     DiasEntrenamientoLista.Add(new Entrenamiento
                     {
                         Nombre = $"Día {i + 1}",
-                        FechaCreacion = DateTime.Now
+                        FechaCreacion = DateTime.Now,
+                        TrabajoEsperado = new ObservableCollection<TrabajoEsperado>()
                     });
                 }
             }
@@ -125,10 +126,9 @@ namespace PulseTFG.ViewModel
 
         public bool EntrenamientoTieneContenido(Entrenamiento entrenamiento)
         {
-            // Aquí va la lógica real para saber si tiene contenido
-            // Por ahora devolvemos false (vacío)
-            return false;
+            return entrenamiento?.TrabajoEsperado?.Count > 0;
         }
+
 
         public ObservableCollection<string> GruposMusculares { get; set; } = new()
     {
@@ -142,9 +142,15 @@ namespace PulseTFG.ViewModel
             set
             {
                 _entrenamientoActual = value;
+
+                // 🔐 Garantía extra: aseguramos que la colección esté inicializada
+                if (_entrenamientoActual != null && _entrenamientoActual.TrabajoEsperado == null)
+                    _entrenamientoActual.TrabajoEsperado = new ObservableCollection<TrabajoEsperado>();
+
                 OnPropertyChanged();
             }
         }
+
 
 
         #region INotifyPropertyChanged

@@ -12,6 +12,11 @@ namespace PulseTFG.Models
 {
     public class Entrenamiento : INotifyPropertyChanged
     {
+        public Entrenamiento()
+        {
+            TrabajoEsperado = new ObservableCollection<TrabajoEsperado>();
+        }
+
         public string IdEntrenamiento { get; set; }
 
         private string nombre;

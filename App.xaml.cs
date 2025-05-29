@@ -8,6 +8,7 @@ namespace PulseTFG
 {
     public partial class App : Application
     {
+
         // Instancia de tu servicio de Auth
         readonly FirebaseAuthService _authService = new();
         // Instancia de tu servicio de Firestore

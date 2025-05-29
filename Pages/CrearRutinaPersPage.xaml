@@ -38,41 +38,78 @@
               >
             <Grid
                 Grid.Row="0"
-                RowDefinitions="*,*,*"
-                ColumnDefinitions="Auto,*"
-                RowSpacing="10"
+                RowDefinitions="Auto"
+                ColumnDefinitions="*,*,*"
                 ColumnSpacing="40"
                 HorizontalOptions="Center">
-                
+
                 <!-- NOMBRE -->
-                <Label Text="Nombre:" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" FontSize="15"/>
-                <HorizontalStackLayout Grid.Row="0" Grid.Column="1" Spacing="10">
-                    <Label Text="{Binding NombreRutina}" VerticalOptions="Center" WidthRequest="200" FontFamily="AntonRegular" TextColor="{StaticResource MoradoPrincipal}"
-                           FontSize="20" FontAttributes="Italic"/>
-                    <Button Text="Cambiar" Clicked="CambiarNombre_Clicked" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
-                            FontFamily="AntonRegular" CharacterSpacing="0.5" FontSize="15"/>
-                </HorizontalStackLayout>
+                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="10" WidthRequest="300">
+                        <HorizontalStackLayout Spacing="20">
+                            <Label Text="Nombre:" FontAttributes="Bold" FontSize="15" TextColor="White" VerticalOptions="Center"/>
+                            <Button Text="Cambiar" Clicked="CambiarNombre_Clicked" BackgroundColor="Transparent" HorizontalOptions="Center"
+                            TextColor="{StaticResource MoradoPrincipal}" FontFamily="AntonRegular" CharacterSpacing="0.5" FontSize="15"/>
+                        </HorizontalStackLayout>
+                        <ScrollView Orientation="Horizontal"
+                                    HeightRequest="30"
+                                    BackgroundColor="Transparent">
+                            <Label Text="{Binding NombreRutina}"
+                                   FontFamily="AntonRegular"
+                                   FontSize="20"
+                                   TextColor="{StaticResource MoradoPrincipal}"
+                                   FontAttributes="Italic"
+                                   VerticalOptions="Center"
+                                   LineBreakMode="NoWrap"/>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
 
                 <!-- DESCRIPCIÓN -->
-                <Label Text="Descripción:" FontAttributes="Bold" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" FontSize="15"/>
-                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="10">
-                    <Label Text="{Binding DescripcionRutina}" VerticalOptions="Center" WidthRequest="200"/>
-                    <Button Text="Cambiar" Clicked="CambiarDescripcion_Clicked" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
-                            FontFamily="AntonRegular" CharacterSpacing="0.5" FontSize="15"/>
-                </HorizontalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                    <VerticalStackLayout WidthRequest="300" Spacing="10">
+                        <HorizontalStackLayout Spacing="20">
+                            <Label Text="Descripción:" FontAttributes="Bold" FontSize="15" TextColor="White" VerticalOptions="Center"/>
+                            <Button Text="Cambiar"
+                                    Clicked="CambiarDescripcion_Clicked"
+                                    BackgroundColor="Transparent"
+                                    HorizontalOptions="Center"
+                                    TextColor="{StaticResource MoradoPrincipal}"
+                                    FontFamily="AntonRegular"
+                                    CharacterSpacing="0.5"
+                                    FontSize="15"
+                                    />
+                        </HorizontalStackLayout>
+
+                        <ScrollView Orientation="Horizontal"
+                                    HeightRequest="30"
+                                    BackgroundColor="Transparent">
+                            <Label Text="{Binding DescripcionRutina}"
+                                   FontSize="20"
+                                   FontFamily="AntonRegular"
+                                   TextColor="White"
+                                   FontAttributes="Italic"
+                                   VerticalOptions="Center"
+                                   LineBreakMode="NoWrap"/>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
 
                 <!-- DÍAS DE ENTRENAMIENTO -->
-                <Label Text="Días:" FontAttributes="Bold" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" FontSize="15"/>
-                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="70" HorizontalOptions="Center">
-                    <Label Text="{Binding DiasEntrenamiento}" VerticalOptions="Center" FontSize="20" FontFamily="AntonRegular" FontAttributes="Italic"/>
-                    <Stepper Minimum="1" Maximum="7" Increment="1"
-                             Value="{Binding DiasEntrenamiento, Mode=TwoWay}" 
-                             ValueChanged="Stepper_ValueChanged"
-                             BackgroundColor="{StaticResource MoradoPrincipal}" 
-                     />
-                </HorizontalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="10">
+                    <Label Text="Días:" FontAttributes="Bold" FontSize="15" TextColor="White"/>
+                    <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                        <Label Text="{Binding DiasEntrenamiento}" VerticalOptions="Center" FontSize="20" FontFamily="AntonRegular" FontAttributes="Italic"/>
+                        <Stepper Minimum="1" Maximum="7" Increment="1"
+                     Value="{Binding DiasEntrenamiento, Mode=TwoWay}" 
+                     ValueChanged="Stepper_ValueChanged"
+                     BackgroundColor="{StaticResource MoradoPrincipal}"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
             </Grid>
-            
+
+
             <!-- Botón guardar rutina -->
             <Button Grid.Row="1" Text="Guardar rutina" HorizontalOptions="Center" VerticalOptions="Center"
                     Grid.ColumnSpan="2" BackgroundColor="{StaticResource VerdeLima}" TextColor="{StaticResource MoradoPrincipal}" 
@@ -88,7 +125,7 @@
                             VerticalOptions="FillAndExpand">
                 
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
                 </CollectionView.ItemsLayout>
                 
                 <CollectionView.ItemTemplate>
@@ -110,26 +147,26 @@
                                    Margin="10"
                                    Grid.Row="1"
                                    HasShadow="True"
-                                   WidthRequest="200">
+                                   WidthRequest="250">
                                 <VerticalStackLayout Margin="0,10,0,0" Spacing="4">
                                     <CollectionView ItemsSource="{Binding TrabajoEsperado}"
                                                     SelectionMode="None"
                                                     Margin="0"
-                                                    HeightRequest="100">
+                                                    HeightRequest="75">
                                         <CollectionView.ItemsLayout>
-                                            <LinearItemsLayout Orientation="Vertical" />
+                                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="2" />
                                         </CollectionView.ItemsLayout>
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate>
-                                                <HorizontalStackLayout>
+                                                <Grid
+                                                    ColumnDefinitions="*,*"
+                                                    HorizontalOptions="FillAndExpand">
                                                     <Label Text="{Binding NombreEjercicio}"
                                                            FontSize="14"
                                                            TextColor="White"
-                                                           FontAttributes="Italic" />
-                                                    <Label Text="{Binding Series}"/>
-                                                    <Label Text="x"/>
-                                                    <Label Text="{Binding Repeticiones}"/>
-                                                </HorizontalStackLayout>
+                                                           FontAttributes="Italic" HorizontalOptions="Start" VerticalOptions="Center"/>
+                                                    <Label Text="{Binding FormatoTrabajo}" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center"/>
+                                                </Grid>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
@@ -138,7 +175,7 @@
 
                             </Frame>
 
-                            <VerticalStackLayout HorizontalOptions="Center" Spacing="10" Grid.Column="1" VerticalOptions="Center">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="10" Grid.Column="1" VerticalOptions="Center" Grid.RowSpan="2">
                                 <Button Text="Editar" 
                                             BackgroundColor="{StaticResource VerdeLima}" 
                                             TextColor="{StaticResource MoradoPrincipal}"

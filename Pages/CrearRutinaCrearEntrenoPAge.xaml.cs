@@ -1,4 +1,4 @@
-using PulseTFG.Models;
+﻿using PulseTFG.Models;
 using PulseTFG.ViewModel;
 using Microsoft.Maui.Controls;
 using System;
@@ -7,20 +7,37 @@ using System.Threading.Tasks;
 using PulseTFG.FirebaseService;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace PulseTFG.Pages;
 
-[QueryProperty(nameof(Entrenamiento), "Entrenamiento")]
+
 public partial class CrearRutinaCrearEntrenoPage : ContentPage
 {
     private RoutineCreatorViewModel _vm;
 
+
     public CrearRutinaCrearEntrenoPage()
     {
         InitializeComponent();
-        _vm = new RoutineCreatorViewModel();
+        _vm = AppState.RoutineCreatorVM;
         BindingContext = _vm;
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (_vm.EntrenamientoActual == null)
+        {
+            await DisplayAlert("Error", "Entrenamiento no definido.", "OK");
+            await Shell.Current.GoToAsync("..");
+            return;
+        }
+
+        await _vm.InitializeAsync();
+    }
+
 
     public Entrenamiento Entrenamiento
     {
@@ -28,16 +45,26 @@ public partial class CrearRutinaCrearEntrenoPage : ContentPage
         set => _vm.EntrenamientoActual = value;
     }
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _vm.InitializeAsync();
-    }
-
     private async void Volver_Clicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("..");
+        // Guardar el entrenamiento en la lista original si existe
+        var entrenamiento = _vm.EntrenamientoActual;
+        var lista = _vm.DiasEntrenamientoLista;
+
+        var existente = lista.FirstOrDefault(e => e.IdEntrenamiento == entrenamiento.IdEntrenamiento);
+        if (existente != null)
+        {
+            int index = lista.IndexOf(existente);
+            lista[index] = entrenamiento;
+        }
+
+        // Opcional: refrescar UI
+        _vm.OnPropertyChanged(nameof(_vm.DiasEntrenamientoLista));
+
+        // Volver a la página de selección
+        await Shell.Current.GoToAsync("//CrearRutinaPersPage");
     }
+
 
     private async void CambiarNombre_Clicked(object sender, EventArgs e)
     {
@@ -51,23 +78,28 @@ public partial class CrearRutinaCrearEntrenoPage : ContentPage
 
     private async void MostrarPopup_Clicked(object sender, EventArgs e)
     {
-        // Carga desde Firestore
         todosLosEjercicios = await _firestore.ObtenerEjerciciosFiltradosAsync(false, "");
-
 
         GrupoMuscularPicker.ItemsSource = _vm.GruposMusculares;
         GrupoMuscularPicker.SelectedIndex = 0;
 
+        // ⚠️ Reiniciamos el ItemsSource y luego lo asignamos para evitar que esté vacío
+        EjercicioPicker.ItemsSource = null;
+        await Task.Delay(100); // Pequeña pausa para forzar el refresco visual
         EjercicioPicker.ItemsSource = todosLosEjercicios;
-        EjercicioPicker.SelectedIndex = 0;
+        EjercicioPicker.SelectedItem = todosLosEjercicios.FirstOrDefault();
 
         FavoritosSwitch.IsToggled = false;
+        PopupGrid.BindingContext = _vm;
         PopupGrid.IsVisible = true;
     }
+
+
 
     private async void FavoritosSwitch_Toggled(object sender, ToggledEventArgs e)
     {
         await AplicarFiltrosPopup();
+
     }
 
     private async void GrupoMuscularPicker_SelectedIndexChanged(object sender, EventArgs e)
@@ -82,9 +114,10 @@ public partial class CrearRutinaCrearEntrenoPage : ContentPage
 
         todosLosEjercicios = await _firestore.ObtenerEjerciciosFiltradosAsync(favoritos, grupo == "Todos" ? "" : grupo);
         EjercicioPicker.ItemsSource = todosLosEjercicios;
+
     }
 
-    private void AceptarPopup_Clicked(object sender, EventArgs e)
+    private async void AceptarPopup_Clicked(object sender, EventArgs e)
     {
         if (EjercicioPicker.SelectedItem is Ejercicio ejercicio)
         {
@@ -96,11 +129,23 @@ public partial class CrearRutinaCrearEntrenoPage : ContentPage
                 Repeticiones = (int)RepeticionesStepper.Value
             };
 
-            _vm.EntrenamientoActual.TrabajoEsperado.Add(trabajo);
+            if (_vm.EntrenamientoActual != null)
+            {
+                // ✅ COMPRUEBA que la lista no sea null
+                if (_vm.EntrenamientoActual.TrabajoEsperado == null)
+                    _vm.EntrenamientoActual.TrabajoEsperado = new ObservableCollection<TrabajoEsperado>();
+
+                _vm.EntrenamientoActual.TrabajoEsperado.Add(trabajo);
+            }
+            else
+            {
+                await DisplayAlert("Error", "No se ha seleccionado un entrenamiento válido.", "OK");
+            }
         }
 
         PopupGrid.IsVisible = false;
     }
+
 
 
 
@@ -109,7 +154,7 @@ public partial class CrearRutinaCrearEntrenoPage : ContentPage
         // Simplemente ocultamos el popup
         PopupGrid.IsVisible = false;
 
-        // Tambi�n puedes resetear valores si quieres:
+        // También puedes resetear valores si quieres:
         GrupoMuscularPicker.SelectedItem = null;
         EjercicioPicker.ItemsSource = null;
         FavoritosSwitch.IsToggled = false;
@@ -119,11 +164,26 @@ public partial class CrearRutinaCrearEntrenoPage : ContentPage
     {
         if (sender is Button btn && btn.BindingContext is TrabajoEsperado trabajo)
         {
-            bool confirmar = await DisplayAlert("Confirmar", $"�Eliminar {trabajo.NombreEjercicio}?", "S�", "No");
+            bool confirmar = await DisplayAlert("Confirmar", $"¿Eliminar {trabajo.NombreEjercicio}?", "Sí", "No");
             if (!confirmar) return;
 
             _vm.EntrenamientoActual.TrabajoEsperado.Remove(trabajo);
         }
     }
+
+    private async void ResetearLista_Clicked(object sender, EventArgs e)
+    {
+        bool confirmar = await DisplayAlert("Resetear lista",
+            "¿Estás seguro de que quieres eliminar todos los ejercicios de este entrenamiento?",
+            "Sí", "No");
+
+        if (!confirmar) return;
+
+        if (BindingContext is RoutineCreatorViewModel vm && vm.EntrenamientoActual != null)
+        {
+            vm.EntrenamientoActual.TrabajoEsperado.Clear();
+        }
+    }
+
 
 }
