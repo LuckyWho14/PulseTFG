@@ -78,9 +78,13 @@ public partial class CrearRutinaPersPage : ContentPage
     {
         if (sender is Button btn && btn.BindingContext is Entrenamiento entrenamiento)
         {
-            // Puedes abrir una nueva página o popup para editarlo
-            await DisplayAlert("Editar Día", $"Aquí editarías {entrenamiento.Nombre}", "OK");
-            // O puedes implementar algo más complejo
+            var parametros = new Dictionary<string, object>
+        {
+            { "Entrenamiento", entrenamiento }
+        };
+
+            await Shell.Current.GoToAsync(nameof(CrearRutinaCrearEntrenoPage), parametros);
+
         }
     }
 

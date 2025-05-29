@@ -18,7 +18,7 @@ namespace PulseTFG.ViewModel
 
         public ObservableCollection<string> GruposMusculares { get; set; } = new()
     {
-        "Todos", "Pecho", "Espalda", "Pierna", "Hombro", "Bíceps", "Tríceps"
+        "Todos", "Pecho", "Espalda", "Pierna", "Hombro", "Bíceps", "Tríceps", "Abdomen"
     };
 
         private string grupoSeleccionado = "Todos";
