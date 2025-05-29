@@ -57,6 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
@@ -77,6 +78,12 @@
 	  </Compile>
 	  <Compile Update="Pages\CrearRutinaSelecTipoPage.xaml.cs">
 	    <DependentUpon>CrearRutinaSelecTipoPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\InicioPage.xaml.cs">
+	    <DependentUpon>InicioPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\MensajePopup.xaml.cs">
+	    <DependentUpon>MensajePopup.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
