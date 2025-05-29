@@ -342,7 +342,98 @@ namespace PulseTFG.FirebaseService
             var resp = await _httpClient.SendAsync(req);
             resp.EnsureSuccessStatusCode();
         }
+        /// <summary>
+        /// Actualiza un campo booleano de una rutina existente.
+        /// </summary>
+        public async Task ActualizarCampoRutinaAsync(string uid, string rutinaId, string campo, bool valor)
+        {
+            var url =
+                $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}"
+                + $"?updateMask.fieldPaths={campo}";
 
+            var doc = new
+            {
+                fields = new Dictionary<string, object>
+                {
+                    { campo, new { booleanValue = valor } }
+                }
+            };
+            var json = JsonSerializer.Serialize(doc);
+            var req = new HttpRequestMessage(HttpMethod.Patch, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
 
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
+
+        /// <summary>
+        /// Agrega un Entrenamiento bajo una rutina.
+        /// </summary>
+        public async Task CrearEntrenamientoAsync(string uid, string rutinaId, Entrenamiento e)
+        {
+            var url =
+              $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos"
+              + $"?documentId={e.IdEntrenamiento}";
+
+            var doc = new
+            {
+                fields = new Dictionary<string, object>
+                {
+                    { "nombre", new { stringValue = e.Nombre } },
+                    { "fechaCreacion", new { timestampValue = e.FechaCreacion.ToUniversalTime().ToString("o") } },
+                    { "actualizado",   new { timestampValue = DateTime.UtcNow.ToString("o") } }
+                }
+            };
+            var json = JsonSerializer.Serialize(doc);
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
+
+        /// <summary>
+        /// Agrega un TrabajoEsperado bajo un Entrenamiento.
+        /// </summary>
+        public async Task CrearTrabajoEsperadoAsync(string uid, string rutinaId, string diaId, TrabajoEsperado te)
+        {
+            var url =
+              $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{diaId}/trabajoEsperado"
+              + $"?documentId={Guid.NewGuid()}";
+
+            var doc = new
+            {
+                fields = new Dictionary<string, object>
+                {
+                    { "IdEjercicio",     new { stringValue = te.IdEjercicio } },
+                    { "NombreEjercicio", new { stringValue = te.NombreEjercicio } },
+                    { "Series",          new { integerValue = te.Series } },
+                    { "Repeticiones",    new { integerValue = te.Repeticiones } }
+                }
+            };
+            var json = JsonSerializer.Serialize(doc);
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
     }
+
 }
+
