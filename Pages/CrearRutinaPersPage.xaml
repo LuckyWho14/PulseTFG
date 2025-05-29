@@ -124,7 +124,9 @@
                     TextColor="{StaticResource MoradoPrincipal}"
                     FontSize="20"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"/>
+                    VerticalOptions="Center"
+                    Clicked="OnGuardarRutina_Clicked"
+                    />
 
                 <!-- Listado de entrenamientos -->
                 <CollectionView
