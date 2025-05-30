@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PulseTFG.Pages.InicioPage"
-             xmlns:local="clr-namespace:PulseTFG.Elementos"
-             Shell.NavBarIsVisible="False"
-             Shell.TabBarIsVisible="False" 
-             BackgroundColor="{StaticResource FondoNegro}"
-             FlyoutItem.IsVisible="True">
-    <Grid 
-        RowDefinitions="*,4*,*" 
-        ColumnDefinitions="*">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PulseTFG.Pages.InicioPage"
+    xmlns:local="clr-namespace:PulseTFG.Elementos"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="{StaticResource FondoNegro}"
+    FlyoutItem.IsVisible="True">
+
+    <Grid
+      RowDefinitions="*,4*,*"
+      ColumnDefinitions="*">
 
         <!-- Título -->
-        <Label 
-            Text="Entrenamiento Actual" 
-            TextColor="{StaticResource MoradoPrincipal}"
-            FontFamily="AntonRegular"
-            Grid.Row="0"
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            FontSize="40"
-            FontAttributes="Italic"/>
-
+        <Label
+        Text="Entrenamiento Actual"
+        TextColor="{StaticResource MoradoPrincipal}"
+        FontFamily="AntonRegular"
+        Grid.Row="0"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        FontSize="40"
+        FontAttributes="Italic" />
 
         <!-- Cuerpo -->
         <StackLayout Grid.Row="1">
 
-            <StackLayout BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10" Margin="20"/>
-            <CollectionView x:Name="EjerciciosList" ItemsSource="{Binding ListaEjercicios}" 
-                            SelectionMode="Single" 
-                            Margin="10"
-                            VerticalOptions="FillAndExpand"
-                            HorizontalOptions="Center">
+            <StackLayout
+          BackgroundColor="{StaticResource VerdeLima}"
+          HeightRequest="10"
+          Margin="20" />
+
+            <CollectionView
+          x:Name="EjerciciosList"
+          ItemsSource="{Binding ListaEjercicios}"
+          SelectionMode="Single"
+          Margin="10"
+          VerticalOptions="FillAndExpand"
+          HorizontalOptions="Center">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
 =======
@@ -48,61 +55,155 @@
                                 ColumnSpacing="10">
 
                             <!-- Fila del día corriente -->
-                            <StackLayout Orientation="Horizontal" Spacing="20" Grid.Column="0">
-                                <CheckBox IsChecked="{Binding Hecho}" />
-                                <Label Text="Hecho" VerticalOptions="Center"/>
+                            <StackLayout
+                  Grid.Row="0" Grid.Column="0"
+                  Orientation="Horizontal"
+                  Spacing="20">
+                                <CheckBox
+                    IsChecked="{Binding HechoActual}" />
+                                <Label
+                    Text="Hecho"
+                    VerticalOptions="Center" />
                             </StackLayout>
 
-                            <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="25" Grid.Column="1" 
-                                       VerticalOptions="Center"/>
+                            <Label
+                  Grid.Row="0" Grid.Column="1"
+                  Text="{Binding Nombre}"
+                  FontAttributes="Bold"
+                  FontSize="25"
+                  VerticalOptions="Center" />
 
-                            <StackLayout Orientation="Horizontal" Spacing="10" Grid.Column="2" >
-                                <Image Source="fuego.png" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Slider Minimum="1" Maximum="10" Value="{Binding Intensidad}" MinimumWidthRequest="100"/>
+                            <StackLayout
+                  Grid.Row="0" Grid.Column="2"
+                  Orientation="Horizontal"
+                  Spacing="10">
+                                <Image
+                    Source="fuego.png"
+                    HeightRequest="20"
+                    VerticalOptions="Center" />
+                                <Slider
+                    Minimum="1"
+                    Maximum="10"
+                    Value="{Binding IntensidadActual, Mode=TwoWay}"
+                    MinimumWidthRequest="100"
+                    VerticalOptions="Center" />
                             </StackLayout>
 
-
-                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="3">
-                                <Stepper Value="{Binding Repeticiones}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="100"/>
-                                <Label Text="Reps:" VerticalOptions="Center" FontAttributes="Bold"/>
-                                <Label Text="{Binding Repeticiones}" VerticalOptions="Center" FontSize="20"/>
+                            <StackLayout
+                  Grid.Row="0" Grid.Column="3"
+                  Orientation="Horizontal"
+                  Spacing="15">
+                                <Stepper
+                    Value="{Binding RepsActual, Mode=TwoWay}"
+                    Minimum="0"
+                    Maximum="100" />
+                                <Label
+                    Text="Reps:"
+                    VerticalOptions="Center"
+                    FontAttributes="Bold" />
+                                <Label
+                    Text="{Binding RepsActual}"
+                    VerticalOptions="Center"
+                    FontSize="20" />
                             </StackLayout>
 
-                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="4">
-                                <Stepper Value="{Binding Series}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="20"/>
-                                <Label Text="Series:" VerticalOptions="Center" FontAttributes="Bold"/>
-                                <Label Text="{Binding Series}" VerticalOptions="Center" FontSize="20"/>
+                            <StackLayout
+                  Grid.Row="0" Grid.Column="4"
+                  Orientation="Horizontal"
+                  Spacing="15">
+                                <Stepper
+                    Value="{Binding SeriesActual, Mode=TwoWay}"
+                    Minimum="0"
+                    Maximum="20" />
+                                <Label
+                    Text="Series:"
+                    VerticalOptions="Center"
+                    FontAttributes="Bold" />
+                                <Label
+                    Text="{Binding SeriesActual}"
+                    VerticalOptions="Center"
+                    FontSize="20" />
                             </StackLayout>
 
-                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="5">
-                                <Stepper Value="{Binding Kg}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="300" Increment="1"/>
-                                <Label Text="KG:" VerticalOptions="Center" FontAttributes="Bold"/>
-                                <Label Text="{Binding Kg}" VerticalOptions="Center" FontSize="20"/>
+                            <StackLayout
+                  Grid.Row="0" Grid.Column="5"
+                  Orientation="Horizontal"
+                  Spacing="15">
+                                <Stepper
+                    Value="{Binding KgActual, Mode=TwoWay}"
+                    Minimum="0"
+                    Maximum="300"
+                    Increment="1" />
+                                <Label
+                    Text="KG:"
+                    VerticalOptions="Center"
+                    FontAttributes="Bold" />
+                                <Label
+                    Text="{Binding KgActual}"
+                    VerticalOptions="Center"
+                    FontSize="20" />
                             </StackLayout>
 
                             <!-- Fila del entrenamiento anterior -->
-
-                            <StackLayout Orientation="Horizontal" Spacing="20" Grid.Column="0" Grid.Row="1">
-                                <CheckBox IsChecked="{Binding Hecho}" IsEnabled="False"/>
-                                <Label Text="Hecho" VerticalOptions="Center"/>
+                            <StackLayout
+                  Grid.Row="1" Grid.Column="0"
+                  Orientation="Horizontal"
+                  Spacing="20"
+                  IsVisible="{Binding TieneRegistroAnterior}">
+                                <CheckBox
+                    IsChecked="{Binding HechoActual}"
+                    IsEnabled="False" />
+                                <Label
+                    Text="Hecho"
+                    VerticalOptions="Center" />
                             </StackLayout>
 
-                            <Label Text="Anterior" FontAttributes="Bold" FontSize="18" Grid.Column="1" Grid.Row="1"
-                                   VerticalOptions="Center"/>
-                            <StackLayout Orientation="Horizontal" Spacing="10" Grid.Column="2" Grid.Row="1">
-                                <Image Source="fuego.png" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <ProgressBar  Progress="{Binding Intensidad}" MinimumWidthRequest="100"/>
-                            </StackLayout>
-                            <!-- ProgressBar para mostrar la intensidad adecuadamente sería progressBar.Progress = (sliderValue - 1) / 9.0;-->
+                            <Label
+                  Grid.Row="1" Grid.Column="1"
+                  Text="Anterior"
+                  FontAttributes="Bold"
+                  FontSize="18"
+                  VerticalOptions="Center"
+                  IsVisible="{Binding TieneRegistroAnterior}" />
 
-                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="3" Grid.Row="1">
-                                <Label Text="Reps:" VerticalOptions="Center"/>
-                                <Label Text="{Binding Repeticiones}" VerticalOptions="Center"/>
+                            <StackLayout
+                  Grid.Row="1" Grid.Column="2"
+                  Orientation="Horizontal"
+                  Spacing="10"
+                  IsVisible="{Binding TieneRegistroAnterior}">
+                                <Image
+                    Source="fuego.png"
+                    HeightRequest="20"
+                    VerticalOptions="Center" />
+                                <ProgressBar
+                    Progress="{Binding IntensidadAnteriorNormalizada}"
+                    MinimumWidthRequest="100" />
                             </StackLayout>
 
-                            <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="4" Grid.Row="1">
-                                <Label Text="Series:" VerticalOptions="Center"/>
-                                <Label Text="{Binding Series}" VerticalOptions="Center"/>
+                            <StackLayout
+                  Grid.Row="1" Grid.Column="3"
+                  Orientation="Horizontal"
+                  Spacing="15"
+                  IsVisible="{Binding TieneRegistroAnterior}">
+                                <Label
+                    Text="Reps:"
+                    VerticalOptions="Center" />
+                                <Label
+                    Text="{Binding RepsAnterior}"
+                    VerticalOptions="Center" />
+                            </StackLayout>
+
+                            <StackLayout
+                  Grid.Row="1" Grid.Column="4"
+                  Orientation="Horizontal"
+                  Spacing="15"
+                  IsVisible="{Binding TieneRegistroAnterior}">
+                                <Label
+                    Text="Series:"
+                    VerticalOptions="Center" />
+                                <Label
+                    Text="{Binding SeriesAnterior}"
+                    VerticalOptions="Center" />
                             </StackLayout>
 
                             <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="5" Grid.Row="1">
@@ -126,12 +227,29 @@
                             </StackLayout>
 
                             <!-- Separador -->
-                            <StackLayout Grid.Row="2" Grid.ColumnSpan="6" BackgroundColor="{StaticResource VerdeLima}" HeightRequest="5" Margin="10"></StackLayout>
+                            <StackLayout
+                  Grid.Row="2"
+                  Grid.ColumnSpan="6"
+                  BackgroundColor="{StaticResource VerdeLima}"
+                  HeightRequest="5"
+                  Margin="10" />
+
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <Button Text="GUARDAR" HorizontalOptions="Center" Margin="10" BackgroundColor="{StaticResource MoradoPrincipal}" TextColor="{StaticResource AzulCian}" FontFamily="AntonRegular" FontAttributes="Italic"/>
+
+            <Button
+          Text="GUARDAR"
+          Command="{Binding SaveCommand}"
+          HorizontalOptions="Center"
+          Margin="10"
+          BackgroundColor="{StaticResource MoradoPrincipal}"
+          TextColor="{StaticResource AzulCian}"
+          FontFamily="AntonRegular"
+          FontAttributes="Italic"
+                Clicked="OnGuardarRegistro_Clicked"/>
+
         </StackLayout>
 
         <!-- Menú Barra-->

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 using PulseTFG.Models;
 using System.Text.Json.Serialization;
+using Microsoft.Win32;
 
 
 namespace PulseTFG.FirebaseService
@@ -408,18 +409,19 @@ namespace PulseTFG.FirebaseService
         public async Task CrearTrabajoEsperadoAsync(string uid, string rutinaId, string diaId, TrabajoEsperado te)
         {
             var url =
-              $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{diaId}/trabajoEsperado"
-              + $"?documentId={Guid.NewGuid()}";
+                  $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{diaId}/trabajoEsperado"
+                  + $"?documentId={Guid.NewGuid()}";
 
             var doc = new
             {
                 fields = new Dictionary<string, object>
-                {
+        {
                     { "IdEjercicio",     new { stringValue = te.IdEjercicio } },
                     { "NombreEjercicio", new { stringValue = te.NombreEjercicio } },
                     { "Series",          new { integerValue = te.Series } },
-                    { "Repeticiones",    new { integerValue = te.Repeticiones } }
-                }
+                    { "Repeticiones",    new { integerValue = te.Repeticiones } },
+                    { "Orden",           new { integerValue = te.Orden } }      // ← Aquí
+        }
             };
             var json = JsonSerializer.Serialize(doc);
             var req = new HttpRequestMessage(HttpMethod.Post, url)
@@ -446,6 +448,274 @@ namespace PulseTFG.FirebaseService
                 ? docs.GetArrayLength()
                 : 0;
         }
+
+        public async Task<List<TrabajoEsperado>> ObtenerTrabajoEsperadoAsync(
+    string uid, string rutinaId, string diaId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}"
+                    + $"/rutinas/{rutinaId}"
+                    + $"/entrenamientos/{diaId}/trabajoEsperado";
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            var token = Preferences.Get(PrefsIdTokenKey, null);
+            req.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode)
+                return new List<TrabajoEsperado>();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            var lista = new List<TrabajoEsperado>();
+            if (!doc.RootElement.TryGetProperty("documents", out var docs))
+                return lista;
+
+            foreach (var d in docs.EnumerateArray())
+            {
+                var name = d.GetProperty("name").GetString();
+                var id = name.Substring(name.LastIndexOf('/') + 1);
+                var f = d.GetProperty("fields");
+
+                // Lectura segura de 'Orden'
+                int orden = 0;
+                if (f.TryGetProperty("Orden", out var ordenProp) &&
+                    ordenProp.TryGetProperty("integerValue", out var iv) &&
+                    int.TryParse(iv.GetString(), out var parsed))
+                {
+                    orden = parsed;
+                }
+
+                lista.Add(new TrabajoEsperado
+                {
+                    IdTrabajoEsperado = id,
+                    IdEjercicio = f.GetProperty("IdEjercicio")
+                                           .GetProperty("stringValue").GetString(),
+                    NombreEjercicio = f.GetProperty("NombreEjercicio")
+                                           .GetProperty("stringValue").GetString(),
+                    Series = int.Parse(f.GetProperty("Series")
+                                           .GetProperty("integerValue").GetString()),
+                    Repeticiones = int.Parse(f.GetProperty("Repeticiones")
+                                           .GetProperty("integerValue").GetString()),
+                    Orden = orden   // ya nunca falla aunque falte el campo
+                });
+            }
+
+            // Ordena por 'Orden' (0 al final) y devuelve
+            return lista.OrderBy(x => x.Orden).ToList();
+        }
+
+        /// <summary>
+        /// Obtiene la lista de Entrenamientos bajo una rutina dada.
+        /// </summary>
+        public async Task<List<Entrenamiento>> ObtenerEntrenamientosAsync(string uid, string rutinaId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            var token = Preferences.Get(PrefsIdTokenKey, null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode)
+                return new List<Entrenamiento>();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("documents", out var docs))
+                return new List<Entrenamiento>();
+
+            var lista = new List<Entrenamiento>();
+            foreach (var d in docs.EnumerateArray())
+            {
+                var name = d.GetProperty("name").GetString();
+                var id = name[(name.LastIndexOf('/') + 1)..];
+                var f = d.GetProperty("fields");
+                lista.Add(new Entrenamiento
+                {
+                    IdEntrenamiento = id,
+                    Nombre = f.GetProperty("nombre").GetProperty("stringValue").GetString(),
+                    FechaCreacion = DateTime.Parse(
+                                          f.GetProperty("fechaCreacion")
+                                           .GetProperty("timestampValue")
+                                           .GetString()
+                                      ),
+                    Actualizado = DateTime.Parse(
+                                          f.GetProperty("actualizado")
+                                           .GetProperty("timestampValue")
+                                           .GetString()
+                                      )
+                });
+            }
+            return lista;
+        }
+
+
+        public async Task<Registro> ObtenerUltimoRegistroAsync(string uid, string idEjercicio)
+        {
+            var url = $"{FirestoreBaseUrl}:runQuery";
+            var idToken = Preferences.Get(PrefsIdTokenKey, null);
+
+            var structuredQuery = new
+            {
+                structuredQuery = new
+                {
+                    from = new[] { new { collectionId = "registros", allDescendants = false } },
+                    where = new
+                    {
+                        fieldFilter = new
+                        {
+                            field = new { fieldPath = "IdEjercicio" },
+                            op = "EQUAL",
+                            value = new { stringValue = idEjercicio }
+                        }
+                    },
+                    orderBy = new[]
+                    {
+                new { field = new { fieldPath = "Fecha" }, direction = "DESCENDING" }
+            },
+                    limit = 1
+                }
+            };
+            var jsonBody = JsonSerializer.Serialize(structuredQuery);
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(jsonBody, Encoding.UTF8, "application/json")
+            };
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", idToken);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode) return null;
+
+            var respJson = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse($"[ {respJson.Trim()} ]");
+            var elem = doc.RootElement.EnumerateArray().FirstOrDefault();
+            if (!elem.TryGetProperty("document", out var document)) return null;
+
+            var f = document.GetProperty("fields");
+            return new Registro
+            {
+                IdTrabajo = f.GetProperty("IdTrabajo").GetProperty("stringValue").GetString(),
+                IdEjercicio = f.GetProperty("IdEjercicio").GetProperty("stringValue").GetString(),
+                NombreEjercicio = f.GetProperty("NombreEjercicio").GetProperty("stringValue").GetString(),
+                Peso = int.Parse(f.GetProperty("Peso").GetProperty("integerValue").GetString()),
+                Repeticion = int.Parse(f.GetProperty("Repeticion").GetProperty("integerValue").GetString()),
+                Serie = int.Parse(f.GetProperty("Serie").GetProperty("integerValue").GetString()),
+                Intensidad = int.Parse(f.GetProperty("Intensidad").GetProperty("integerValue").GetString()),
+                Hecho = f.GetProperty("Hecho").GetProperty("booleanValue").GetBoolean(),
+                Notas = f.TryGetProperty("Notas", out var n) ? n.GetProperty("stringValue").GetString() : "",
+                Fecha = DateTime.Parse(f.GetProperty("Fecha").GetProperty("timestampValue").GetString())
+            };
+        }
+
+        /// <summary>
+        /// Guarda un Registro en Firestore bajo /usuarios/{uid}/registros/{registroId}
+        /// </summary>
+        public async Task CrearRegistroAsync(string uid, Registro r)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/registros?documentId={Guid.NewGuid()}";
+            var doc = new
+            {
+                fields = new Dictionary<string, object>
+        {
+            { "IdTrabajo",       new { stringValue  = r.IdTrabajo } },
+            { "IdEjercicio",     new { stringValue  = r.IdEjercicio } },   // <-- stringValue
+            { "NombreEjercicio", new { stringValue  = r.NombreEjercicio } },
+            { "Peso",            new { integerValue = r.Peso } },
+            { "Repeticion",      new { integerValue = r.Repeticion } },
+            { "Serie",           new { integerValue = r.Serie } },
+            { "Intensidad",      new { integerValue = r.Intensidad } },
+            { "Hecho",           new { booleanValue = r.Hecho } },
+            { "Notas",           new { stringValue  = r.Notas ?? "" } },
+            { "Fecha",           new { timestampValue = r.Fecha.ToUniversalTime().ToString("o") } },
+        }
+            };
+            var json = JsonSerializer.Serialize(doc);
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            var token = Preferences.Get(PrefsIdTokenKey, null);
+            req.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
+
+        public async Task<Registro> ObtenerUltimoRegistroAnteriorAsync(string uid, string idEjercicio)
+        {
+            var url = $"{FirestoreBaseUrl}:runQuery";
+            var token = Preferences.Get(PrefsIdTokenKey, null);
+
+            var hoyIso = DateTime.UtcNow.Date.ToString("o");
+            var structuredQuery = new
+            {
+                structuredQuery = new
+                {
+                    from = new[] { new { collectionId = "registros", allDescendants = false } },
+                    where = new
+                    {
+                        compositeFilter = new
+                        {
+                            op = "AND",
+                            filters = new object[]
+                            {
+                        new {
+                            fieldFilter = new {
+                                field = new { fieldPath = "IdEjercicio" },
+                                op = "EQUAL",
+                                value = new { stringValue = idEjercicio }
+                            }
+                        },
+                        new {
+                            fieldFilter = new {
+                                field = new { fieldPath = "Fecha" },
+                                op = "LESS_THAN",
+                                value = new { timestampValue = hoyIso }
+                            }
+                        }
+                            }
+                        }
+                    },
+                    orderBy = new[]
+                    {
+                new { field = new { fieldPath = "Fecha" }, direction = "DESCENDING" }
+            },
+                    limit = 1
+                }
+            };
+
+            var json = JsonSerializer.Serialize(structuredQuery);
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode) return null;
+
+            var body = await resp.Content.ReadAsStringAsync();
+            using var arr = JsonDocument.Parse($"[{body.Trim()}]");
+            var elem = arr.RootElement.EnumerateArray().FirstOrDefault();
+            if (!elem.TryGetProperty("document", out var docElem)) return null;
+
+            var f = docElem.GetProperty("fields");
+            return new Registro
+            {
+                IdTrabajo = f.GetProperty("IdTrabajo").GetProperty("stringValue").GetString(),
+                IdEjercicio = f.GetProperty("IdEjercicio").GetProperty("stringValue").GetString(),
+                NombreEjercicio = f.GetProperty("NombreEjercicio").GetProperty("stringValue").GetString(),
+                Peso = int.Parse(f.GetProperty("Peso").GetProperty("integerValue").GetString()),
+                Repeticion = int.Parse(f.GetProperty("Repeticion").GetProperty("integerValue").GetString()),
+                Serie = int.Parse(f.GetProperty("Serie").GetProperty("integerValue").GetString()),
+                Intensidad = int.Parse(f.GetProperty("Intensidad").GetProperty("integerValue").GetString()),
+                Hecho = f.GetProperty("Hecho").GetProperty("booleanValue").GetBoolean(),
+                Notas = f.TryGetProperty("Notas", out var n) ? n.GetProperty("stringValue").GetString() : "",
+                Fecha = DateTime.Parse(f.GetProperty("Fecha").GetProperty("timestampValue").GetString())
+            };
+        }
+
 
     }
 }
