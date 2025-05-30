@@ -1,9 +1,12 @@
 ﻿using PulseTFG.ViewModel;
 using PulseTFG.Models;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using PulseTFG.FirebaseService;
+using System.Collections.Generic;
 
 namespace PulseTFG.Pages
 {
@@ -11,6 +14,7 @@ namespace PulseTFG.Pages
     {
         RoutineCreatorViewModel _vm;
         readonly FirebaseFirestoreService _firestore = new();
+
         public CrearRutinaPersPage()
         {
             InitializeComponent();
@@ -27,20 +31,25 @@ namespace PulseTFG.Pages
         private async void OnVolverClicked(object sender, EventArgs e)
         {
             _vm.Reset();
-
             await Shell.Current.GoToAsync("//CrearRutinaSelecTipoPage");
         }
 
         private async void CambiarNombre_Clicked(object sender, EventArgs e)
         {
-            string nuevo = await DisplayPromptAsync("Nombre de rutina", "Introduce un nuevo nombre:", initialValue: _vm.NombreRutina);
+            string nuevo = await DisplayPromptAsync(
+                "Nombre de rutina",
+                "Introduce un nuevo nombre:",
+                initialValue: _vm.NombreRutina);
             if (!string.IsNullOrWhiteSpace(nuevo))
                 _vm.NombreRutina = nuevo;
         }
 
         private async void CambiarDescripcion_Clicked(object sender, EventArgs e)
         {
-            string desc = await DisplayPromptAsync("Descripción", "Introduce una nueva descripción:", initialValue: _vm.DescripcionRutina);
+            string desc = await DisplayPromptAsync(
+                "Descripción",
+                "Introduce una nueva descripción:",
+                initialValue: _vm.DescripcionRutina);
             if (!string.IsNullOrWhiteSpace(desc))
                 _vm.DescripcionRutina = desc;
         }
@@ -67,8 +76,6 @@ namespace PulseTFG.Pages
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Cambiar nombre” de cada día
         private async void OnCambiarNombreEntreno_clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is Entrenamiento dia)
@@ -82,30 +89,19 @@ namespace PulseTFG.Pages
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Añadir ejercicio” (antes “Editar”) de cada día
         private async void EditarDia_Clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is Entrenamiento dia)
             {
-                // 1) Señalamos el día sobre el que trabajamos
                 _vm.EntrenamientoActual = dia;
-
-                // 2) Reseteamos filtros del popup
                 GrupoMuscularPicker.ItemsSource = _vm.GruposMusculares;
                 GrupoMuscularPicker.SelectedIndex = 0;
                 FavoritosSwitch.IsToggled = false;
-
-                // 3) Cargamos ejercicios
                 await _vm.CargarEjerciciosAsync(false, "");
-
-                // 4) Mostramos popup
                 PopupGrid.IsVisible = true;
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Reset ejercicios” de cada día
         private async void OnResetEjercicios_clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is Entrenamiento dia)
@@ -115,37 +111,30 @@ namespace PulseTFG.Pages
                     await DisplayAlert("Aviso", "No hay ejercicios que resetear.", "OK");
                     return;
                 }
-
                 bool ok = await DisplayAlert(
                     "Confirmar reset",
                     $"¿Eliminar todos los ejercicios de {dia.Nombre}?",
                     "Sí", "No");
                 if (!ok) return;
-
                 dia.TrabajoEsperado.Clear();
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Borrar” dentro de la lista de ejercicios del popup
         private async void OnBorrarEjercicio_Clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is TrabajoEsperado te)
             {
                 var dia = _vm.EntrenamientoActual;
                 if (dia == null) return;
-
                 bool ok = await DisplayAlert(
                     "Confirmar borrado",
                     $"¿Eliminar {te.NombreEjercicio} de {dia.Nombre}?",
                     "Sí", "No");
                 if (!ok) return;
-
                 dia.TrabajoEsperado.Remove(te);
             }
         }
 
-        // ——————————————————————————————————————————————
         // Popup: Aceptar / Cancelar
         private async void AceptarPopup_Clicked(object sender, EventArgs e)
         {
@@ -158,13 +147,16 @@ namespace PulseTFG.Pages
 
             if (EjercicioPicker.SelectedItem is Ejercicio ejer)
             {
-                dia.TrabajoEsperado.Add(new TrabajoEsperado
+                // Asignamos Orden según la posición actual en la lista
+                var nuevoTe = new TrabajoEsperado
                 {
                     IdEjercicio = ejer.IdEjercicio,
                     NombreEjercicio = ejer.Nombre,
                     Series = (int)SeriesStepper.Value,
-                    Repeticiones = (int)RepeticionesStepper.Value
-                });
+                    Repeticiones = (int)RepeticionesStepper.Value,
+                    Orden = dia.TrabajoEsperado.Count
+                };
+                dia.TrabajoEsperado.Add(nuevoTe);
             }
             else
             {
@@ -177,7 +169,6 @@ namespace PulseTFG.Pages
         private void CancelarPopup_Clicked(object sender, EventArgs e)
             => PopupGrid.IsVisible = false;
 
-        // Filtros del popup
         private async void GrupoMuscularPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             var grupo = (string)GrupoMuscularPicker.SelectedItem;
@@ -207,26 +198,18 @@ namespace PulseTFG.Pages
                 ? await _firestore.ObtenerRutinasUsuarioAsync(uid)
                 : new List<Rutina>();
 
-            bool activar;
-            if (existentes.Count == 0)
-            {
-                activar = true;
-            }
-            else
-            {
-                // Preguntar al usuario
-                activar = await DisplayAlert(
+            bool activar = existentes.Count == 0
+                ? true
+                : await DisplayAlert(
                     "Rutina activa",
                     "¿Quieres que esta sea tu rutina ACTIVA? Sólo puede haber una.",
                     "Sí", "No");
-                if (activar)
-                {
-                    // Desactivar las anteriores
-                    foreach (var r in existentes.Where(r => r.Activo))
-                    {
-                        await _firestore.ActualizarCampoRutinaAsync(uid, r.IdRutina, "activo", false);
-                    }
-                }
+
+            if (activar)
+            {
+                // Desactivar las anteriores
+                foreach (var r in existentes.Where(r => r.Activo))
+                    await _firestore.ActualizarCampoRutinaAsync(uid, r.IdRutina, "activo", false);
             }
 
             // 2) Crear objeto Rutina y subirla
@@ -240,17 +223,19 @@ namespace PulseTFG.Pages
             };
             var creada = await _firestore.CrearRutinaAsync(uid, nueva);
 
-            // 3) Subir entrenamientos y trabajos esperados
+            // 3) Subir entrenamientos y trabajos esperados (con Orden)
             foreach (var dia in _vm.DiasEntrenamientoLista)
             {
-                // Asegúrate de que IdEntrenamiento está definido
                 if (string.IsNullOrEmpty(dia.IdEntrenamiento))
                     dia.IdEntrenamiento = Guid.NewGuid().ToString();
 
                 await _firestore.CrearEntrenamientoAsync(uid, creada.IdRutina, dia);
 
-                foreach (var te in dia.TrabajoEsperado)
+                for (int i = 0; i < dia.TrabajoEsperado.Count; i++)
                 {
+                    var te = dia.TrabajoEsperado[i];
+                    // Asignar orden según índice en la lista
+                    te.Orden = i;
                     await _firestore.CrearTrabajoEsperadoAsync(
                         uid, creada.IdRutina, dia.IdEntrenamiento, te);
                 }
@@ -262,6 +247,5 @@ namespace PulseTFG.Pages
             else
                 await Shell.Current.GoToAsync("//MisEntrenosPage");
         }
-
     }
 }
