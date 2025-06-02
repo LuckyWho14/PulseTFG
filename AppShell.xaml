@@ -58,7 +58,11 @@
     <FlyoutItem Title="Información personal" >
         <ShellContent ContentTemplate="{DataTemplate local:InfoPersPage}" />
     </FlyoutItem>
-    
+
+    <FlyoutItem Title="Calendario actividad" >
+        <ShellContent ContentTemplate="{DataTemplate local:CalendarioPage}" />
+    </FlyoutItem>
+
     <!-- Direcciones de las páginas(ocultas del flyout) -->
     <TabBar IsEnabled="False">
        

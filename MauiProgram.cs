@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using Syncfusion.Maui.Core.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace PulseTFG
@@ -20,6 +21,8 @@ namespace PulseTFG
 
 #if DEBUG
             builder.Logging.AddDebug();
+            builder.ConfigureSyncfusionCore();
+
 #endif
 
             return builder.Build();
