@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="PulseTFG.Pages.MensajePopup">
+<toolkit:Popup
+    x:Class="PulseTFG.Pages.MensajePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
 
-    <VerticalStackLayout Padding="20" BackgroundColor="DarkViolet">
-        <Label x:Name="LabelMensaje" Text="Cargando..." FontSize="20"/>
-        <Button Text="Cerrar" Clicked="OnCerrarClicked"/>
-    </VerticalStackLayout>
+    <!-- Contenedor principal centrado -->
+    <Grid>
+        <!-- Frame con fondo violeta oscuro y bordes redondeados para el popup -->
+        <Frame BackgroundColor="#512DA8" Padding="20" CornerRadius="10"
+               HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="350" HeightRequest="150">
+            <!-- Contenido del popup: frase motivacional y botón de cierre -->
+            <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
+                <!-- Label para la frase motivacional (texto blanco sobre fondo oscuro) -->
+                <Label x:Name="MessageLabel"
+                       Text="Frase motivacional"
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+                <!-- Botón para cerrar el popup -->
+                <Button Text="Cerrar"
+                        Clicked="CloseButton_Clicked"
+                        BackgroundColor="Black"
+                        TextColor="White"
+                        HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
 </toolkit:Popup>

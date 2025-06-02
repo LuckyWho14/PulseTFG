@@ -24,9 +24,9 @@ public partial class InicioPage : ContentPage
         {
             _seMuestraPopup = true;
 
+            // Muestra el popup de frases motivacionales
             var popup = new MensajePopup();
             this.ShowPopup(popup);
         }
     }
-
 }
