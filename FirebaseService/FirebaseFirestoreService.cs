@@ -9,6 +9,7 @@ using Microsoft.Maui.Storage;
 using PulseTFG.Models;
 using System.Text.Json.Serialization;
 using Microsoft.Win32;
+using PulseTFG.Converter;
 
 
 namespace PulseTFG.FirebaseService
@@ -621,7 +622,7 @@ namespace PulseTFG.FirebaseService
             { "IdTrabajo",       new { stringValue  = r.IdTrabajo } },
             { "IdEjercicio",     new { stringValue  = r.IdEjercicio } },   // <-- stringValue
             { "NombreEjercicio", new { stringValue  = r.NombreEjercicio } },
-            { "Peso",            new { integerValue = r.Peso } },
+            { "Peso",            new { doubleValue  = r.Peso } },
             { "Repeticion",      new { integerValue = r.Repeticion } },
             { "Serie",           new { integerValue = r.Serie } },
             { "Intensidad",      new { integerValue = r.Intensidad } },
@@ -715,6 +716,112 @@ namespace PulseTFG.FirebaseService
                 Fecha = DateTime.Parse(f.GetProperty("Fecha").GetProperty("timestampValue").GetString())
             };
         }
+
+        /// <summary>
+        /// Obtiene todos los registros de un usuario en Firestore (colección "/usuarios/{uid}/registros").
+        /// </summary>
+        public async Task<List<Registro>> ObtenerRegistrosUsuarioAsync(string uid)
+        {
+            var token = Preferences.Get(PrefsIdTokenKey, null);
+            if (string.IsNullOrEmpty(token))
+                return new List<Registro>();
+
+            // Construimos la URL para GET /usuarios/{uid}/registros
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/registros";
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode)
+                return new List<Registro>();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            var lista = new List<Registro>();
+            // Si no hay campo "documents", devolvemos lista vacía
+            if (!doc.RootElement.TryGetProperty("documents", out var docs))
+                return lista;
+
+            foreach (var d in docs.EnumerateArray())
+            {
+                var fields = d.GetProperty("fields");
+
+                // Mapear cada campo al modelo Registro (ver ModeloFirestore.txt :contentReference[oaicite:1]{index=1})
+                lista.Add(new Registro
+                {
+                    // En tu modelo, IdTrabajo y NombreEjercicio son string; Peso, Repeticion, Serie, Intensidad son int; Hecho bool; Notas string; Fecha DateTime.
+                    IdTrabajo = fields.GetProperty("IdTrabajo").GetProperty("stringValue").GetString(),
+                    // Si el campo IdEjercicio lo guardaste como stringValue, podrías parsear a int, pero en la mayoría de las vistas de historial no se usa IdEjercicio directamente.
+                    // IdEjercicio   = int.Parse(fields.GetProperty("IdEjercicio").GetProperty("stringValue").GetString()),
+                    NombreEjercicio = fields.GetProperty("NombreEjercicio").GetProperty("stringValue").GetString(),
+                    Peso = fields.GetProperty("Peso").TryGetProperty("doubleValue", out var dv)
+                            ? dv.GetDouble()
+                            : double.Parse(fields.GetProperty("Peso").GetProperty("integerValue").GetString()),
+                    Repeticion = int.Parse(fields.GetProperty("Repeticion").GetProperty("integerValue").GetString()),
+                    Serie = int.Parse(fields.GetProperty("Serie").GetProperty("integerValue").GetString()),
+                    Intensidad = int.Parse(fields.GetProperty("Intensidad").GetProperty("integerValue").GetString()),
+                    Hecho = fields.GetProperty("Hecho").GetProperty("booleanValue").GetBoolean(),
+                    Notas = fields.TryGetProperty("Notas", out var n)
+                                        ? n.GetProperty("stringValue").GetString()
+                                        : string.Empty,
+                    Fecha = DateTime.Parse(fields.GetProperty("Fecha").GetProperty("timestampValue").GetString())
+                });
+            }
+
+            return lista;
+        }
+
+        public async Task<Rutina> ObtenerRutinaPorIdAsync(string uid, string rutinaId)
+        {
+            var docUrl = $"usuarios/{uid}/rutinas/{rutinaId}";
+            var doc = await GetDocumentsAsync<Rutina>(docUrl);
+            if (doc != null)
+                doc.IdRutina = rutinaId;
+            return doc;
+        }
+        public async Task<List<Entrenamiento>> ObtenerEntrenamientosDeRutinaAsync(string uid, string rutinaId)
+        {
+            var colUrl = $"usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
+            var lista = await GetDocumentsAsync<Entrenamiento>(colUrl);
+
+            foreach (var ent in lista)
+                ent.IdEntrenamiento ??= Guid.NewGuid().ToString();
+
+            return lista;
+        }
+        public async Task<List<TrabajoEsperado>> ObtenerTrabajoEsperadoDeEntrenamientoAsync(string uid, string rutinaId, string entrenamientoId)
+        {
+            var colUrl = $"usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{entrenamientoId}/trabajoEsperado";
+            return await GetDocumentsAsync<TrabajoEsperado>(colUrl);
+        }
+
+        public async Task<List<T>> GetDocumentsAsync<T>(string collectionPath) where T : new()
+        {
+            var url = $"{FirestoreBaseUrl}/{collectionPath}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return new List<T>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var data = JsonDocument.Parse(json);
+
+            var result = new List<T>();
+
+            if (data.RootElement.TryGetProperty("documents", out var documents))
+            {
+                foreach (var doc in documents.EnumerateArray())
+                {
+                    var obj = FirestoreHelper.ConvertFromFirestore<T>(doc);
+                    result.Add(obj);
+                }
+            }
+
+            return result;
+        }
+
+
 
 
     }

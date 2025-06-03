@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using PulseTFG.FirebaseService;
@@ -9,18 +10,20 @@ using PulseTFG.Models;
 
 namespace PulseTFG.ViewModel
 {
-    public class InicioViewModel
+    public class InicioViewModel : INotifyPropertyChanged
     {
+        public string NombreRutina { get; set; }
+        public string NombreEntrenamientoActual => 
+            (_listaEntrenamientos.Count > DiaActualIndex) ? _listaEntrenamientos[DiaActualIndex].Nombre : "";
+
+        private List<Entrenamiento> _listaEntrenamientos = new();
+
         readonly FirebaseFirestoreService _firestore;
         readonly string _uid, _rutinaId;
 
-        // Lista de IDs de días (entrenamientos) de la rutina activa
         List<string> _listaDias = new();
-
-        // Para cada día, la lista de ejercicios preparada
         List<List<EjercicioRutinaViewModel>> _masterDiasEjercicios = new();
 
-        // Observable sólo con los ejercicios del día actual
         public ObservableCollection<EjercicioRutinaViewModel> ListaEjercicios { get; }
             = new ObservableCollection<EjercicioRutinaViewModel>();
 
@@ -33,10 +36,6 @@ namespace PulseTFG.ViewModel
             _firestore = new FirebaseFirestoreService();
         }
 
-        /// <summary>
-        /// Carga todos los días (entrenamientos) y para cada uno, su lista de ejercicios.
-        /// Luego muestra el primer día.
-        /// </summary>
         public async Task InicializarAsync(string primerDiaId)
         {
             DiaActualIndex = 0;
@@ -44,18 +43,15 @@ namespace PulseTFG.ViewModel
             _masterDiasEjercicios.Clear();
             ListaEjercicios.Clear();
 
-            // 1) Obtén todos los entrenamientos (IDs y orden por fecha o nombre)
+            // Obtener entrenamientos
             var entrenamientos = await _firestore.ObtenerEntrenamientosAsync(_uid, _rutinaId);
-            // Asegura orden deseado
-            entrenamientos = entrenamientos.OrderBy(e => e.FechaCreacion).ToList();
+            _listaEntrenamientos = entrenamientos.OrderBy(e => e.FechaCreacion).ToList();
 
-            // 2) Para cada día, carga los ejercicios
-            foreach (var ent in entrenamientos)
+            foreach (var ent in _listaEntrenamientos)
             {
                 _listaDias.Add(ent.IdEntrenamiento);
 
-                var trabajo = await _firestore.ObtenerTrabajoEsperadoAsync(
-                    _uid, _rutinaId, ent.IdEntrenamiento);
+                var trabajo = await _firestore.ObtenerTrabajoEsperadoAsync(_uid, _rutinaId, ent.IdEntrenamiento);
 
                 var listaVM = new List<EjercicioRutinaViewModel>();
                 foreach (var t in trabajo)
@@ -64,27 +60,21 @@ namespace PulseTFG.ViewModel
                     {
                         IdTrabajoEsperado = t.IdTrabajoEsperado,
                         IdEjercicio = t.IdEjercicio,
-                        SeriesActual = t.Series,
-                        RepsActual = t.Repeticiones,
-                        KgActual = 0,
-                        IntensidadActual = 1,
-                        HechoActual = false
+                        Series = t.Series,
+                        Repeticiones = t.Repeticiones,
+                        Kg = 0,
+                        Intensidad = 1,
+                        Hecho = false
                     };
-                    var ultimo = await _firestore.ObtenerUltimoRegistroAsync(
-                        _uid, t.IdTrabajoEsperado);
-                    if (ultimo != null)
-                    {
-                        vm.SeriesAnterior = ultimo.Serie;
-                        vm.RepsAnterior = ultimo.Repeticion;
-                        vm.KgAnterior = ultimo.Peso;
-                        vm.IntensidadAnterior = ultimo.Intensidad;
-                    }
+
+
+
                     listaVM.Add(vm);
                 }
+
                 _masterDiasEjercicios.Add(listaVM);
             }
 
-            // 3) Mostrar el día inicial (por índice 0)
             if (_masterDiasEjercicios.Count > 0)
             {
                 DiaActualIndex = 0;
@@ -97,42 +87,43 @@ namespace PulseTFG.ViewModel
             ListaEjercicios.Clear();
             foreach (var vm in _masterDiasEjercicios[DiaActualIndex])
                 ListaEjercicios.Add(vm);
+
+            OnPropertyChanged(nameof(NombreEntrenamientoActual));
         }
 
-        /// <summary>
-        /// Registra todos los ejercicios del día actual y avanza al siguiente día,
-        /// ciclando al primero cuando se pasa del último.
-        /// </summary>
-        public async Task GuardarYAvanzarDiaAsync()
+        public async Task GuardarDiaActualAsync()
         {
             var ejercicios = _masterDiasEjercicios[DiaActualIndex];
-            foreach (var actual in ejercicios)
+            foreach (var actual in ejercicios.Where(e => e.Hecho))
             {
                 var registro = new Registro
                 {
                     IdTrabajo = actual.IdTrabajoEsperado,
                     IdEjercicio = actual.IdEjercicio,
                     NombreEjercicio = actual.Nombre,
-                    Peso = actual.KgActual,
-                    Repeticion = actual.RepsActual,
-                    Serie = actual.SeriesActual,
-                    Intensidad = actual.IntensidadActual,
-                    Hecho = actual.HechoActual,
+                    Repeticion = actual.Repeticiones,
+                    Serie = actual.Series,
+                    Peso = actual.Kg,
+                    Intensidad = actual.Intensidad,
+                    Hecho = true,
                     Notas = "",
                     Fecha = DateTime.Now
                 };
                 await _firestore.CrearRegistroAsync(_uid, registro);
             }
+            foreach (var ejercicio in ejercicios)
+            {
 
-            // Avanza al siguiente día (cíclico)
-            DiaActualIndex = (DiaActualIndex + 1) % _masterDiasEjercicios.Count;
-            RefrescarDia();
+                ejercicio.Intensidad = 1;
+                ejercicio.Hecho = false;
+            }
+
         }
+
         public async Task CargarEjerciciosDelDiaAsync(string diaId)
         {
             ListaEjercicios.Clear();
 
-            // traer trabajo esperado
             var trabajo = await _firestore.ObtenerTrabajoEsperadoAsync(_uid, _rutinaId, diaId);
 
             foreach (var t in trabajo)
@@ -140,27 +131,32 @@ namespace PulseTFG.ViewModel
                 var vm = new EjercicioRutinaViewModel(t.NombreEjercicio)
                 {
                     IdTrabajoEsperado = t.IdTrabajoEsperado,
-                    IdEjercicio = t.IdEjercicio,
-                    SeriesActual = t.Series,
-                    RepsActual = t.Repeticiones,
-                    KgActual = 0,
-                    IntensidadActual = 1,
-                    HechoActual = false
+                    IdEjercicio = t.IdEjercicio
                 };
 
-                // ← aquí el cambio: filtramos sólo registros de días anteriores
-                var ultimo = await _firestore.ObtenerUltimoRegistroAnteriorAsync(_uid, t.IdEjercicio);
-                if (ultimo != null)
-                {
-                    vm.SeriesAnterior = ultimo.Serie;
-                    vm.RepsAnterior = ultimo.Repeticion;
-                    vm.KgAnterior = ultimo.Peso;
-                    vm.IntensidadAnterior = ultimo.Intensidad;
-                }
 
                 ListaEjercicios.Add(vm);
             }
         }
 
+        public void MoverADiaAnterior()
+        {
+            if (_masterDiasEjercicios.Count == 0) return;
+
+            DiaActualIndex = (DiaActualIndex - 1 + _masterDiasEjercicios.Count) % _masterDiasEjercicios.Count;
+            RefrescarDia();
+        }
+
+        public void MoverADiaSiguiente()
+        {
+            if (_masterDiasEjercicios.Count == 0) return;
+
+            DiaActualIndex = (DiaActualIndex + 1) % _masterDiasEjercicios.Count;
+            RefrescarDia();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -14,15 +14,24 @@
       ColumnDefinitions="*">
 
         <!-- Título -->
-        <Label
-        Text="Entrenamiento Actual"
+        <StackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center">
+            <Label
+        Text="Registra tu entrenamiento"
         TextColor="{StaticResource MoradoPrincipal}"
         FontFamily="AntonRegular"
-        Grid.Row="0"
-        VerticalOptions="Center"
-        HorizontalOptions="Center"
-        FontSize="40"
-        FontAttributes="Italic" />
+        FontSize="32"
+        FontAttributes="Italic"
+        HorizontalTextAlignment="Center" />
+
+            <Label
+        Text="{Binding NombreEntrenamientoActual}"
+        FontAttributes="Bold"
+        FontSize="20"
+        TextColor="{StaticResource Blanco}"
+        HorizontalTextAlignment="Center"
+        Margin="0,5,0,0"/>
+        </StackLayout>
+
 
         <!-- Cuerpo -->
         <StackLayout Grid.Row="1">
@@ -33,12 +42,12 @@
           Margin="20" />
 
             <CollectionView
-          x:Name="EjerciciosList"
-          ItemsSource="{Binding ListaEjercicios}"
-          SelectionMode="Single"
-          Margin="10"
-          VerticalOptions="FillAndExpand"
-          HorizontalOptions="Center">
+  x:Name="EjerciciosList"
+  ItemsSource="{Binding ListaEjercicios}"
+  SelectionMode="Single"
+  Margin="10"
+  VerticalOptions="FillAndExpand"
+  HorizontalOptions="Center">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
 =======
@@ -54,81 +63,53 @@
                                 Padding="10"
                                 ColumnSpacing="10">
 
-                            <!-- Fila del día corriente -->
-                            <StackLayout
-                  Grid.Row="0" Grid.Column="0"
-                  Orientation="Horizontal"
-                  Spacing="20">
-                                <CheckBox
-                    IsChecked="{Binding HechoActual}" />
-                                <Label
-                    Text="Hecho"
-                    VerticalOptions="Center" />
+                            <!-- Hecho -->
+                            <StackLayout Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="20">
+                                <CheckBox IsChecked="{Binding Hecho}" />
+                                <Label Text="Hecho" VerticalOptions="Center" />
                             </StackLayout>
 
+                            <!-- Nombre ejercicio -->
                             <Label
-                  Grid.Row="0" Grid.Column="1"
-                  Text="{Binding Nombre}"
-                  FontAttributes="Bold"
-                  FontSize="25"
-                  VerticalOptions="Center" />
+          Grid.Row="0" Grid.Column="1"
+          Text="{Binding Nombre}"
+          FontAttributes="Bold"
+          FontSize="25"
+          VerticalOptions="Center" />
 
-                            <StackLayout
-                  Grid.Row="0" Grid.Column="2"
-                  Orientation="Horizontal"
-                  Spacing="10">
-                                <Image
-                    Source="fuego.png"
-                    HeightRequest="20"
-                    VerticalOptions="Center" />
+                            <!-- Intensidad -->
+                            <StackLayout Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Spacing="10">
+                                <Image Source="fuego.png" HeightRequest="20" VerticalOptions="Center" />
                                 <Slider
-                    Minimum="1"
-                    Maximum="10"
-                    Value="{Binding IntensidadActual, Mode=TwoWay}"
-                    MinimumWidthRequest="100"
-                    VerticalOptions="Center" />
+            Minimum="1"
+            Maximum="10"
+            Value="{Binding Intensidad, Mode=TwoWay}"
+            MinimumWidthRequest="100"
+            VerticalOptions="Center" />
                             </StackLayout>
 
-                            <StackLayout
-                  Grid.Row="0" Grid.Column="3"
-                  Orientation="Horizontal"
-                  Spacing="15">
-                                <Stepper
-                    Value="{Binding RepsActual, Mode=TwoWay}"
-                    Minimum="0"
-                    Maximum="100" />
-                                <Label
-                    Text="Reps:"
-                    VerticalOptions="Center"
-                    FontAttributes="Bold" />
-                                <Label
-                    Text="{Binding RepsActual}"
-                    VerticalOptions="Center"
-                    FontSize="20" />
+                            <!-- Repeticiones -->
+                            <StackLayout Grid.Row="0" Grid.Column="3" Orientation="Horizontal" Spacing="15">
+                                <Stepper Value="{Binding Repeticiones, Mode=TwoWay}" Minimum="0" Maximum="100" />
+                                <Label Text="Reps:" VerticalOptions="Center" FontAttributes="Bold" />
+                                <Label Text="{Binding Repeticiones}" VerticalOptions="Center" FontSize="20" />
                             </StackLayout>
 
-                            <StackLayout
-                  Grid.Row="0" Grid.Column="4"
-                  Orientation="Horizontal"
-                  Spacing="15">
-                                <Stepper
-                    Value="{Binding SeriesActual, Mode=TwoWay}"
-                    Minimum="0"
-                    Maximum="20" />
-                                <Label
-                    Text="Series:"
-                    VerticalOptions="Center"
-                    FontAttributes="Bold" />
-                                <Label
-                    Text="{Binding SeriesActual}"
-                    VerticalOptions="Center"
-                    FontSize="20" />
+                            <!-- Series -->
+                            <StackLayout Grid.Row="0" Grid.Column="4" Orientation="Horizontal" Spacing="15">
+                                <Stepper Value="{Binding Series, Mode=TwoWay}" Minimum="0" Maximum="20" />
+                                <Label Text="Series:" VerticalOptions="Center" FontAttributes="Bold" />
+                                <Label Text="{Binding Series}" VerticalOptions="Center" FontSize="20" />
                             </StackLayout>
 
-                            <StackLayout
-                  Grid.Row="0" Grid.Column="5"
-                  Orientation="Horizontal"
-                  Spacing="15">
+                            <!-- KG -->
+                            <StackLayout Grid.Row="0" Grid.Column="5" Orientation="Horizontal" Spacing="10">
+                                <Entry
+            Text="{Binding Kg, Mode=TwoWay}"
+            WidthRequest="60"
+            Keyboard="Numeric"
+            HorizontalTextAlignment="Center"
+            VerticalOptions="Center" />
                                 <Stepper
                     Value="{Binding KgActual, Mode=TwoWay}"
                     Minimum="0"
@@ -228,27 +209,47 @@
 
                             <!-- Separador -->
                             <StackLayout
-                  Grid.Row="2"
-                  Grid.ColumnSpan="6"
-                  BackgroundColor="{StaticResource VerdeLima}"
-                  HeightRequest="5"
-                  Margin="10" />
+          Grid.Row="2"
+          Grid.ColumnSpan="6"
+          BackgroundColor="{StaticResource VerdeLima}"
+          HeightRequest="5"
+          Margin="10" />
 
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Button
-          Text="GUARDAR"
-          Command="{Binding SaveCommand}"
-          HorizontalOptions="Center"
-          Margin="10"
-          BackgroundColor="{StaticResource MoradoPrincipal}"
-          TextColor="{StaticResource AzulCian}"
-          FontFamily="AntonRegular"
-          FontAttributes="Italic"
-                Clicked="OnGuardarRegistro_Clicked"/>
+
+            <Grid ColumnDefinitions="*,2*,*" Margin="10" VerticalOptions="Center" HorizontalOptions="Center" ColumnSpacing="20" HeightRequest="50">
+                <Button
+        Text="←"
+        Clicked="OnAnteriorDia_Clicked"
+        BackgroundColor="{StaticResource MoradoPrincipal}"
+        TextColor="{StaticResource AzulCian}"
+        FontSize="30"
+        FontAttributes="Bold"
+        Grid.Column="0" />
+
+                <Button
+        Text="GUARDAR"
+        Clicked="OnGuardarRegistro_Clicked"
+        BackgroundColor="{StaticResource MoradoPrincipal}"
+        TextColor="{StaticResource AzulCian}"
+        FontFamily="AntonRegular"
+        FontAttributes="Italic"
+        Grid.Column="1" />
+
+                <Button
+        Text="→"
+        Clicked="OnSiguienteDia_Clicked"
+        BackgroundColor="{StaticResource MoradoPrincipal}"
+        TextColor="{StaticResource AzulCian}"
+        FontSize="30"
+        FontAttributes="Bold"
+        Grid.Column="2" />
+            </Grid>
+
 
         </StackLayout>
 

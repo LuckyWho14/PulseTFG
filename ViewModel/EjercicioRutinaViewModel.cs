@@ -1,5 +1,4 @@
-﻿// PulseTFG/ViewModel/EjercicioRutinaViewModel.cs
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace PulseTFG.ViewModel
@@ -9,118 +8,52 @@ namespace PulseTFG.ViewModel
         public EjercicioRutinaViewModel(string nombre)
         {
             Nombre = nombre;
-            SeriesActual = RepsActual = KgActual = IntensidadActual = 0;
-            HechoActual = false;
-            SeriesAnterior = RepsAnterior = KgAnterior = IntensidadAnterior = 0;
+            Series = Repeticiones = Intensidad = 0;
+            Kg = 0;
+            Hecho = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        // — Identificadores —
         public string IdTrabajoEsperado { get; set; }
-        public string IdEjercicio { get; set; }   // <-- string, no int
-
-        // — Datos actuales —
+        public string IdEjercicio { get; set; }
         public string Nombre { get; }
 
-        private int _seriesActual;
-        public int SeriesActual
+        private int _series;
+        public int Series
         {
-            get => _seriesActual;
-            set { _seriesActual = value; OnPropertyChanged(); }
+            get => _series;
+            set { _series = value; OnPropertyChanged(); }
         }
 
-        private int _repsActual;
-        public int RepsActual
+        private int _repeticiones;
+        public int Repeticiones
         {
-            get => _repsActual;
-            set { _repsActual = value; OnPropertyChanged(); }
+            get => _repeticiones;
+            set { _repeticiones = value; OnPropertyChanged(); }
         }
 
-        private int _kgActual;
-        public int KgActual
+        private double _kg;
+        public double Kg
         {
-            get => _kgActual;
-            set { _kgActual = value; OnPropertyChanged(); }
+            get => _kg;
+            set { _kg = value; OnPropertyChanged(); }
         }
 
-        private int _intensidadActual;
-        public int IntensidadActual
+        private int _intensidad;
+        public int Intensidad
         {
-            get => _intensidadActual;
-            set { _intensidadActual = value; OnPropertyChanged(); }
+            get => _intensidad;
+            set { _intensidad = value; OnPropertyChanged(); }
         }
 
-        private bool _hechoActual;
-        public bool HechoActual
+        private bool _hecho;
+        public bool Hecho
         {
-            get => _hechoActual;
-            set { _hechoActual = value; OnPropertyChanged(); }
+            get => _hecho;
+            set { _hecho = value; OnPropertyChanged(); }
         }
-
-        // — Datos anteriores —
-        private int _seriesAnterior;
-        public int SeriesAnterior
-        {
-            get => _seriesAnterior;
-            set
-            {
-                if (_seriesAnterior == value) return;
-                _seriesAnterior = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TieneRegistroAnterior));
-            }
-        }
-
-        private int _repsAnterior;
-        public int RepsAnterior
-        {
-            get => _repsAnterior;
-            set
-            {
-                if (_repsAnterior == value) return;
-                _repsAnterior = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TieneRegistroAnterior));
-            }
-        }
-
-        private int _kgAnterior;
-        public int KgAnterior
-        {
-            get => _kgAnterior;
-            set
-            {
-                if (_kgAnterior == value) return;
-                _kgAnterior = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TieneRegistroAnterior));
-            }
-        }
-
-        private int _intensidadAnterior;
-        public int IntensidadAnterior
-        {
-            get => _intensidadAnterior;
-            set
-            {
-                if (_intensidadAnterior == value) return;
-                _intensidadAnterior = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IntensidadAnteriorNormalizada));
-                OnPropertyChanged(nameof(TieneRegistroAnterior));
-            }
-        }
-
-        public double IntensidadAnteriorNormalizada
-            => (IntensidadAnterior - 1) / 9.0;
-
-        public bool TieneRegistroAnterior
-            => SeriesAnterior > 0
-            || RepsAnterior > 0
-            || KgAnterior > 0
-            || IntensidadAnterior > 0;
     }
 }

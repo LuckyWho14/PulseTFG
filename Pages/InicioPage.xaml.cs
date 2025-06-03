@@ -45,20 +45,26 @@ namespace PulseTFG.Pages
 
         private async void OnGuardarRegistro_Clicked(object sender, EventArgs e)
         {
-            bool ok = await DisplayAlert(
-                "Confirmar",
-                "Guardar registros de este día y pasar al siguiente?",
-                "Sí", "No");
-            if (!ok) return;
-
             try
             {
-                await _vm.GuardarYAvanzarDiaAsync();
+                await _vm.GuardarDiaActualAsync();
+                await DisplayAlert("Guardado", "Registros guardados correctamente.", "OK");
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", ex.Message, "OK");
             }
         }
+
+        private void OnAnteriorDia_Clicked(object sender, EventArgs e)
+        {
+            _vm.MoverADiaAnterior();
+        }
+
+        private void OnSiguienteDia_Clicked(object sender, EventArgs e)
+        {
+            _vm.MoverADiaSiguiente();
+        }
+
     }
 }
