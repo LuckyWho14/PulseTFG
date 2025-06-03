@@ -10,8 +10,10 @@ using System.Collections.Generic;
 
 namespace PulseTFG.Pages
 {
+    [QueryProperty(nameof(RutinaId), "rutinaId")]
     public partial class CrearRutinaPersPage : ContentPage
     {
+        public string RutinaId { get; set; }
         RoutineCreatorViewModel _vm;
         readonly FirebaseFirestoreService _firestore = new();
 
@@ -25,7 +27,14 @@ namespace PulseTFG.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await _vm.InitializeAsync();
+            var uid = Preferences.Get("firebase_user_uid", null);
+            if (string.IsNullOrEmpty(uid)) return;
+
+            if (!string.IsNullOrEmpty(RutinaId))
+                await _vm.CargarRutinaExistenteAsync(uid, RutinaId);
+            else
+                await _vm.InitializeAsync();
+
         }
 
         private async void OnVolverClicked(object sender, EventArgs e)

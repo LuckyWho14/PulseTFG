@@ -1,133 +1,233 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PulseTFG.Elementos"
-             x:Class="PulseTFG.Pages.HistorialPage"
-             x:Name="HistorialPageRef"
-             Shell.TabBarIsVisible="False" 
-             BackgroundColor="{StaticResource FondoNegro}">
-    <Grid 
-        RowDefinitions="*,4*,*" 
-        ColumnDefinitions="*">
-        
-        <!-- Título -->
-        <Label 
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sys="clr-namespace:System;assembly=netstandard"
+    xmlns:local="clr-namespace:PulseTFG.Elementos"
+    x:Class="PulseTFG.Pages.HistorialPage"
+    x:Name="HistorialPageRef"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
+    BackgroundColor="{StaticResource FondoNegro}"
+    Title="Historial">
+
+    <!-- ==============================
+         Grid principal: 3 filas
+         Row 0 = TÍTULO
+         Row 1 = CUERPO (filtros + lista)
+         Row 2 = BARRA DE MENÚ
+         ============================== -->
+    <Grid RowDefinitions="*,4*,*" ColumnDefinitions="*">
+
+        <!-- ════ Fila 0: TÍTULO ════ -->
+        <Label
+            Grid.Row="0"
             Text="Historial"
             TextColor="{StaticResource MoradoPrincipal}"
             FontFamily="AntonRegular"
-            Grid.Row="0"
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
             FontSize="40"
-            FontAttributes="Italic"/>
-        
-        <!-- Cuerpo -->
-        <Grid Grid.Row="1"  
-              RowDefinitions="30,4*">
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="100" >
-                <Label Text="Todos los días"/>
-                <Label Text="Día"/>
-                <Label Text="Comparador"/>
-                <Switch
-                        IsToggled="{Binding EstaActivo}" 
-                        OnColor="{StaticResource AzulCian}"
-                        ThumbColor="{StaticResource MoradoPrincipal}"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center" />
-            </HorizontalStackLayout>
-            <StackLayout Grid.Row="1">
+            FontAttributes="Italic"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
 
-                <StackLayout BackgroundColor="{StaticResource VerdeLima}" HeightRequest="10" Margin="20"/>
-                <CollectionView x:Name="EjerciciosList" ItemsSource="{Binding ListaEjercicios}" 
-                    SelectionMode="Single" 
+        <!-- ════ Fila 1: CUERPO (filtros + lista) ════ -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="*">
+
+            <!-- 1.1. Fila 0 dentro del cuerpo: Switch + DatePicker -->
+            <HorizontalStackLayout
+                Grid.Row="0"
+                HorizontalOptions="Center"
+                Spacing="20"
+                Margin="10,10,10,0">
+
+                <Label
+                    Text="Todos los días"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+
+                <Switch
+                    IsToggled="{Binding MostrarTodosDias}"
+                    VerticalOptions="Center" />
+
+                <Label
+                    Text="Filtrar por fecha:"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+
+                <DatePicker
+                    Date="{Binding FechaSeleccionada}"
+                    IsEnabled="{Binding MostrarTodosDias, Converter={StaticResource InverseBooleanConverter}}"
+                    MaximumDate="{x:Static sys:DateTime.Today}"
+                    TextColor="White" />
+
+                <!-- Picker para ejercicio -->
+            <StackLayout
+                Grid.Row="1"
+                Orientation="Horizontal"
+                HorizontalOptions="Center"
+                Spacing="10"
+                Margin="10,5,10,5">
+
+                <Label
+                    Text="Ejercicio:"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+
+                <Picker
+                    ItemsSource="{Binding ListaEjerciciosDisponibles}"
+                    SelectedItem="{Binding EjercicioSeleccionado}"
+                    TextColor="White"
+                    HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+            </HorizontalStackLayout>
+
+
+            <!-- 1.3. Fila 2 dentro del cuerpo: RefreshView → CollectionView -->
+            <RefreshView
+                Grid.Row="2"
+                IsRefreshing="{Binding IsBusy}"
+                Command="{Binding RefrescarCommand}"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand">
+
+                <CollectionView
+                    x:Name="RegistrosList"
+                    ItemsSource="{Binding ListaRegistros}"
+                    SelectionMode="None"
                     Margin="10"
-                    VerticalOptions="FillAndExpand"
-                    HorizontalOptions="Center">
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
+
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid 
-                                    RowDefinitions="2*,*,*"
-                                    ColumnDefinitions="*,2*,*,*,*,*"
-                                    Padding="10"
-                                    ColumnSpacing="10">
+                            <Grid
+                                Padding="10"
+                                RowDefinitions="Auto, Auto, Auto"
+                                ColumnDefinitions="*,2*,*,*,*,*"
+                                ColumnSpacing="10">
 
-                                <!-- Fila del día corriente -->
-                                <StackLayout Orientation="Horizontal" Spacing="20" Grid.Column="0">
-                                    <CheckBox IsChecked="{Binding Hecho}" />
-                                    <Label Text="Hecho" VerticalOptions="Center"/>
-                                </StackLayout>
+                                <!-- Fila 0: FECHA -->
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.ColumnSpan="6"
+                                    Text="{Binding Fecha, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
+                                    FontAttributes="Italic"
+                                    FontSize="16"
+                                    TextColor="{StaticResource MoradoPrincipal}"
+                                    HorizontalOptions="Center" />
 
-                                <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="25" Grid.Column="1" 
-                               VerticalOptions="Center"/>
+                                <!-- Fila 1: DATOS DEL REGISTRO -->
+                                <Grid Grid.Row="1" ColumnDefinitions="2*,*,*,*,*" Grid.ColumnSpan="5" Margin="50,0,0,0">
 
-                                <StackLayout Orientation="Horizontal" Spacing="10" Grid.Column="2" >
-                                    <Image Source="fuego.png" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                    <Slider Minimum="1" Maximum="10" Value="{Binding Intensidad}" MinimumWidthRequest="100"/>
-                                </StackLayout>
+                                    <!-- 2. Nombre del ejercicio -->
+                                    <Label
+                                        Text="{Binding NombreEjercicio}"
+                                        FontAttributes="Bold"
+                                        FontSize="25"
+                                        TextColor="White"
+                                        VerticalOptions="Center" 
+                                        />
 
-
-                                <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="3">
-                                    <Stepper Value="{Binding Repeticiones}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="100"/>
-                                    <Label Text="Reps:" VerticalOptions="Center" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Repeticiones}" VerticalOptions="Center" FontSize="20"/>
-                                </StackLayout>
-
-                                <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="4">
-                                    <Stepper Value="{Binding Series}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="20"/>
-                                    <Label Text="Series:" VerticalOptions="Center" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Series}" VerticalOptions="Center" FontSize="20"/>
-                                </StackLayout>
-
-                                <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="5">
-                                    <Stepper Value="{Binding Kg}" BackgroundColor="{StaticResource AzulCian}" Minimum="0" Maximum="300" Increment="1"/>
-                                    <Label Text="KG:" VerticalOptions="Center" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Kg}" VerticalOptions="Center" FontSize="20"/>
-                                </StackLayout>
-
-                                <!-- Fila del entrenamiento anterior -->
-                                <Grid Grid.Row="1" Grid.ColumnSpan="6"
-                                      RowDefinitions="Auto" ColumnDefinitions="*,2*,*,*,*,*"
-                                      IsVisible="{Binding Source={x:Reference HistorialPageRef}, Path=EstaActivo}">
-                                    
-                                    <StackLayout Orientation="Horizontal" Spacing="20" Grid.Column="0" Grid.Row="1">
-                                        <CheckBox IsChecked="{Binding Hecho}" IsEnabled="False"/>
-                                        <Label Text="Hecho" VerticalOptions="Center"/>
-                                    </StackLayout>
-                                    <Label Text="Anterior" FontAttributes="Bold" FontSize="18" Grid.Column="1" Grid.Row="1"
-                                           VerticalOptions="Center"/>
-                                    <StackLayout Orientation="Horizontal" Spacing="10" Grid.Column="2" Grid.Row="1">
-                                        <Image Source="fuego.png" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                        <ProgressBar  Progress="{Binding Intensidad}" MinimumWidthRequest="100"/>
-                                    </StackLayout>
-                                    <!-- ProgressBar para mostrar la intensidad adecuadamente sería progressBar.Progress = (sliderValue - 1) / 9.0;-->
-
-                                    <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="3" Grid.Row="1">
-                                        <Label Text="Reps:" VerticalOptions="Center"/>
-                                        <Label Text="{Binding Repeticiones}" VerticalOptions="Center"/>
+                                    <!-- 3. Intensidad (ProgressBar) -->
+                                    <StackLayout
+                                        Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Spacing="5"
+                                        VerticalOptions="Center">
+                                        <Image
+                                            Source="fuego.png"
+                                            HeightRequest="20"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center" />
+                                        <ProgressBar
+                                            Progress="{Binding Intensidad, Converter={StaticResource IntensidadToProgressConverter}}"
+                                            MinimumWidthRequest="100"
+                                            VerticalOptions="Center" />
                                     </StackLayout>
 
-                                    <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="4" Grid.Row="1">
-                                        <Label Text="Series:" VerticalOptions="Center"/>
-                                        <Label Text="{Binding Series}" VerticalOptions="Center"/>
+                                    <!-- 4. Repeticiones -->
+                                    <StackLayout
+                                        Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="5"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            Text="Reps:"
+                                            FontAttributes="Bold"
+                                            TextColor="White"
+                                            FontSize="20"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Text="{Binding Repeticion}"
+                                            FontSize="20"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
                                     </StackLayout>
 
-                                    <StackLayout Orientation="Horizontal" Spacing="15" Grid.Column="5" Grid.Row="1">
-                                        <Label Text="KG:" VerticalOptions="Center"/>
-                                        <Label Text="{Binding Kg}" VerticalOptions="Center"/>
+                                    <!-- 5. Series -->
+                                    <StackLayout
+                                        Grid.Column="3"
+                                        Orientation="Horizontal"
+                                        Spacing="5"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            Text="Series:"
+                                            FontAttributes="Bold"
+                                            TextColor="White"
+                                            FontSize="20"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Text="{Binding Serie}"
+                                            FontSize="20"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </StackLayout>
+
+                                    <!-- 6. Peso (KG) -->
+                                    <StackLayout
+                                        Grid.Column="4"
+                                        Orientation="Horizontal"
+                                        Spacing="5"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            Text="KG:"
+                                            FontAttributes="Bold"
+                                            TextColor="White"
+                                            FontSize="20"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Text="{Binding Peso, StringFormat='{}{0:0.0}'}"
+                                            FontSize="20"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+
                                     </StackLayout>
                                 </Grid>
 
-
-                                <!-- Separador -->
-                                <StackLayout Grid.Row="2" Grid.ColumnSpan="6" BackgroundColor="{StaticResource VerdeLima}" HeightRequest="5" Margin="10"></StackLayout>
+                                <!-- Fila 2: Separador visual -->
+                                <BoxView
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="6"
+                                    BackgroundColor="{StaticResource VerdeLima}"
+                                    HeightRequest="2"
+                                    Margin="0,10,0,0" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </StackLayout>
-        </Grid>
-        <!-- Barra Menú -->
-        <local:MenuBarra Grid.Row="2"/>
+            </RefreshView>
 
+            <!-- 1.4. Fila 3 dentro del cuerpo: ActivityIndicator mientras IsBusy = true -->
+            <ActivityIndicator
+                Grid.Row="3"
+                IsVisible="{Binding IsBusy}"
+                IsRunning="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource MoradoPrincipal}" />
+        </Grid>
+
+        <!-- ════ Fila 2: BARRA DE MENÚ ════ -->
+        <local:MenuBarra Grid.Row="2" />
     </Grid>
 </ContentPage>

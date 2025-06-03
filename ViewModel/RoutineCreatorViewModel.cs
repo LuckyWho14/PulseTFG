@@ -170,6 +170,27 @@ namespace PulseTFG.ViewModel
             });
         }
 
+        public async Task CargarRutinaExistenteAsync(string uid, string rutinaId)
+        {
+            var rutina = await _firestore.ObtenerRutinaPorIdAsync(uid, rutinaId);
+            if (rutina == null) return;
+
+            NombreRutina = rutina.Nombre;
+            DescripcionRutina = rutina.Descripcion;
+
+            var entrenos = await _firestore.ObtenerEntrenamientosDeRutinaAsync(uid, rutinaId);
+
+            DiasEntrenamientoLista.Clear();
+            foreach (var ent in entrenos)
+            {
+                var trabajos = await _firestore.ObtenerTrabajoEsperadoDeEntrenamientoAsync(uid, rutinaId, ent.IdEntrenamiento);
+                ent.TrabajoEsperado = new ObservableCollection<TrabajoEsperado>(trabajos);
+                DiasEntrenamientoLista.Add(ent);
+            }
+
+            DiasEntrenamiento = DiasEntrenamientoLista.Count;
+        }
+
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

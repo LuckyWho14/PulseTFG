@@ -1,30 +1,25 @@
-namespace PulseTFG.Pages;
+// Origen: PulseTFG/Pages/HistorialPage.xaml.cs
+using PulseTFG.ViewModel;
 
-public partial class HistorialPage : ContentPage
+namespace PulseTFG.Pages
 {
-    public HistorialPage()
-	{
-		InitializeComponent();
-
-        BindingContext = this;
-        EstaActivo = false;
-
-    }
-
-    private bool _estaActivo;
-    public bool EstaActivo
+    public partial class HistorialPage : ContentPage
     {
-        get => _estaActivo;
-        set
+        private readonly HistorialViewModel _viewModel;
+
+        public HistorialPage()
         {
-            if (_estaActivo != value)
-            {
-                _estaActivo = value;
-                OnPropertyChanged(nameof(EstaActivo));
-            }
+            InitializeComponent();
+            _viewModel = new HistorialViewModel();
+            this.BindingContext = _viewModel;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            // Cada vez que la página aparece en pantalla, volvemos a cargar datos
+            if (_viewModel.CargarRegistrosCommand.CanExecute(null))
+                _viewModel.CargarRegistrosCommand.Execute(null);
         }
     }
-    
-
-
 }

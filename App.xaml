@@ -10,6 +10,13 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!-- Converter para invertir booleano -->
+            <converter:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+
+            <!-- Converter para Intensidad -->
+            <converter:IntensidadToProgressConverter x:Key="IntensidadToProgressConverter" />
+            
+            <!-- Converter para convertir un booleano a una imagen de favorito -->
             <converter:FavoritoImagenConverter x:Key="FavoritoImagenConverter"/>
         </ResourceDictionary>
     </Application.Resources>
