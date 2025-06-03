@@ -775,11 +775,14 @@ namespace PulseTFG.FirebaseService
         public async Task<Rutina> ObtenerRutinaPorIdAsync(string uid, string rutinaId)
         {
             var docUrl = $"usuarios/{uid}/rutinas/{rutinaId}";
-            var doc = await GetDocumentsAsync<Rutina>(docUrl);
+            var doc = await GetDocumentAsync<Rutina>(docUrl); // ✅ ahora sí devuelves 1 solo
+
             if (doc != null)
                 doc.IdRutina = rutinaId;
+
             return doc;
         }
+
         public async Task<List<Entrenamiento>> ObtenerEntrenamientosDeRutinaAsync(string uid, string rutinaId)
         {
             var colUrl = $"usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
@@ -821,8 +824,93 @@ namespace PulseTFG.FirebaseService
             return result;
         }
 
+        public async Task BorrarTrabajoEsperadoAsync(string uid, string rutinaId, string diaId, string idTrabajo)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{diaId}/trabajoEsperado/{idTrabajo}";
+            var req = new HttpRequestMessage(HttpMethod.Delete, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
 
+        public async Task BorrarEntrenamientoAsync(string uid, string rutinaId, string idEntrenamiento)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{idEntrenamiento}";
+            var req = new HttpRequestMessage(HttpMethod.Delete, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
 
+        public async Task ActualizarCampoRutinaGenericoAsync(string uid, string rutinaId, string campo, object valor)
+        {
+            string tipoFirestore;
+            object firestoreValue;
+
+            switch (valor)
+            {
+                case string s:
+                    tipoFirestore = "stringValue";
+                    firestoreValue = s;
+                    break;
+                case bool b:
+                    tipoFirestore = "booleanValue";
+                    firestoreValue = b;
+                    break;
+                case int i:
+                    tipoFirestore = "integerValue";
+                    firestoreValue = i;
+                    break;
+                case double d:
+                    tipoFirestore = "doubleValue";
+                    firestoreValue = d;
+                    break;
+                case DateTime dt:
+                    tipoFirestore = "timestampValue";
+                    firestoreValue = dt.ToUniversalTime().ToString("o");
+                    break;
+                default:
+                    throw new ArgumentException("Tipo no soportado");
+            }
+
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}?updateMask.fieldPaths={campo}";
+
+            var doc = new
+            {
+                fields = new Dictionary<string, object>
+        {
+            { campo, new Dictionary<string, object> { { tipoFirestore, firestoreValue } } }
+        }
+            };
+
+            var json = JsonSerializer.Serialize(doc);
+            var req = new HttpRequestMessage(HttpMethod.Patch, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
+
+        public async Task<T> GetDocumentAsync<T>(string documentPath) where T : new()
+        {
+            var url = $"{FirestoreBaseUrl}/{documentPath}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return default;
+
+            var json = await response.Content.ReadAsStringAsync();
+            var doc = JsonDocument.Parse(json).RootElement;
+
+            return FirestoreHelper.ConvertFromFirestore<T>(doc);
+        }
 
     }
 }
