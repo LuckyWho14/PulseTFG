@@ -274,7 +274,7 @@ namespace PulseTFG.Pages
             }
 
             await DisplayAlert("Rutina guardada", "La rutina se ha guardado correctamente.", "OK");
-            await Shell.Current.GoToAsync("//MisEntrenosPage");
+            await Shell.Current.GoToAsync("MisEntrenosPage");
         }
 
     }
