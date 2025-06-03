@@ -22,16 +22,23 @@ namespace PulseTFG.Pages
             // Recargamos rutinas (y su cuenta de días) solo aquí
             await vm.LoadEntrenosAsync();
         }
-        // TODO Aniadir y editar rutinas
+        
         // Añadir
         private async void OnAñadirEntrenamiento_Clicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("CrearRutinaSelectTipoPage");
+            => await Shell.Current.GoToAsync("///CrearRutinaSelectTipoPage");
 
         // Editar
         private async void EditarButton_Clicked(object sender, EventArgs e)
         {
             if ((sender as Button)?.CommandParameter is Rutina r)
-                await Shell.Current.GoToAsync($"CrearRutinaPersPage?rutinaId={r.IdRutina}");
+                try
+                {
+                    await Shell.Current.GoToAsync($"///CrearRutinaPersPage?rutinaId={r.IdRutina}");
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error de navegación", ex.Message, "OK");
+                }
         }
 
         // Activar

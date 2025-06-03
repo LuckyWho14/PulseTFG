@@ -192,7 +192,7 @@ namespace PulseTFG.Pages
             await _vm.CargarEjerciciosAsync(FavoritosSwitch.IsToggled, filtro);
         }
 
-        // GUARDAR RUTINA
+        // 🚀 Guardar rutina
         private async void OnGuardarRutina_Clicked(object sender, EventArgs e)
         {
             var uid = Preferences.Get("firebase_user_uid", null);
@@ -202,13 +202,20 @@ namespace PulseTFG.Pages
                 return;
             }
 
+            // 🚫 VALIDACIÓN: no permitir guardar si algún entrenamiento está vacío
+            bool todosTienenTrabajo = _vm.DiasEntrenamientoLista.All(d => d.TrabajoEsperado != null && d.TrabajoEsperado.Count > 0);
+            if (!todosTienenTrabajo)
+            {
+                await DisplayAlert("Error", "Cada día de entrenamiento debe tener al menos un ejercicio asignado.", "OK");
+                return;
+            }
+
             string rutinaIdFinal = RutinaId;
             bool activar = false;
 
             if (string.IsNullOrEmpty(RutinaId))
             {
                 // ✅ MODO CREACIÓN
-
                 var existentes = await _firestore.UsuarioTieneRutinasAsync(uid)
                     ? await _firestore.ObtenerRutinasUsuarioAsync(uid)
                     : new List<Rutina>();
@@ -238,13 +245,10 @@ namespace PulseTFG.Pages
             else
             {
                 // ✅ MODO EDICIÓN
-
-                // Actualizar los campos de la rutina
                 await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "nombre", _vm.NombreRutina);
                 await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "descripcion", _vm.DescripcionRutina);
                 await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "actualizado", DateTime.UtcNow);
 
-                // 🔥 Borrar entrenamientos y trabajoEsperado antiguos (si quieres)
                 var antiguos = await _firestore.ObtenerEntrenamientosAsync(uid, RutinaId);
                 foreach (var ent in antiguos)
                 {
@@ -276,6 +280,7 @@ namespace PulseTFG.Pages
             await DisplayAlert("Rutina guardada", "La rutina se ha guardado correctamente.", "OK");
             await Shell.Current.GoToAsync("MisEntrenosPage");
         }
+
 
     }
 }
