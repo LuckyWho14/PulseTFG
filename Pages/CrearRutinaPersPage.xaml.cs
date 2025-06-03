@@ -202,59 +202,80 @@ namespace PulseTFG.Pages
                 return;
             }
 
-            // 1) ¿Ya tiene rutinas?
-            var existentes = await _firestore.UsuarioTieneRutinasAsync(uid)
-                ? await _firestore.ObtenerRutinasUsuarioAsync(uid)
-                : new List<Rutina>();
+            string rutinaIdFinal = RutinaId;
+            bool activar = false;
 
-            bool activar = existentes.Count == 0
-                ? true
-                : await DisplayAlert(
-                    "Rutina activa",
-                    "¿Quieres que esta sea tu rutina ACTIVA? Sólo puede haber una.",
-                    "Sí", "No");
-
-            if (activar)
+            if (string.IsNullOrEmpty(RutinaId))
             {
-                // Desactivar las anteriores
-                foreach (var r in existentes.Where(r => r.Activo))
-                    await _firestore.ActualizarCampoRutinaAsync(uid, r.IdRutina, "activo", false);
+                // ✅ MODO CREACIÓN
+
+                var existentes = await _firestore.UsuarioTieneRutinasAsync(uid)
+                    ? await _firestore.ObtenerRutinasUsuarioAsync(uid)
+                    : new List<Rutina>();
+
+                activar = existentes.Count == 0
+                    ? true
+                    : await DisplayAlert("Rutina activa", "¿Quieres que esta sea tu rutina ACTIVA? Sólo puede haber una.", "Sí", "No");
+
+                if (activar)
+                {
+                    foreach (var r in existentes.Where(r => r.Activo))
+                        await _firestore.ActualizarCampoRutinaAsync(uid, r.IdRutina, "activo", false);
+                }
+
+                var nueva = new Rutina
+                {
+                    Nombre = _vm.NombreRutina,
+                    Descripcion = _vm.DescripcionRutina,
+                    Activo = activar,
+                    FechaCreacion = DateTime.Now,
+                    Actualizado = DateTime.Now
+                };
+
+                var creada = await _firestore.CrearRutinaAsync(uid, nueva);
+                rutinaIdFinal = creada.IdRutina;
+            }
+            else
+            {
+                // ✅ MODO EDICIÓN
+
+                // Actualizar los campos de la rutina
+                await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "nombre", _vm.NombreRutina);
+                await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "descripcion", _vm.DescripcionRutina);
+                await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "actualizado", DateTime.UtcNow);
+
+                // 🔥 Borrar entrenamientos y trabajoEsperado antiguos (si quieres)
+                var antiguos = await _firestore.ObtenerEntrenamientosAsync(uid, RutinaId);
+                foreach (var ent in antiguos)
+                {
+                    var trabajos = await _firestore.ObtenerTrabajoEsperadoAsync(uid, RutinaId, ent.IdEntrenamiento);
+                    foreach (var te in trabajos)
+                        await _firestore.BorrarTrabajoEsperadoAsync(uid, RutinaId, ent.IdEntrenamiento, te.IdTrabajoEsperado);
+
+                    await _firestore.BorrarEntrenamientoAsync(uid, RutinaId, ent.IdEntrenamiento);
+                }
             }
 
-            // 2) Crear objeto Rutina y subirla
-            var nueva = new Rutina
-            {
-                Nombre = _vm.NombreRutina,
-                Descripcion = _vm.DescripcionRutina,
-                Activo = activar,
-                FechaCreacion = DateTime.Now,
-                Actualizado = DateTime.Now
-            };
-            var creada = await _firestore.CrearRutinaAsync(uid, nueva);
-
-            // 3) Subir entrenamientos y trabajos esperados (con Orden)
+            // ✅ Guardar los entrenamientos nuevos
             foreach (var dia in _vm.DiasEntrenamientoLista)
             {
                 if (string.IsNullOrEmpty(dia.IdEntrenamiento))
                     dia.IdEntrenamiento = Guid.NewGuid().ToString();
 
-                await _firestore.CrearEntrenamientoAsync(uid, creada.IdRutina, dia);
+                await _firestore.CrearEntrenamientoAsync(uid, rutinaIdFinal, dia);
 
                 for (int i = 0; i < dia.TrabajoEsperado.Count; i++)
                 {
                     var te = dia.TrabajoEsperado[i];
-                    // Asignar orden según índice en la lista
                     te.Orden = i;
                     await _firestore.CrearTrabajoEsperadoAsync(
-                        uid, creada.IdRutina, dia.IdEntrenamiento, te);
+                        uid, rutinaIdFinal, dia.IdEntrenamiento, te);
                 }
             }
 
-            // 4) Redirigir
-            if (activar)
-                await Shell.Current.GoToAsync("//InicioPage");
-            else
-                await Shell.Current.GoToAsync("//MisEntrenosPage");
+            await DisplayAlert("Rutina guardada", "La rutina se ha guardado correctamente.", "OK");
+            await Shell.Current.GoToAsync("//MisEntrenosPage");
         }
+
     }
 }
