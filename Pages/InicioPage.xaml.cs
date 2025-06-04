@@ -11,7 +11,7 @@ namespace PulseTFG.Pages
     {
         readonly FirebaseFirestoreService _firestore = new();
         InicioViewModel _vm;
-
+        private string rutinaActivaAnteriorId;
         public InicioPage()
         {
             InitializeComponent();
@@ -28,7 +28,7 @@ namespace PulseTFG.Pages
                 return;
             }
 
-            // Rutina y día  inicial
+            // Obtener rutina activa actual
             var rutinas = await _firestore.ObtenerRutinasUsuarioAsync(uid);
             var activa = rutinas.Find(r => r.Activo);
             if (activa == null)
@@ -37,11 +37,15 @@ namespace PulseTFG.Pages
                 return;
             }
 
-            _vm = new InicioViewModel(uid, activa.IdRutina);
-            BindingContext = _vm;
-
-            await _vm.InicializarAsync(primerDiaId: null);
+            if (_vm == null || activa.IdRutina != rutinaActivaAnteriorId)
+            {
+                rutinaActivaAnteriorId = activa.IdRutina;
+                _vm = new InicioViewModel(uid, activa.IdRutina);
+                BindingContext = _vm;
+                await _vm.InicializarAsync(primerDiaId: null);
+            }
         }
+
 
         private async void OnGuardarRegistro_Clicked(object sender, EventArgs e)
         {

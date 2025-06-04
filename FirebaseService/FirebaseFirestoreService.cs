@@ -774,55 +774,115 @@ namespace PulseTFG.FirebaseService
 
         public async Task<Rutina> ObtenerRutinaPorIdAsync(string uid, string rutinaId)
         {
-            var docUrl = $"usuarios/{uid}/rutinas/{rutinaId}";
-            var doc = await GetDocumentAsync<Rutina>(docUrl); // ✅ ahora sí devuelves 1 solo
-
-            if (doc != null)
-                doc.IdRutina = rutinaId;
-
-            return doc;
-        }
-
-        public async Task<List<Entrenamiento>> ObtenerEntrenamientosDeRutinaAsync(string uid, string rutinaId)
-        {
-            var colUrl = $"usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
-            var lista = await GetDocumentsAsync<Entrenamiento>(colUrl);
-
-            foreach (var ent in lista)
-                ent.IdEntrenamiento ??= Guid.NewGuid().ToString();
-
-            return lista;
-        }
-        public async Task<List<TrabajoEsperado>> ObtenerTrabajoEsperadoDeEntrenamientoAsync(string uid, string rutinaId, string entrenamientoId)
-        {
-            var colUrl = $"usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{entrenamientoId}/trabajoEsperado";
-            return await GetDocumentsAsync<TrabajoEsperado>(colUrl);
-        }
-
-        public async Task<List<T>> GetDocumentsAsync<T>(string collectionPath) where T : new()
-        {
-            var url = $"{FirestoreBaseUrl}/{collectionPath}";
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return new List<T>();
+                return null;
 
             var json = await response.Content.ReadAsStringAsync();
-            var data = JsonDocument.Parse(json);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
 
-            var result = new List<T>();
+            var fields = root.GetProperty("fields");
 
-            if (data.RootElement.TryGetProperty("documents", out var documents))
+            return new Rutina
             {
-                foreach (var doc in documents.EnumerateArray())
+                IdRutina = rutinaId,
+                Nombre = fields.GetProperty("nombre").GetProperty("stringValue").GetString(),
+                Descripcion = fields.GetProperty("descripcion").GetProperty("stringValue").GetString(),
+                Activo = fields.GetProperty("activo").GetProperty("booleanValue").GetBoolean(),
+                FechaCreacion = DateTime.Parse(fields.GetProperty("fechaCreacion").GetProperty("timestampValue").GetString()),
+                Actualizado = DateTime.Parse(fields.GetProperty("actualizado").GetProperty("timestampValue").GetString())
+            };
+        }
+
+
+        public async Task<List<Entrenamiento>> ObtenerEntrenamientosDeRutinaAsync(string uid, string rutinaId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode)
+                return new List<Entrenamiento>();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("documents", out var docs))
+                return new List<Entrenamiento>();
+
+            var lista = new List<Entrenamiento>();
+            foreach (var d in docs.EnumerateArray())
+            {
+                var name = d.GetProperty("name").GetString();
+                var id = name.Substring(name.LastIndexOf('/') + 1);
+                var f = d.GetProperty("fields");
+
+                lista.Add(new Entrenamiento
                 {
-                    var obj = FirestoreHelper.ConvertFromFirestore<T>(doc);
-                    result.Add(obj);
-                }
+                    IdEntrenamiento = id,
+                    Nombre = f.GetProperty("nombre").GetProperty("stringValue").GetString(),
+                    FechaCreacion = DateTime.Parse(f.GetProperty("fechaCreacion").GetProperty("timestampValue").GetString()),
+                    Actualizado = DateTime.Parse(f.GetProperty("actualizado").GetProperty("timestampValue").GetString()),
+                    TrabajoEsperado = new System.Collections.ObjectModel.ObservableCollection<TrabajoEsperado>()
+                });
             }
 
-            return result;
+            return lista;
         }
+
+        public async Task<List<TrabajoEsperado>> ObtenerTrabajoEsperadoDeEntrenamientoAsync(string uid, string rutinaId, string entrenamientoId)
+        {
+            var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{entrenamientoId}/trabajoEsperado";
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            if (!resp.IsSuccessStatusCode)
+                return new List<TrabajoEsperado>();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            var lista = new List<TrabajoEsperado>();
+            if (!doc.RootElement.TryGetProperty("documents", out var docs))
+                return lista;
+
+            foreach (var d in docs.EnumerateArray())
+            {
+                var name = d.GetProperty("name").GetString();
+                var id = name.Substring(name.LastIndexOf('/') + 1);
+                var f = d.GetProperty("fields");
+
+                int orden = 0;
+                if (f.TryGetProperty("Orden", out var ordenProp) &&
+                    ordenProp.TryGetProperty("integerValue", out var iv) &&
+                    int.TryParse(iv.GetString(), out var parsed))
+                {
+                    orden = parsed;
+                }
+
+                lista.Add(new TrabajoEsperado
+                {
+                    IdTrabajoEsperado = id,
+                    IdEjercicio = f.GetProperty("IdEjercicio").GetProperty("stringValue").GetString(),
+                    NombreEjercicio = f.GetProperty("NombreEjercicio").GetProperty("stringValue").GetString(),
+                    Series = int.Parse(f.GetProperty("Series").GetProperty("integerValue").GetString()),
+                    Repeticiones = int.Parse(f.GetProperty("Repeticiones").GetProperty("integerValue").GetString()),
+                    Orden = orden
+                });
+            }
+
+            return lista.OrderBy(x => x.Orden).ToList();
+        }
+
+
+
 
         public async Task BorrarTrabajoEsperadoAsync(string uid, string rutinaId, string diaId, string idTrabajo)
         {
@@ -896,20 +956,6 @@ namespace PulseTFG.FirebaseService
 
             var resp = await _httpClient.SendAsync(req);
             resp.EnsureSuccessStatusCode();
-        }
-
-        public async Task<T> GetDocumentAsync<T>(string documentPath) where T : new()
-        {
-            var url = $"{FirestoreBaseUrl}/{documentPath}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return default;
-
-            var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json).RootElement;
-
-            return FirestoreHelper.ConvertFromFirestore<T>(doc);
         }
 
     }

@@ -1,4 +1,3 @@
-// Origen: PulseTFG/Pages/HistorialPage.xaml.cs
 using PulseTFG.ViewModel;
 
 namespace PulseTFG.Pages
@@ -17,7 +16,6 @@ namespace PulseTFG.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            // Cada vez que la página aparece en pantalla, volvemos a cargar datos
             if (_viewModel.CargarRegistrosCommand.CanExecute(null))
                 _viewModel.CargarRegistrosCommand.Execute(null);
         }

@@ -13,6 +13,14 @@ namespace PulseTFG.ViewModel
         {
             Shell.Current.FlyoutIsPresented = false;
 
+            bool confirm = await Application.Current.MainPage.DisplayAlert(
+                "Cerrar sesión",
+                "¿Estás seguro de que quieres cerrar sesión?",
+                "Sí", "No");
+
+            if (!confirm)
+                return;
+
             await _authService.SignOutAsync();
 
             await Application.Current.MainPage.DisplayAlert(
@@ -22,5 +30,6 @@ namespace PulseTFG.ViewModel
 
             await Shell.Current.GoToAsync("//LoginPage");
         });
+
     }
 }

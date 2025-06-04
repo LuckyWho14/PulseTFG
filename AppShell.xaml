@@ -13,7 +13,7 @@
     <!-- Header -->
     <Shell.FlyoutHeader>
         <StackLayout  Margin="20">
-            <Label Text="Hola! Usuario" TextColor="White" FontSize="40" FontFamily="AntonRegular" FontAttributes="Italic" HorizontalOptions="Center" />
+            <Label Text="Hola!" TextColor="White" FontSize="40" FontFamily="AntonRegular" FontAttributes="Italic" HorizontalOptions="Center" />
         </StackLayout>
     </Shell.FlyoutHeader>
     
@@ -48,7 +48,8 @@
     </Shell.ItemTemplate>
     <!-- Elementos del menú -->
     <FlyoutItem Title="Mis entrenamientos" >
-        <ShellContent ContentTemplate="{DataTemplate local:MisEntrenosPage}" />
+        <ShellContent ContentTemplate="{DataTemplate local:MisEntrenosPage}"
+                      Route="MisEntrenosPage"/>
     </FlyoutItem>
 
     <FlyoutItem Title="Glosario ejercicios" >

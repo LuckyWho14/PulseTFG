@@ -40,14 +40,16 @@
                 Spacing="20"
                 Margin="10,10,10,0">
 
-                <Label
-                    Text="Todos los días"
+                <Button 
+                    Text="Todos"
+                    Command="{Binding MostrarTodosDiasCommand}"
+                    BackgroundColor="{StaticResource MoradoPrincipal}"
                     TextColor="White"
-                    VerticalOptions="Center" />
+                    FontFamily="AntonRegular"
+                    FontSize="20"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center" />
 
-                <Switch
-                    IsToggled="{Binding MostrarTodosDias}"
-                    VerticalOptions="Center" />
 
                 <Label
                     Text="Filtrar por fecha:"

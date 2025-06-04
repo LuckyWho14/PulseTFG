@@ -15,7 +15,8 @@ namespace PulseTFG.ViewModel
     {
         readonly FirebaseAuthService _auth = new();
         readonly FirebaseFirestoreService _firestore = new();
-
+        public bool ModoEdicion { get; set; } = false;
+        public ICommand LogoutCommand { get; }
         public RoutineCreatorViewModel()
         {
             CambiarDiasCommand = new Command<int>(async v => await ActualizarDiasEntrenamiento(v));
@@ -28,6 +29,7 @@ namespace PulseTFG.ViewModel
                 FechaCreacion = DateTime.Now,
                 TrabajoEsperado = new ObservableCollection<TrabajoEsperado>()
             });
+            LogoutCommand = new LoggoutViewModel().LogoutCommand;
         }
 
         private bool tieneRutinas;
@@ -40,7 +42,7 @@ namespace PulseTFG.ViewModel
                     OnPropertyChanged(nameof(NoTieneRutinas));
             }
         }
-        public bool NoTieneRutinas => TieneRutinas;
+        public bool NoTieneRutinas => !TieneRutinas;
 
         public async Task InitializeAsync()
         {
@@ -100,19 +102,25 @@ namespace PulseTFG.ViewModel
                 for (int i = DiasEntrenamientoLista.Count - 1; i >= nuevoValor; i--)
                 {
                     var entrenamiento = DiasEntrenamientoLista[i];
-                    if (EntrenamientoTieneContenido(entrenamiento))
+
+                    if (EntrenamientoTieneContenido(entrenamiento) && !ModoEdicion)
                     {
                         var confirmar = await Application.Current.MainPage.DisplayAlert(
                             "Confirmar borrado",
                             $"¿Eliminar {entrenamiento.Nombre} con ejercicios asignados?",
                             "Sí", "No");
-                        if (!confirmar) return;
+
+                        if (!confirmar)
+                            return;
                     }
+
                     DiasEntrenamientoLista.RemoveAt(i);
                 }
             }
+
             DiasEntrenamiento = nuevoValor;
         }
+
 
         public bool EntrenamientoTieneContenido(Entrenamiento e)
             => e?.TrabajoEsperado?.Count > 0;

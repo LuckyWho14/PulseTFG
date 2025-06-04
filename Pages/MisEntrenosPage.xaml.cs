@@ -25,7 +25,7 @@ namespace PulseTFG.Pages
         
         // Añadir
         private async void OnAñadirEntrenamiento_Clicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("///CrearRutinaSelectTipoPage");
+            => await Shell.Current.GoToAsync("CrearRutinaSelectTipoPage");
 
         // Editar
         private async void EditarButton_Clicked(object sender, EventArgs e)
@@ -33,7 +33,7 @@ namespace PulseTFG.Pages
             if ((sender as Button)?.CommandParameter is Rutina r)
                 try
                 {
-                    await Shell.Current.GoToAsync($"///CrearRutinaPersPage?rutinaId={r.IdRutina}");
+                    await Shell.Current.GoToAsync($"///CrearRutinaPersPage?rutinaId={r.IdRutina}&origen=misEntrenos");
                 }
                 catch (Exception ex)
                 {
