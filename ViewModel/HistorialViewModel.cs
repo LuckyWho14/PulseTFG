@@ -1,27 +1,22 @@
-﻿// Origen: PulseTFG/ViewModels/HistorialViewModel.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Maui.Controls;    // Para la clase Command
-using Microsoft.Maui.Storage;     // Para Preferences
-using PulseTFG.FirebaseService;   // Tu servicio de Firestore REST
-using PulseTFG.Models;            // Tu modelo Registro
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
+using PulseTFG.FirebaseService;
+using PulseTFG.Models;
 
 namespace PulseTFG.ViewModel
 {
     public class HistorialViewModel : INotifyPropertyChanged
     {
-        // 1. Servicio REST de Firestore
         private readonly FirebaseFirestoreService _firestoreService = new FirebaseFirestoreService();
-
-        // 2. Lista en memoria con TODOS los registros descargados
         private List<Registro> _allRegistros = new List<Registro>();
 
-        // 3. Backing fields
         private bool _isBusy;
         private bool _mostrarTodosDias = true;
         private DateTime _fechaSeleccionada = DateTime.Today;
@@ -87,6 +82,7 @@ namespace PulseTFG.ViewModel
 
         public ICommand CargarRegistrosCommand { get; }
         public ICommand RefrescarCommand { get; }
+        public ICommand MostrarTodosDiasCommand { get; }
 
         public HistorialViewModel()
         {
@@ -94,6 +90,7 @@ namespace PulseTFG.ViewModel
             ListaEjerciciosDisponibles = new ObservableCollection<string>();
             CargarRegistrosCommand = new Command(async () => await CargarRegistrosAsync(), () => !IsBusy);
             RefrescarCommand = new Command(async () => await CargarRegistrosAsync(), () => !IsBusy);
+            MostrarTodosDiasCommand = new Command(EjecutarMostrarTodosDias);
             EjercicioSeleccionado = "Todos";
         }
 
@@ -144,33 +141,26 @@ namespace PulseTFG.ViewModel
         {
             if (_allRegistros == null) return;
 
-            // 1. Partimos de todos los registros
             IEnumerable<Registro> filtrados = _allRegistros;
-
-            // 2. Filtrar sólo los que están marcados como "Hecho == true"
             filtrados = filtrados.Where(r => r.Hecho);
 
-            // 3. Filtrar por día si MostrarTodosDias == false
             if (!MostrarTodosDias)
-            {
                 filtrados = filtrados.Where(r => r.Fecha.Date == FechaSeleccionada.Date);
-            }
 
-            // 4. Filtrar por ejercicio si EjercicioSeleccionado != "Todos"
             if (!string.IsNullOrEmpty(EjercicioSeleccionado) && EjercicioSeleccionado != "Todos")
-            {
                 filtrados = filtrados.Where(r => r.NombreEjercicio == EjercicioSeleccionado);
-            }
 
-            // 5. Orden opcional: por fecha descendente
             filtrados = filtrados.OrderByDescending(r => r.Fecha);
 
-            // 6. Actualizar la ObservableCollection (ListaRegistros)
             ListaRegistros.Clear();
             foreach (var reg in filtrados)
-            {
                 ListaRegistros.Add(reg);
-            }
+        }
+
+        private void EjecutarMostrarTodosDias()
+        {
+            MostrarTodosDias = true;
+            FechaSeleccionada = DateTime.Today;
         }
     }
 }

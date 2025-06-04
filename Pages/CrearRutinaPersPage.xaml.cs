@@ -10,12 +10,24 @@ using System.Collections.Generic;
 
 namespace PulseTFG.Pages
 {
+    [QueryProperty(nameof(RutaOrigen), "origen")]
     [QueryProperty(nameof(RutinaId), "rutinaId")]
     public partial class CrearRutinaPersPage : ContentPage
     {
-        public string RutinaId { get; set; }
+        public string RutaOrigen { get; set; } = "nueva";
         RoutineCreatorViewModel _vm;
         readonly FirebaseFirestoreService _firestore = new();
+
+        private string _rutinaId;
+        public string RutinaId
+        {
+            get => _rutinaId;
+            set
+            {
+                _rutinaId = value;
+                CargarDatosRutina(); // Método personalizado
+            }
+        }
 
         public CrearRutinaPersPage()
         {
@@ -24,24 +36,41 @@ namespace PulseTFG.Pages
             BindingContext = _vm;
         }
 
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            var uid = Preferences.Get("firebase_user_uid", null);
-            if (string.IsNullOrEmpty(uid)) return;
-
-            if (!string.IsNullOrEmpty(RutinaId))
-                await _vm.CargarRutinaExistenteAsync(uid, RutinaId);
-            else
-                await _vm.InitializeAsync();
-
+            if (string.IsNullOrEmpty(RutinaId))
+            {
+                var uid = Preferences.Get("firebase_user_uid", null);
+                if (!string.IsNullOrEmpty(uid))
+                    await _vm.InitializeAsync();
+            }
         }
+
 
         private async void OnVolverClicked(object sender, EventArgs e)
-        {
+{
+            bool ok = await DisplayAlert("Salir", "¿Deseas salir sin guardar los cambios?", "Sí", "No");
+            if (!ok) return;
+
             _vm.Reset();
-            await Shell.Current.GoToAsync("//CrearRutinaSelecTipoPage");
+
+            switch (RutaOrigen)
+            {
+                case "misEntrenos":
+                    await Shell.Current.GoToAsync("//MisEntrenosPage");
+                    break;
+                case "nueva":
+                    await Shell.Current.GoToAsync("/CrearRutinaSelectTipoPage");
+                    break;
+                default:
+                    await Shell.Current.GoToAsync("/"); // fallback seguro
+                    break;
+            }
         }
+
+
 
         private async void CambiarNombre_Clicked(object sender, EventArgs e)
         {
@@ -281,6 +310,16 @@ namespace PulseTFG.Pages
             await Shell.Current.GoToAsync("MisEntrenosPage");
         }
 
+        private async void CargarDatosRutina()
+        {
+            var uid = Preferences.Get("firebase_user_uid", null);
+            if (string.IsNullOrEmpty(uid) || string.IsNullOrEmpty(RutinaId))
+                return;
+
+            await _vm.CargarRutinaExistenteAsync(uid, RutinaId);
+            _vm.ModoEdicion = true;
+
+        }
 
     }
 }
