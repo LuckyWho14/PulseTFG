@@ -7,10 +7,10 @@
     CanBeDismissedByTappingOutsideOfPopup="False">
 
     <!-- Contenedor principal centrado -->
-    <Grid>
+    <Grid BackgroundColor="Transparent">
         <!-- Frame con fondo violeta oscuro y bordes redondeados para el popup -->
-        <Frame BackgroundColor="#512DA8" Padding="20" CornerRadius="10"
-               HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="350" HeightRequest="150">
+        <Frame BackgroundColor="{StaticResource MoradoPrincipal}" Padding="20"
+               HorizontalOptions="Center" VerticalOptions="Center" >
             <!-- Contenido del popup: frase motivacional y botón de cierre -->
             <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
                 <!-- Label para la frase motivacional (texto blanco sobre fondo oscuro) -->
@@ -23,7 +23,7 @@
                 <!-- Botón para cerrar el popup -->
                 <Button Text="Cerrar"
                         Clicked="CloseButton_Clicked"
-                        BackgroundColor="Black"
+                        BackgroundColor="{StaticResource RojoStop}"
                         TextColor="White"
                         HorizontalOptions="Center"/>
             </VerticalStackLayout>

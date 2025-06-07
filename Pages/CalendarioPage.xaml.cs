@@ -4,18 +4,30 @@ namespace PulseTFG.Pages;
 
 public partial class CalendarioPage : ContentPage
 {
-	public CalendarioPage()
-	{
-		InitializeComponent();
-	}
+    private readonly List<DateTime> fechasEntrenadas = new();
 
+    public CalendarioPage()
+    {
+        InitializeComponent();
+
+        // 🚫 Comentado porque MonthCellLoaded no existe aún en MAUI (salvo versiones futuras)
+        // CalendarioEntrenamientos.MonthCellLoaded += OnMonthCellLoaded;
+
+        CalendarioEntrenamientos.SelectionChanged += OnSelectionChanged;
+    }
+
+    // Solo guarda la fecha (en memoria por ahora)
     private void OnSelectionChanged(object sender, CalendarSelectionChangedEventArgs e)
     {
-        if (e.NewValue is IList<DateTime> fechasSeleccionadas)
+        // e.NewValue es un solo DateTime, no una lista, así que no uses foreach
+        if (e.NewValue is DateTime fecha)
         {
-            foreach (var fecha in fechasSeleccionadas)
+            if (!fechasEntrenadas.Contains(fecha.Date))
             {
-                Console.WriteLine($"📅 Día marcado como entrenado: {fecha:dd/MM/yyyy}");
+                fechasEntrenadas.Add(fecha.Date);
+
+                // Aquí guardarías en Firebase
+                Console.WriteLine($"Día entrenado guardado: {fecha:yyyy-MM-dd}");
             }
         }
     }
