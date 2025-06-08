@@ -14,11 +14,13 @@ namespace PulseTFG.FirebaseService
 {
     internal class FirebaseFirestoreService
     {
-        // Clave de ID del prouecto de Firebase
+        // Clave de ID del proyecto de Firebase
         private const string FirebaseProjectId = "pulsetfg-6642a";
-        // Clave de API de Firebase, reemplaza con tu propia clave
+
+        // Clave de API de Firebase
         private readonly string apiKey = "AIzaSyA6vA0XQcWhkIBjEA7Yrwo6wOZK-4-BPT4";
-        // URL base para Firestore, reemplaza "tu-proyecto-id" con el ID de tu proyecto de Firebase
+
+        // URL base para Firestore
         private const string FirestoreBaseUrl = $"https://firestore.googleapis.com/v1/projects/{FirebaseProjectId}/databases/(default)/documents";
 
         // Cliente HTTP para hacer peticiones a Firestore
@@ -45,10 +47,7 @@ namespace PulseTFG.FirebaseService
         }
 
 
-        /// <summary>
-        /// Obtiene los datos del usuario desde Firestore.
-        /// </summary>
-
+        // Obtiene los datos del usuario desde Firestore.
         public async Task<Usuario> ObtenerUsuarioAsync(string uid)
         {
             var url =
@@ -91,9 +90,7 @@ namespace PulseTFG.FirebaseService
             };
         }
 
-        /// <summary>
-        /// Actualiza un único campo del documento de usuario en Firestore.
-        /// </summary>
+        // Actualiza un único campo del documento de usuario en Firestore.
         public async Task ActualizarCampoUsuarioAsync(string uid, string campo, object valor)
         {
             // Endpoint con máscara para solo el campo que quieres tocar
@@ -122,9 +119,7 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Obtiene las rutinas asociadas a un usuario específico desde Firestore.
-        /// </summary>
+        // Obtiene las rutinas asociadas a un usuario específico desde Firestore.
         public async Task<List<Rutina>> ObtenerRutinasUsuarioAsync(string uid)
         {
             var url =
@@ -143,7 +138,7 @@ namespace PulseTFG.FirebaseService
             using var doc = JsonDocument.Parse(json);
             var list = new List<Rutina>();
 
-            // ✅ Verifica si hay rutinas antes de acceder a "documents"
+            // Verifica si hay rutinas antes de acceder a "documents"
             if (!doc.RootElement.TryGetProperty("documents", out var documentos))
             {
                 // No hay rutinas
@@ -169,9 +164,7 @@ namespace PulseTFG.FirebaseService
         }
 
 
-        /// <summary>
-        /// Crea una nueva rutina asociada a un usuario específico en Firestore.
-        /// </summary>
+        // Crea una nueva rutina asociada a un usuario específico en Firestore.
         public async Task<Rutina> CrearRutinaAsync(string uid, Rutina r)
         {
             var url =
@@ -209,9 +202,7 @@ namespace PulseTFG.FirebaseService
             return r;
         }
 
-        /// <summary>
-        /// Obtiene una lista de ejercicios filtrados por favoritos y grupo muscular.
-        /// </summary>
+        // Obtiene una lista de ejercicios filtrados por favoritos y grupo muscular.
         public async Task<List<Ejercicio>> ObtenerEjerciciosFiltradosAsync(bool soloFavoritos, string grupoMuscular)
         {
             try
@@ -250,7 +241,7 @@ namespace PulseTFG.FirebaseService
                     }
                 }
 
-                // 🔸 Obtener ejercicios
+                // Obtener ejercicios
                 var url = $"{FirestoreBaseUrl}/ejercicios";
                 var req = new HttpRequestMessage(HttpMethod.Get, url);
                 req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -307,9 +298,7 @@ namespace PulseTFG.FirebaseService
 
 
 
-        /// <summary>
-        /// Agrega un ejercicio a la lista de favoritos del usuario en Firestore.
-        /// </summary>
+        // Agrega un ejercicio a la lista de favoritos del usuario en Firestore.
         public async Task AgregarFavoritoAsync(string uid, string ejercicioId)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/favoritos?documentId={ejercicioId}";
@@ -328,9 +317,7 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Elimina un ejercicio de la lista de favoritos del usuario en Firestore.
-        /// </summary>
+        // Elimina un ejercicio de la lista de favoritos del usuario en Firestore.
         public async Task EliminarFavoritoAsync(string uid, string ejercicioId)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/favoritos/{ejercicioId}";
@@ -342,9 +329,8 @@ namespace PulseTFG.FirebaseService
             var resp = await _httpClient.SendAsync(req);
             resp.EnsureSuccessStatusCode();
         }
-        /// <summary>
-        /// Actualiza un campo booleano de una rutina existente.
-        /// </summary>
+
+        // Actualiza un campo booleano de una rutina existente.
         public async Task ActualizarCampoRutinaAsync(string uid, string rutinaId, string campo, bool valor)
         {
             var url =
@@ -371,9 +357,7 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Agrega un Entrenamiento bajo una rutina.
-        /// </summary>
+        // Agrega un Entrenamiento bajo una rutina.
         public async Task CrearEntrenamientoAsync(string uid, string rutinaId, Entrenamiento e)
         {
             var url =
@@ -402,9 +386,7 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Agrega un TrabajoEsperado bajo un Entrenamiento.
-        /// </summary>
+        // Agrega un TrabajoEsperado bajo un Entrenamiento.
         public async Task CrearTrabajoEsperadoAsync(string uid, string rutinaId, string diaId, TrabajoEsperado te)
         {
             var url =

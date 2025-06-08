@@ -6,7 +6,7 @@ namespace PulseTFG.Pages;
 
 public partial class MensajePopup : Popup
 {
-    // Arreglo local de frases motivacionales (ejemplos en español)
+    // Frases motivacionales
     private static readonly string[] FrasesMotivacionales = new string[] {
         "Hoy es un buen día para comenzar de nuevo.",
         "Cree en ti. Cada paso cuenta.",
@@ -61,21 +61,21 @@ public partial class MensajePopup : Popup
         "Nadie progresa sin incomodidad. Agradece el esfuerzo."
         };
 
-    // Generador de n\u00fameros aleatorios para escoger frases
+    // Generador aleatorio para escoger frases
     private static readonly Random Azar = new Random();
 
     public MensajePopup()
     {
         InitializeComponent();
-        // Seleccionar aleatoriamente una frase del arreglo y mostrarla en el Label
+        // Selecciona aleatoriamente una frase del array y la muestra en el Label
         int indice = Azar.Next(FrasesMotivacionales.Length);
         string fraseAleatoria = FrasesMotivacionales[indice];
         MessageLabel.Text = fraseAleatoria;
     }
 
-    // Manejador del bot\u00f3n "Cerrar" para cerrar el popup
+    // Botón para cerrar el popup
     private void CloseButton_Clicked(object sender, EventArgs e)
     {
-        Close(); // Cierra el popup program\u00e1ticamente
+        Close(); 
     }
 }

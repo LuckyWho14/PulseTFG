@@ -44,9 +44,7 @@ namespace PulseTFG
             _ = InitAppAsync();
         }
 
-        /// <summary>
-        /// Guarda el timestamp cuando la app se suspende o se cierra.
-        /// </summary>
+        // Guarda el timestamp cuando la app se suspende o se cierra.
         protected override void OnSleep()
         {
             Preferences.Set("last_active_timestamp", DateTime.UtcNow.ToString("o"));
@@ -65,7 +63,7 @@ namespace PulseTFG
                 return;
             }
 
-            // ⏱️ Verificar si se cerró hace menos de 5 minutos
+            // Verifica si se cerró hace menos de 5 minutos
             var lastActiveString = Preferences.Get("last_active_timestamp", null);
             if (!string.IsNullOrEmpty(lastActiveString) &&
                 DateTime.TryParse(lastActiveString, null, System.Globalization.DateTimeStyles.RoundtripKind, out var lastActive))
@@ -75,7 +73,7 @@ namespace PulseTFG
 
                 if (tiempoDesdeCierre <= maxInactividad)
                 {
-                    // ⚡ Reactivar sesión sin pedir login
+                    // Reactivar sesión sin pedir login
                     await EntrarDirectamenteAsync(uid);
                     return;
                 }

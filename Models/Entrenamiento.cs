@@ -38,6 +38,8 @@ namespace PulseTFG.Models
         public DateTime Actualizado { get; set; }
 
         private ObservableCollection<TrabajoEsperado> trabajoEsperado;
+
+        // Colección de trabajos esperados para este entrenamiento
         public ObservableCollection<TrabajoEsperado> TrabajoEsperado
         {
             get => trabajoEsperado;
@@ -52,6 +54,8 @@ namespace PulseTFG.Models
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        // Método para notificar cambios en las propiedades
         protected void OnPropertyChanged(string propertyName)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

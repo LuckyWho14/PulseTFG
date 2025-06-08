@@ -36,7 +36,6 @@ public partial class AjustesPage : ContentPage
             }
         }
 
-        // Aquí ya terminó la inicialización
         _usuarioInteraccion = true;
     }
 

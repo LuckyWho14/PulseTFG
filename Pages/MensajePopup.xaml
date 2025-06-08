@@ -6,14 +6,11 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     CanBeDismissedByTappingOutsideOfPopup="False">
 
-    <!-- Contenedor principal centrado -->
     <Grid BackgroundColor="Transparent">
-        <!-- Frame con fondo violeta oscuro y bordes redondeados para el popup -->
         <Frame BackgroundColor="{StaticResource MoradoPrincipal}" Padding="20"
                HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="400" HeightRequest="200">
             <!-- Contenido del popup: frase motivacional y botón de cierre -->
             <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
-                <!-- Label para la frase motivacional (texto blanco sobre fondo oscuro) -->
                 <Label x:Name="MessageLabel"
                        Text="Frase motivacional"
                        FontSize="16"

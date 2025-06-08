@@ -17,6 +17,7 @@ public partial class InfoEjerPage : ContentPage
         
     }
 
+    // Evento que se dispara cuando la página aparece
     private void OnThumbnailTapped(object sender, EventArgs e)
     {
         if (sender is Image image && image.BindingContext is Ejercicio video)
