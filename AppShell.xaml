@@ -59,8 +59,8 @@
         <ShellContent ContentTemplate="{DataTemplate local:InfoPersPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Calendario actividad" >
-        <ShellContent ContentTemplate="{DataTemplate local:CalendarioPage}" />
+    <FlyoutItem Title="Ajustes">
+        <ShellContent ContentTemplate="{DataTemplate local:AjustesPage}"/>
     </FlyoutItem>
 
     <!-- Direcciones de las páginas(ocultas del flyout) -->

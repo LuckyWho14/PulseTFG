@@ -5,7 +5,7 @@
              xmlns:elem="clr-namespace:PulseTFG.Elementos"
              Shell.NavBarIsVisible="False"
              Shell.TabBarIsVisible="False" 
-             BackgroundColor="{StaticResource FondoNegro}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource FondoNegro}}"
              FlyoutItem.IsVisible="True">
 
     <Grid 

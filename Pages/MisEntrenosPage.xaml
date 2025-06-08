@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PulseTFG.Elementos"
              x:Class="PulseTFG.Pages.MisEntrenosPage"
-             BackgroundColor="{StaticResource FondoNegro}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource FondoNegro}}">
     <Grid 
     RowDefinitions="*,4*,*" 
     ColumnDefinitions="*">

@@ -10,9 +10,6 @@ namespace PulseTFG
         {
             var builder = MauiApp.CreateBuilder();
 
-            // ✅ Registra tu licencia de Syncfusion aquí
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhOYVdpR2Nbek5yflVDal9QVBYiSV9jS3tTcEVnWHteeHdcQmNVUU90Vg=="); 
-
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -22,7 +19,7 @@ namespace PulseTFG
                     fonts.AddFont("Anton-Regular.ttf", "AntonRegular");
                 })
                 .UseMauiCommunityToolkit()
-                .ConfigureSyncfusionCore(); // ✅ mueve esto fuera del #if DEBUG
+                .ConfigureSyncfusionCore(); 
 
 #if DEBUG
             builder.Logging.AddDebug();

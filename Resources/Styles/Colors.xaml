@@ -53,4 +53,12 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- Tema adaptable -->
+    <SolidColorBrush x:Key="FondoPrincipal" Color="{AppThemeBinding Light=#FFFFFF, Dark=#121212}" />
+    <SolidColorBrush x:Key="TextoPrincipal" Color="{AppThemeBinding Light=#121212, Dark=#FFFFFF}" />
+    <SolidColorBrush x:Key="FondoSecundario" Color="{AppThemeBinding Light=#F3F3F3, Dark=#1f1f1f}" />
+    <SolidColorBrush x:Key="BordeColor" Color="{AppThemeBinding Light=#C8C8C8, Dark=#404040}" />
+
+
 </ResourceDictionary>

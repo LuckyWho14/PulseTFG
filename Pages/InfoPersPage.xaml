@@ -1,131 +1,123 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PulseTFG.Pages.InfoPersPage"
              xmlns:local="clr-namespace:PulseTFG.Elementos"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource FondoNegro}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource FondoNegro}}"
              FlyoutItem.IsVisible="True">
-    <ScrollView>
 
-        <Grid 
-            RowDefinitions="*,4*,*" 
-            ColumnDefinitions="*">
+    <!-- Grid principal con contenido y barra fija -->
+    <Grid RowDefinitions="*,Auto">
 
-            <!-- Título -->
-            <Label 
-            Text="Información personal" 
-            TextColor="{StaticResource MoradoPrincipal}"
-            FontFamily="AntonRegular"
-            Grid.Row="0"
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            FontSize="40"
-            FontAttributes="Italic"/>
+        <!-- CONTENIDO SCROLLABLE -->
+        <ScrollView Grid.Row="0">
+            <Grid 
+                RowDefinitions="Auto,Auto" 
+                ColumnDefinitions="*">
 
-            <!-- Cuerpo -->
-            <Grid Grid.Row="1"
-                  RowDefinitions="Auto,*"
-                  ColumnDefinitions="*,*">
+                <!-- Título -->
+                <Label 
+                    Text="Información personal" 
+                    TextColor="{StaticResource MoradoPrincipal}"
+                    FontFamily="AntonRegular"
+                    Grid.Row="0"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    FontSize="40"
+                    FontAttributes="Italic"
+                    Margin="0,20,0,10"/>
 
-                <Grid Grid.Row="0" Grid.Column="0"
-                      RowDefinitions="*,*,*,*,Auto,*,*"
+                <!-- Cuerpo -->
+                <Grid Grid.Row="1"
+                      RowDefinitions="Auto,*"
                       ColumnDefinitions="*,*"
-                      HorizontalOptions="Center"
-                      ColumnSpacing="20"
-                      >
+                      Padding="20">
 
-                    <!-- Nombre -->
-                    <Label Grid.Row="0" Grid.Column="0"
-                           Text="Nombre:"/>
-                    <Label Grid.Row="0" Grid.Column="1"
-                           Text="{Binding Nombre}"/>
+                    <!-- Info personal -->
+                    <Grid Grid.Row="0" Grid.Column="0"
+                          RowDefinitions="*,*,*,*,Auto,*,*"
+                          ColumnDefinitions="*,*"
+                          HorizontalOptions="Center"
+                          ColumnSpacing="20">
 
-                    <!-- Email -->
-                    <Label Grid.Row="1" Grid.Column="0"
-                           Text="Email:"/>
-                    <Label Grid.Row="1" Grid.Column="1"
-                           Text="{Binding Email}"/>
+                        <!-- Nombre -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Nombre:"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding Nombre}"/>
 
-                    <!-- Cumpleaños -->
-                    <Label Grid.Row="2" Grid.Column="0"
-                           Text="Cumpleaños: "/>
-                    <Label Grid.Row="2" Grid.Column="1"
-                           Text="{Binding FechaNacimiento, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                        <!-- Email -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Email:"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Email}"/>
 
-                    <!-- Altura -->
-                    <Label Grid.Row="3" Grid.Column="0"
-                           Text="Altura: "/>
-                    <Label Grid.Row="3" Grid.Column="1"
-                           Text="{Binding Altura}" x:Name="Altura"/>
+                        <!-- Cumpleaños -->
+                        <Label Grid.Row="2" Grid.Column="0" Text="Cumpleaños: "/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding FechaNacimiento, StringFormat='{}{0:dd/MM/yyyy}'}"/>
 
-                    <!-- Peso -->
-                    <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" Spacing="20">
-                        <Label Text="Peso: " WidthRequest="85"/>
-                        <Entry Text="{Binding Peso, Mode=TwoWay}"
-                               Keyboard="Numeric"
-                               WidthRequest="60"
-                               HorizontalTextAlignment="Center"
-                               VerticalOptions="Center"
-                               x:Name="Peso"
-                               />
+                        <!-- Altura -->
+                        <Label Grid.Row="3" Grid.Column="0" Text="Altura: "/>
+                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding Altura}" x:Name="Altura"/>
 
-                        <Button Text="−" Command="{Binding DecreasePesoCommand}" VerticalOptions="Center"/>
-                        <Button Text="+" Command="{Binding IncreasePesoCommand}" VerticalOptions="Center"/>
+                        <!-- Peso -->
+                        <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" Spacing="20">
+                            <Label Text="Peso: " WidthRequest="85"/>
+                            <Entry Text="{Binding Peso, Mode=TwoWay}"
+                                   Keyboard="Numeric"
+                                   WidthRequest="60"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center"
+                                   x:Name="Peso"/>
+                            <Button Text="−" Command="{Binding DecreasePesoCommand}" VerticalOptions="Center"/>
+                            <Button Text="+" Command="{Binding IncreasePesoCommand}" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
 
-                    </HorizontalStackLayout>
+                        <!-- IMC -->
+                        <Label Grid.Row="5" Grid.Column="0" Text="IMC: "/>
+                        <Label Grid.Row="5" Grid.Column="1" Text="{Binding IMC, StringFormat='{0:F2}'}" x:Name="IMC"/>
+                        <Button Grid.Row="6" Text="Guardar cambios" HorizontalOptions="Center"
+                                Grid.ColumnSpan="2" BackgroundColor="{StaticResource MoradoPrincipal}"
+                                TextColor="White" Command="{Binding GuardarPesoCommand}"/>
+                    </Grid>
 
-                    <!-- IMC -->
-                    <Label Grid.Row="5" Grid.Column="0"
-                           Text="IMC: "/>
-                    <Label Grid.Row="5" Grid.Column="1"
-                           Text="{Binding IMC, StringFormat='{0:F2}'}" x:Name="IMC"/>
-                    <Button Grid.Row="6" Text="Guardar cambios" HorizontalOptions="Center"
-                            Grid.ColumnSpan="2" BackgroundColor="{StaticResource MoradoPrincipal}"
-                            TextColor="White" Command="{Binding GuardarPesoCommand}"/>
-                </Grid>
+                    <!-- Logo -->
+                    <Image Grid.Row="0" Grid.Column="1"
+                           Source="logo1_pulse.png" HeightRequest="250"/>
 
-                <!-- Logo -->
-                <Image Grid.Row="0" Grid.Column="1"
-                       Source="logo1_pulse.png" HeightRequest="250"/>
-
-                <!-- Info IMC -->
-                <Grid Grid.Row="1" Grid.ColumnSpan="2"
-                      RowDefinitions="*"
-                      ColumnDefinitions="*,*,*,*,*,*"
-                      ColumnSpacing="10"
-                      Padding="30"
-                      Margin="0,30,0,0">
-                    <StackLayout Grid.Column="0">
-                        <Label Text="&lt; 18.5 – Bajo peso:" FontAttributes="Bold"/>
-                        <Label Text="Posible desnutrición; revisar alimentación y salud."/>
-                    </StackLayout>
-                    <StackLayout Grid.Column="1">
-                        <Label Text="18.5 – 24.9 – Peso normal:" FontAttributes="Bold"/>
-                        <Label Text="Estado saludable; mantener buenos hábitos."/>
-                    </StackLayout>
-                    <StackLayout Grid.Column="2">
-                        <Label Text="25 – 29.9 – Sobrepeso:" FontAttributes="Bold"/>
-                        <Label Text="Riesgo moderado; mejorar alimentación y ejercicio."/>
-                    </StackLayout>
-                    <StackLayout Grid.Column="3">
-                        <Label Text="30 – 34.9 – Obesidad I:" FontAttributes="Bold"/>
-                        <Label Text="Riesgo alto de enfermedades; requiere cambios."/>
-                    </StackLayout>
-                    <StackLayout Grid.Column="4">
-                        <Label Text="35 – 39.9 – Obesidad II:" FontAttributes="Bold"/>
-                        <Label Text="Riesgo mayor; se recomienda atención médica."/>
-                    </StackLayout>
-                    <StackLayout Grid.Column="5">
-                        <Label Text="&gt; 40 – Obesidad mórbida" FontAttributes="Bold"/>
-                        <Label Text="Riesgo muy alto; necesita intervención profesional."/>
-                    </StackLayout>
-
+                    <!-- Info IMC -->
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2"
+                          RowDefinitions="*"
+                          ColumnDefinitions="*,*,*,*,*,*"
+                          ColumnSpacing="10"
+                          Padding="30"
+                          Margin="0,30,0,0">
+                        <StackLayout Grid.Column="0">
+                            <Label Text="&lt; 18.5 – Bajo peso:" FontAttributes="Bold"/>
+                            <Label Text="Posible desnutrición; revisar alimentación y salud."/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1">
+                            <Label Text="18.5 – 24.9 – Peso normal:" FontAttributes="Bold"/>
+                            <Label Text="Estado saludable; mantener buenos hábitos."/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="2">
+                            <Label Text="25 – 29.9 – Sobrepeso:" FontAttributes="Bold"/>
+                            <Label Text="Riesgo moderado; mejorar alimentación y ejercicio."/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="3">
+                            <Label Text="30 – 34.9 – Obesidad I:" FontAttributes="Bold"/>
+                            <Label Text="Riesgo alto de enfermedades; requiere cambios."/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="4">
+                            <Label Text="35 – 39.9 – Obesidad II:" FontAttributes="Bold"/>
+                            <Label Text="Riesgo mayor; se recomienda atención médica."/>
+                        </StackLayout>
+                        <StackLayout Grid.Column="5">
+                            <Label Text="&gt; 40 – Obesidad mórbida" FontAttributes="Bold"/>
+                            <Label Text="Riesgo muy alto; necesita intervención profesional."/>
+                        </StackLayout>
+                    </Grid>
                 </Grid>
             </Grid>
-            <!-- Menú Barra-->
-            <local:MenuBarra Grid.Row="2"/>
+        </ScrollView>
 
-        </Grid>
-    </ScrollView>
+        <!-- MENÚ BARRA FIJO -->
+        <local:MenuBarra Grid.Row="1" HeightRequest="100"/>
+    </Grid>
 </ContentPage>

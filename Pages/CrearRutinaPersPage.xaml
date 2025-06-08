@@ -6,7 +6,7 @@
     x:Class="PulseTFG.Pages.CrearRutinaPersPage"
     Shell.NavBarIsVisible="False"
     Shell.TabBarIsVisible="False"
-    BackgroundColor="{StaticResource FondoNegro}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource FondoNegro}}"
     FlyoutItem.IsVisible="True">
 
     <AbsoluteLayout>
