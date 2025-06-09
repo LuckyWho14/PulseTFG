@@ -22,6 +22,6 @@ public partial class CrearRutinaPredetPage : ContentPage
     
     public async void Button_Clicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("///CrearRutinaSelectTipoPage");
+        await Shell.Current.GoToAsync("//CrearRutinaSelectTipoPage");
     }
 }

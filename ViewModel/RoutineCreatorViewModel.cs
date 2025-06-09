@@ -82,6 +82,7 @@ namespace PulseTFG.ViewModel
 
         public ICommand CambiarDiasCommand { get; }
 
+        // Actualiza la cantidad de días de entrenamiento y ajusta la lista
         private async Task ActualizarDiasEntrenamiento(int nuevoValor)
         {
             if (nuevoValor > DiasEntrenamientoLista.Count)
@@ -151,6 +152,7 @@ namespace PulseTFG.ViewModel
             set { SetProperty(ref ejerciciosFiltrados, value); }
         }
 
+        // Carga los ejercicios filtrados por favoritos y grupo muscular
         public async Task CargarEjerciciosAsync(bool soloFav, string grupo)
         {
             var list = await _firestore.ObtenerEjerciciosFiltradosAsync(soloFav, grupo);
@@ -159,6 +161,7 @@ namespace PulseTFG.ViewModel
                 EjerciciosFiltrados.Add(e);
         }
 
+        // Restablece la rutina a valores por defecto
         public void Reset()
         {
             // Restablece texto
@@ -178,6 +181,7 @@ namespace PulseTFG.ViewModel
             });
         }
 
+        // Carga rutina existente por ID
         public async Task CargarRutinaExistenteAsync(string uid, string rutinaId)
         {
             var rutina = await _firestore.ObtenerRutinaPorIdAsync(uid, rutinaId);

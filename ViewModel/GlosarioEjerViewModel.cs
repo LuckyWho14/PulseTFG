@@ -69,6 +69,7 @@ namespace PulseTFG.ViewModel
             _ = CargarEjercicios();
         }
 
+        // Carga los ejercicios filtrados según los criterios seleccionados
         private async Task CargarEjercicios()
         {
             System.Diagnostics.Debug.WriteLine("🚀 Cargando ejercicios...");
@@ -89,7 +90,7 @@ namespace PulseTFG.ViewModel
             System.Diagnostics.Debug.WriteLine($"✅ Cargados {ListaEjercicios.Count} ejercicios");
         }
 
-
+        // Maneja el cambio de estado de favorito
         private async Task CambiarFavoritoAsync(Ejercicio ejercicio)
         {
             var uid = Preferences.Get("firebase_user_uid", null);

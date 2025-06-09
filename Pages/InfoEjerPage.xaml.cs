@@ -32,7 +32,8 @@ public partial class InfoEjerPage : ContentPage
     {
         // Oculta el overlay y limpia el WebView
         VideoOverlay.IsVisible = false;
-        VideoWebView.Source = null;
+        VideoWebView.Source = "about:blank";
+
     }
 
 

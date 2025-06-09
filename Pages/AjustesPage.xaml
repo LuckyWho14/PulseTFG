@@ -39,7 +39,7 @@
                             SelectedIndexChanged="ThemePicker_SelectedIndexChanged">
                         <Picker.Items>
                             <x:String>Automático</x:String>
-                            <x:String>Claro</x:String>
+                            <x:String>Claro (Beta)</x:String>
                             <x:String>Oscuro</x:String>
                         </Picker.Items>
                     </Picker>
