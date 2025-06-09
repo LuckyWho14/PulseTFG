@@ -19,7 +19,7 @@
     
     <!-- Footer -->
     <Shell.FlyoutFooter >
-        <StackLayout Padding="30">
+        <StackLayout Padding="15">
             <Button
                   Text="Cerrar sesión"
                   Command="{Binding LogoutCommand}"
