@@ -36,6 +36,9 @@ namespace PulseTFG.ViewModel
             _firestore = new FirebaseFirestoreService();
         }
 
+        /// <summary>
+        /// Inicializa el ViewModel cargando los entrenamientos y ejercicios del primer día.
+        /// </summary>
         public async Task InicializarAsync(string primerDiaId)
         {
             DiaActualIndex = 0;
@@ -82,6 +85,9 @@ namespace PulseTFG.ViewModel
             }
         }
 
+        /// <summary>
+        /// Actualiza la lista de ejercicios del día actual y notifica el cambio de nombre del entrenamiento.
+        /// </summary>
         void RefrescarDia()
         {
             ListaEjercicios.Clear();
@@ -91,6 +97,9 @@ namespace PulseTFG.ViewModel
             OnPropertyChanged(nameof(NombreEntrenamientoActual));
         }
 
+        /// <summary>
+        /// Guarda el estado del día actual en Firestore.
+        /// </summary>
         public async Task GuardarDiaActualAsync()
         {
             var ejercicios = _masterDiasEjercicios[DiaActualIndex];
@@ -120,6 +129,9 @@ namespace PulseTFG.ViewModel
 
         }
 
+        /// <summary>
+        /// Carga los ejercicios del día especificado desde Firestore y los agrega a la lista de ejercicios.
+        /// </summary>
         public async Task CargarEjerciciosDelDiaAsync(string diaId)
         {
             ListaEjercicios.Clear();
@@ -139,6 +151,9 @@ namespace PulseTFG.ViewModel
             }
         }
 
+        /// <summary>
+        /// Mueve al día anterior en la lista de entrenamientos, o al último si ya está en el primero.
+        /// </summary>
         public void MoverADiaAnterior()
         {
             if (_masterDiasEjercicios.Count == 0) return;
@@ -147,6 +162,9 @@ namespace PulseTFG.ViewModel
             RefrescarDia();
         }
 
+        /// <summary>
+        /// Mueve al día siguiente en la lista de entrenamientos, o al primero si ya está en el último.
+        /// </summary>
         public void MoverADiaSiguiente()
         {
             if (_masterDiasEjercicios.Count == 0) return;
