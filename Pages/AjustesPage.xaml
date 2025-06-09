@@ -74,7 +74,11 @@
                        FontSize="20"
                        TextColor="{StaticResource TextoPrincipal}" />
 
-                <Switch IsToggled="False" />
+                <HorizontalStackLayout>
+                    <Switch IsToggled="False" IsEnabled="False"/>
+
+                    <Label Text="Próximamente" VerticalOptions="Center" TextColor="Grey"/>
+                </HorizontalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>

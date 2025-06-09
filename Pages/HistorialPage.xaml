@@ -11,12 +11,7 @@
     BackgroundColor="{StaticResource FondoNegro}"
     Title="Historial">
 
-    <!-- ==============================
-         Grid principal: 3 filas
-         Row 0 = TÍTULO
-         Row 1 = CUERPO (filtros + lista)
-         Row 2 = BARRA DE MENÚ
-         ============================== -->
+
     <Grid RowDefinitions="*,4*,*" ColumnDefinitions="*">
 
         <!-- ════ Fila 0: TÍTULO ════ -->
@@ -58,7 +53,7 @@
 
                 <DatePicker
                     Date="{Binding FechaSeleccionada}"
-                    IsEnabled="{Binding MostrarTodosDias, Converter={StaticResource InverseBooleanConverter}}"
+                    IsEnabled="True"
                     MaximumDate="{x:Static sys:DateTime.Today}"
                     TextColor="White" />
 

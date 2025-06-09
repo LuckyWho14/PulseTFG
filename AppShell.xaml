@@ -19,7 +19,7 @@
     
     <!-- Footer -->
     <Shell.FlyoutFooter >
-        <StackLayout Padding="30">
+        <StackLayout Padding="10">
             <Button
                   Text="Cerrar sesión"
                   Command="{Binding LogoutCommand}"
@@ -104,10 +104,7 @@
                 ContentTemplate="{DataTemplate local:CrearRutinaPredetPage}"
                 Route="CrearRutinaPredetPage" 
                 />
-        <ShellContent
-                ContentTemplate="{DataTemplate local:CrearRutinaPredetSinglePage}"
-                Route="CrearRutinaPredetSinglePage" 
-                />
+        
         <ShellContent
                 ContentTemplate="{DataTemplate local:CrearRutinaPersPage}"
                 Route="CrearRutinaPersPage" 

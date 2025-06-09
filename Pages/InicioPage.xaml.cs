@@ -47,6 +47,16 @@ public partial class InicioPage : ContentPage
             BindingContext = _vm;
             await _vm.InicializarAsync(primerDiaId: null);
         }
+        base.OnAppearing();
+
+        if (!_seMuestraPopup)
+        {
+            _seMuestraPopup = true;
+
+            // Muestra el popup de frases motivacionales
+            var popup = new MensajePopup();
+            this.ShowPopup(popup);
+        }
     }
 
 
@@ -73,24 +83,5 @@ public partial class InicioPage : ContentPage
         _vm.MoverADiaSiguiente();
     }
 
-    // Muestra el popup solo una vez al aparecer la página
-    protected override void MostrarPopup()
-    {
-        base.OnAppearing();
 
-        if (!_seMuestraPopup)
-        {
-            _seMuestraPopup = true;
-
-            // Muestra el popup de frases motivacionales
-            var popup = new MensajePopup();
-            this.ShowPopup(popup);
-        }
-    }
-
-}
-}
-
-}
-   
 }

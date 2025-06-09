@@ -1,4 +1,5 @@
 using PulseTFG.ViewModel;
+
 namespace PulseTFG.Pages;
 
 public partial class CrearRutinaPredetPage : ContentPage
@@ -16,6 +17,11 @@ public partial class CrearRutinaPredetPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _vm.InitializeAsync(); // Aquí sí esperas el resultado
+        await _vm.InitializeAsync(); 
+    }
+    
+    public async void Button_Clicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("///CrearRutinaSelectTipoPage");
     }
 }

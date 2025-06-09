@@ -939,6 +939,31 @@ namespace PulseTFG.FirebaseService
             var resp = await _httpClient.SendAsync(req);
             resp.EnsureSuccessStatusCode();
         }
+        public async Task EliminarRutinaConEntrenamientosAsync(string uid, string rutinaId)
+        {
+            var entrenamientos = await ObtenerEntrenamientosAsync(uid, rutinaId);
+
+            foreach (var entrenamiento in entrenamientos)
+            {
+                var trabajos = await ObtenerTrabajoEsperadoAsync(uid, rutinaId, entrenamiento.IdEntrenamiento);
+
+                foreach (var trabajo in trabajos)
+                {
+                    await BorrarTrabajoEsperadoAsync(uid, rutinaId, entrenamiento.IdEntrenamiento, trabajo.IdTrabajoEsperado);
+                }
+
+                await BorrarEntrenamientoAsync(uid, rutinaId, entrenamiento.IdEntrenamiento);
+            }
+
+            // Por último, borrar la rutina en sí
+            var url = $"https://firestore.googleapis.com/v1/projects/pulsetfg-6642a/databases/(default)/documents/usuarios/{uid}/rutinas/{rutinaId}";
+            var req = new HttpRequestMessage(HttpMethod.Delete, url);
+            var token = Preferences.Get("firebase_id_token", null);
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var resp = await _httpClient.SendAsync(req);
+            resp.EnsureSuccessStatusCode();
+        }
 
     }
 }

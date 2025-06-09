@@ -112,9 +112,6 @@
 	  <MauiXaml Update="Pages\CrearRutinaPredetPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\CrearRutinaPredetSinglePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Pages\CrearRutinaSelecTipoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

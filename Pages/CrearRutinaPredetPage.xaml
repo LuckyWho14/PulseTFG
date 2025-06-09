@@ -24,8 +24,13 @@
             FontAttributes="Italic"/>
 
         <!-- Cuerpo -->
-
-
+        <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="40">
+            
+            <Label Text="Próximamente" FontSize="50"/>
+            <Button Text="Volver" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="{StaticResource RojoStop}" TextColor="White"
+                    Clicked="Button_Clicked"/>
+        </VerticalStackLayout>
+        
         <!-- Menú Barra-->
         <elem:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>
 
