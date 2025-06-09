@@ -7,7 +7,6 @@ namespace PulseTFG.Converter
 {
     public class InverseBooleanConverter : IValueConverter
     {
-        // Este convertidor se utiliza para invertir un valor booleano.
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool b)
@@ -15,7 +14,6 @@ namespace PulseTFG.Converter
             return false;
         }
 
-        // El método ConvertBack invierte el valor booleano de nuevo.
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool b)

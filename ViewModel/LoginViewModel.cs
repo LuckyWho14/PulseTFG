@@ -40,12 +40,12 @@ public class LoginViewModel : INotifyPropertyChanged
             var token = await _authService.LoginAsync(Email, Password);
             var uid = Preferences.Get(PrefsUserUidKey, null);
 
-            // Aquí guarda token seguro y navegar a siguiente página
+            // Aquí guardar token seguro y navegar a siguiente página
             await Application.Current.MainPage.DisplayAlert("Éxito", "Usuario autenticado", "OK");
 
             var shell = new AppShell();
 
-            // Reemplazas la raíz de la app
+            // 2) Reemplazas la raíz de la app
             bool tieneRutinas = await _firestoreService.UsuarioTieneRutinasAsync(uid);
 
             

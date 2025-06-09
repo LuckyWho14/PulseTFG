@@ -498,7 +498,7 @@ namespace PulseTFG.FirebaseService
                                            .GetProperty("integerValue").GetString()),
                     Repeticiones = int.Parse(f.GetProperty("Repeticiones")
                                            .GetProperty("integerValue").GetString()),
-                    Orden = orden   
+                    Orden = orden   // ya nunca falla aunque falte el campo
                 });
             }
 
@@ -551,9 +551,7 @@ namespace PulseTFG.FirebaseService
             return lista;
         }
 
-        /// <summary>
-        /// Obtiene el último registro de un ejercicio específico del usuario.
-        /// </summary>
+
         public async Task<Registro> ObtenerUltimoRegistroAsync(string uid, string idEjercicio)
         {
             var url = $"{FirestoreBaseUrl}:runQuery";
@@ -645,9 +643,6 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Obtiene el último registro anterior a la fecha actual de un ejercicio específico del usuario.
-        /// </summary>
         public async Task<Registro> ObtenerUltimoRegistroAnteriorAsync(string uid, string idEjercicio)
         {
             var url = $"{FirestoreBaseUrl}:runQuery";
@@ -755,7 +750,10 @@ namespace PulseTFG.FirebaseService
                 // Mapear cada campo al modelo Registro (ver ModeloFirestore.txt :contentReference[oaicite:1]{index=1})
                 lista.Add(new Registro
                 {
+                    // En tu modelo, IdTrabajo y NombreEjercicio son string; Peso, Repeticion, Serie, Intensidad son int; Hecho bool; Notas string; Fecha DateTime.
                     IdTrabajo = fields.GetProperty("IdTrabajo").GetProperty("stringValue").GetString(),
+                    // Si el campo IdEjercicio lo guardaste como stringValue, podrías parsear a int, pero en la mayoría de las vistas de historial no se usa IdEjercicio directamente.
+                    // IdEjercicio   = int.Parse(fields.GetProperty("IdEjercicio").GetProperty("stringValue").GetString()),
                     NombreEjercicio = fields.GetProperty("NombreEjercicio").GetProperty("stringValue").GetString(),
                     Peso = fields.GetProperty("Peso").TryGetProperty("doubleValue", out var dv)
                             ? dv.GetDouble()
@@ -774,9 +772,6 @@ namespace PulseTFG.FirebaseService
             return lista;
         }
 
-        /// <summary>
-        /// Obtiene una rutina específica por su ID.
-        /// </summary>
         public async Task<Rutina> ObtenerRutinaPorIdAsync(string uid, string rutinaId)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}";
@@ -802,9 +797,7 @@ namespace PulseTFG.FirebaseService
             };
         }
 
-        /// <summary>
-        /// Obtiene los entrenamientos de una rutina específica.
-        /// </summary>
+
         public async Task<List<Entrenamiento>> ObtenerEntrenamientosDeRutinaAsync(string uid, string rutinaId)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos";
@@ -842,9 +835,6 @@ namespace PulseTFG.FirebaseService
             return lista;
         }
 
-        /// <summary>
-        /// Obtiene el trabajo esperado de un entrenamiento específico.
-        /// </summary>
         public async Task<List<TrabajoEsperado>> ObtenerTrabajoEsperadoDeEntrenamientoAsync(string uid, string rutinaId, string entrenamientoId)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{entrenamientoId}/trabajoEsperado";
@@ -893,9 +883,7 @@ namespace PulseTFG.FirebaseService
 
 
 
-        /// <summary>
-        /// Borra un trabajo esperado específico de un entrenamiento.
-        /// </summary>
+
         public async Task BorrarTrabajoEsperadoAsync(string uid, string rutinaId, string diaId, string idTrabajo)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{diaId}/trabajoEsperado/{idTrabajo}";
@@ -906,9 +894,6 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Borra un entrenamiento específico de una rutina.
-        /// </summary>
         public async Task BorrarEntrenamientoAsync(string uid, string rutinaId, string idEntrenamiento)
         {
             var url = $"{FirestoreBaseUrl}/usuarios/{uid}/rutinas/{rutinaId}/entrenamientos/{idEntrenamiento}";
@@ -919,9 +904,6 @@ namespace PulseTFG.FirebaseService
             resp.EnsureSuccessStatusCode();
         }
 
-        /// <summary>
-        /// Actualiza un campo genérico de una rutina específica en Firestore.
-        /// </summary>
         public async Task ActualizarCampoRutinaGenericoAsync(string uid, string rutinaId, string campo, object valor)
         {
             string tipoFirestore;

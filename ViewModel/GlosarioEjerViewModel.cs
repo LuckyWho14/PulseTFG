@@ -16,7 +16,6 @@ namespace PulseTFG.ViewModel
         private readonly FirebaseFirestoreService _firestoreService = new();
         public ObservableCollection<Ejercicio> ListaEjercicios { get; set; } = new();
 
-        /// Lista de grupos musculares
         public ObservableCollection<string> GruposMusculares { get; set; } = new()
     {
         "Todos", "Pecho", "Espalda", "Pierna", "Hombro", "Bíceps", "Tríceps", "Abdomen"
@@ -70,9 +69,6 @@ namespace PulseTFG.ViewModel
             _ = CargarEjercicios();
         }
 
-        /// <summary>
-        /// Carga los ejercicios desde Firestore aplicando los filtros seleccionados.
-        /// </summary>
         private async Task CargarEjercicios()
         {
             System.Diagnostics.Debug.WriteLine("🚀 Cargando ejercicios...");
@@ -93,9 +89,7 @@ namespace PulseTFG.ViewModel
             System.Diagnostics.Debug.WriteLine($"✅ Cargados {ListaEjercicios.Count} ejercicios");
         }
 
-        /// <summary>
-        /// Cambia el estado de favorito del ejercicio actual.
-        /// </summary>
+
         private async Task CambiarFavoritoAsync(Ejercicio ejercicio)
         {
             var uid = Preferences.Get("firebase_user_uid", null);

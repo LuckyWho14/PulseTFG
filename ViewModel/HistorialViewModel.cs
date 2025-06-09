@@ -29,7 +29,6 @@ namespace PulseTFG.ViewModel
         public ObservableCollection<Registro> ListaRegistros { get; }
         public ObservableCollection<string> ListaEjerciciosDisponibles { get; }
 
-        /// Propiedades para enlazar con la vista
         public bool IsBusy
         {
             get => _isBusy;
@@ -95,9 +94,6 @@ namespace PulseTFG.ViewModel
             EjercicioSeleccionado = "Todos";
         }
 
-        /// <summary>
-        /// Carga los registros del usuario desde Firestore y los organiza en la lista.
-        /// </summary>
         private async Task CargarRegistrosAsync()
         {
             if (IsBusy) return;
@@ -141,9 +137,6 @@ namespace PulseTFG.ViewModel
             }
         }
 
-        /// <summary>
-        /// Aplica los filtros seleccionados a la lista de registros y actualiza la vista.
-        /// </summary>
         private void AplicarFiltro()
         {
             if (_allRegistros == null) return;
@@ -164,9 +157,6 @@ namespace PulseTFG.ViewModel
                 ListaRegistros.Add(reg);
         }
 
-        /// <summary>
-        /// Ejecuta la acción de mostrar todos los días, reseteando la fecha seleccionada.
-        /// </summary>
         private void EjecutarMostrarTodosDias()
         {
             MostrarTodosDias = true;
