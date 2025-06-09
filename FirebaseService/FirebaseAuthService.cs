@@ -27,6 +27,7 @@ public class FirebaseAuthService
     // Key para almacenar el UID del usuario
     private const string PrefsUserUidKey = "firebase_user_uid";
 
+    // Clase para manejar la respuesta de autenticación
     public class AuthResponse
     {
         [JsonPropertyName("idToken")]
@@ -39,12 +40,14 @@ public class FirebaseAuthService
         public string RefreshToken { get; set; }
     }
 
+    // Clase para manejar el estado de verificación del email
     public class EmailVerificationStatus
     {
         [JsonPropertyName("users")]
         public UserInfo[] Users { get; set; }
     }
 
+    // Clase para manejar la información del usuario
     public class UserInfo
     {
         [JsonPropertyName("emailVerified")]

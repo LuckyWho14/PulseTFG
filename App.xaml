@@ -10,9 +10,6 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!-- Converter para invertir booleano -->
-            <converter:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-
             <!-- Converter para Intensidad -->
             <converter:IntensidadToProgressConverter x:Key="IntensidadToProgressConverter" />
             
