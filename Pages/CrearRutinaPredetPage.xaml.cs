@@ -16,6 +16,6 @@ public partial class CrearRutinaPredetPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _vm.InitializeAsync(); // Aquí sí esperas el resultado
+        await _vm.InitializeAsync(); 
     }
 }
