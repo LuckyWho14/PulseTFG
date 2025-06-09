@@ -35,6 +35,9 @@ namespace PulseTFG.ViewModel
             }
         }
 
+        /// <summary>
+        /// Comando para enviar el correo de recuperación de contraseña.
+        /// </summary>
         public ICommand EnviarCommand => new Command(async () =>
         {
             try

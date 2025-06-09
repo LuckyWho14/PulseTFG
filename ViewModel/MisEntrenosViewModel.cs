@@ -19,10 +19,7 @@ namespace PulseTFG.ViewModel
         private readonly FirebaseFirestoreService _firestore
             = new FirebaseFirestoreService();
 
-        public MisEntrenosViewModel()
-        {
-            // No cargamos aquí para evitar duplicados
-        }
+        
 
         // Carga rutinas, su cuenta de días y notifica a la UI
         public async Task LoadEntrenosAsync()
