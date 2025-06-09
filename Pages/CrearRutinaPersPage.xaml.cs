@@ -1,14 +1,33 @@
 ﻿using PulseTFG.ViewModel;
 using PulseTFG.Models;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using PulseTFG.FirebaseService;
+using System.Collections.Generic;
 
 namespace PulseTFG.Pages
 {
+    [QueryProperty(nameof(RutaOrigen), "origen")]
+    [QueryProperty(nameof(RutinaId), "rutinaId")]
     public partial class CrearRutinaPersPage : ContentPage
     {
+        public string RutaOrigen { get; set; } = "nueva";
         RoutineCreatorViewModel _vm;
+        readonly FirebaseFirestoreService _firestore = new();
+
+        private string _rutinaId;
+        public string RutinaId
+        {
+            get => _rutinaId;
+            set
+            {
+                _rutinaId = value;
+                CargarDatosRutina(); // Método personalizado
+            }
+        }
 
         public CrearRutinaPersPage()
         {
@@ -17,29 +36,58 @@ namespace PulseTFG.Pages
             BindingContext = _vm;
         }
 
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await _vm.InitializeAsync();
+            if (string.IsNullOrEmpty(RutinaId))
+            {
+                var uid = Preferences.Get("firebase_user_uid", null);
+                if (!string.IsNullOrEmpty(uid))
+                    await _vm.InitializeAsync();
+            }
         }
+
 
         private async void OnVolverClicked(object sender, EventArgs e)
-        {
+{
+            bool ok = await DisplayAlert("Salir", "¿Deseas salir sin guardar los cambios?", "Sí", "No");
+            if (!ok) return;
+
             _vm.Reset();
 
-            await Shell.Current.GoToAsync("//CrearRutinaSelecTipoPage");
+            switch (RutaOrigen)
+            {
+                case "misEntrenos":
+                    await Shell.Current.GoToAsync("//MisEntrenosPage");
+                    break;
+                case "nueva":
+                    await Shell.Current.GoToAsync("/CrearRutinaSelectTipoPage");
+                    break;
+                default:
+                    await Shell.Current.GoToAsync("/"); // fallback seguro
+                    break;
+            }
         }
+
+
 
         private async void CambiarNombre_Clicked(object sender, EventArgs e)
         {
-            string nuevo = await DisplayPromptAsync("Nombre de rutina", "Introduce un nuevo nombre:", initialValue: _vm.NombreRutina);
+            string nuevo = await DisplayPromptAsync(
+                "Nombre de rutina",
+                "Introduce un nuevo nombre:",
+                initialValue: _vm.NombreRutina);
             if (!string.IsNullOrWhiteSpace(nuevo))
                 _vm.NombreRutina = nuevo;
         }
 
         private async void CambiarDescripcion_Clicked(object sender, EventArgs e)
         {
-            string desc = await DisplayPromptAsync("Descripción", "Introduce una nueva descripción:", initialValue: _vm.DescripcionRutina);
+            string desc = await DisplayPromptAsync(
+                "Descripción",
+                "Introduce una nueva descripción:",
+                initialValue: _vm.DescripcionRutina);
             if (!string.IsNullOrWhiteSpace(desc))
                 _vm.DescripcionRutina = desc;
         }
@@ -66,8 +114,6 @@ namespace PulseTFG.Pages
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Cambiar nombre” de cada día
         private async void OnCambiarNombreEntreno_clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is Entrenamiento dia)
@@ -81,30 +127,19 @@ namespace PulseTFG.Pages
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Añadir ejercicio” (antes “Editar”) de cada día
         private async void EditarDia_Clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is Entrenamiento dia)
             {
-                // 1) Señalamos el día sobre el que trabajamos
                 _vm.EntrenamientoActual = dia;
-
-                // 2) Reseteamos filtros del popup
                 GrupoMuscularPicker.ItemsSource = _vm.GruposMusculares;
                 GrupoMuscularPicker.SelectedIndex = 0;
                 FavoritosSwitch.IsToggled = false;
-
-                // 3) Cargamos ejercicios
                 await _vm.CargarEjerciciosAsync(false, "");
-
-                // 4) Mostramos popup
                 PopupGrid.IsVisible = true;
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Reset ejercicios” de cada día
         private async void OnResetEjercicios_clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is Entrenamiento dia)
@@ -114,37 +149,30 @@ namespace PulseTFG.Pages
                     await DisplayAlert("Aviso", "No hay ejercicios que resetear.", "OK");
                     return;
                 }
-
                 bool ok = await DisplayAlert(
                     "Confirmar reset",
                     $"¿Eliminar todos los ejercicios de {dia.Nombre}?",
                     "Sí", "No");
                 if (!ok) return;
-
                 dia.TrabajoEsperado.Clear();
             }
         }
 
-        // ——————————————————————————————————————————————
-        // Botón “Borrar” dentro de la lista de ejercicios del popup
         private async void OnBorrarEjercicio_Clicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.BindingContext is TrabajoEsperado te)
             {
                 var dia = _vm.EntrenamientoActual;
                 if (dia == null) return;
-
                 bool ok = await DisplayAlert(
                     "Confirmar borrado",
                     $"¿Eliminar {te.NombreEjercicio} de {dia.Nombre}?",
                     "Sí", "No");
                 if (!ok) return;
-
                 dia.TrabajoEsperado.Remove(te);
             }
         }
 
-        // ——————————————————————————————————————————————
         // Popup: Aceptar / Cancelar
         private async void AceptarPopup_Clicked(object sender, EventArgs e)
         {
@@ -157,13 +185,16 @@ namespace PulseTFG.Pages
 
             if (EjercicioPicker.SelectedItem is Ejercicio ejer)
             {
-                dia.TrabajoEsperado.Add(new TrabajoEsperado
+                // Asignamos Orden según la posición actual en la lista
+                var nuevoTe = new TrabajoEsperado
                 {
                     IdEjercicio = ejer.IdEjercicio,
                     NombreEjercicio = ejer.Nombre,
                     Series = (int)SeriesStepper.Value,
-                    Repeticiones = (int)RepeticionesStepper.Value
-                });
+                    Repeticiones = (int)RepeticionesStepper.Value,
+                    Orden = dia.TrabajoEsperado.Count
+                };
+                dia.TrabajoEsperado.Add(nuevoTe);
             }
             else
             {
@@ -176,7 +207,6 @@ namespace PulseTFG.Pages
         private void CancelarPopup_Clicked(object sender, EventArgs e)
             => PopupGrid.IsVisible = false;
 
-        // Filtros del popup
         private async void GrupoMuscularPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             var grupo = (string)GrupoMuscularPicker.SelectedItem;
@@ -190,5 +220,106 @@ namespace PulseTFG.Pages
             var filtro = grupo == "Todos" ? "" : grupo;
             await _vm.CargarEjerciciosAsync(FavoritosSwitch.IsToggled, filtro);
         }
+
+        // 🚀 Guardar rutina
+        private async void OnGuardarRutina_Clicked(object sender, EventArgs e)
+        {
+            var uid = Preferences.Get("firebase_user_uid", null);
+            if (string.IsNullOrEmpty(uid))
+            {
+                await DisplayAlert("Error", "Usuario no autenticado.", "OK");
+                return;
+            }
+
+            // 🚫 VALIDACIÓN: no permitir guardar si algún entrenamiento está vacío
+            bool todosTienenTrabajo = _vm.DiasEntrenamientoLista.All(d => d.TrabajoEsperado != null && d.TrabajoEsperado.Count > 0);
+            if (!todosTienenTrabajo)
+            {
+                await DisplayAlert("Error", "Cada día de entrenamiento debe tener al menos un ejercicio asignado.", "OK");
+                return;
+            }
+
+            string rutinaIdFinal = RutinaId;
+            bool activar = false;
+
+            if (string.IsNullOrEmpty(RutinaId))
+            {
+                // ✅ MODO CREACIÓN
+                var existentes = await _firestore.UsuarioTieneRutinasAsync(uid)
+                    ? await _firestore.ObtenerRutinasUsuarioAsync(uid)
+                    : new List<Rutina>();
+
+                activar = existentes.Count == 0
+                    ? true
+                    : await DisplayAlert("Rutina activa", "¿Quieres que esta sea tu rutina ACTIVA? Sólo puede haber una.", "Sí", "No");
+
+                if (activar)
+                {
+                    foreach (var r in existentes.Where(r => r.Activo))
+                        await _firestore.ActualizarCampoRutinaAsync(uid, r.IdRutina, "activo", false);
+                }
+
+                var nueva = new Rutina
+                {
+                    Nombre = _vm.NombreRutina,
+                    Descripcion = _vm.DescripcionRutina,
+                    Activo = activar,
+                    FechaCreacion = DateTime.Now,
+                    Actualizado = DateTime.Now
+                };
+
+                var creada = await _firestore.CrearRutinaAsync(uid, nueva);
+                rutinaIdFinal = creada.IdRutina;
+            }
+            else
+            {
+                // ✅ MODO EDICIÓN
+                await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "nombre", _vm.NombreRutina);
+                await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "descripcion", _vm.DescripcionRutina);
+                await _firestore.ActualizarCampoRutinaGenericoAsync(uid, RutinaId, "actualizado", DateTime.UtcNow);
+
+                var antiguos = await _firestore.ObtenerEntrenamientosAsync(uid, RutinaId);
+                foreach (var ent in antiguos)
+                {
+                    var trabajos = await _firestore.ObtenerTrabajoEsperadoAsync(uid, RutinaId, ent.IdEntrenamiento);
+                    foreach (var te in trabajos)
+                        await _firestore.BorrarTrabajoEsperadoAsync(uid, RutinaId, ent.IdEntrenamiento, te.IdTrabajoEsperado);
+
+                    await _firestore.BorrarEntrenamientoAsync(uid, RutinaId, ent.IdEntrenamiento);
+                }
+            }
+
+            // ✅ Guardar los entrenamientos nuevos
+            foreach (var dia in _vm.DiasEntrenamientoLista)
+            {
+                if (string.IsNullOrEmpty(dia.IdEntrenamiento))
+                    dia.IdEntrenamiento = Guid.NewGuid().ToString();
+
+                await _firestore.CrearEntrenamientoAsync(uid, rutinaIdFinal, dia);
+
+                for (int i = 0; i < dia.TrabajoEsperado.Count; i++)
+                {
+                    var te = dia.TrabajoEsperado[i];
+                    te.Orden = i;
+                    await _firestore.CrearTrabajoEsperadoAsync(
+                        uid, rutinaIdFinal, dia.IdEntrenamiento, te);
+                }
+            }
+
+            await DisplayAlert("Rutina guardada", "La rutina se ha guardado correctamente.", "OK");
+            await Shell.Current.GoToAsync("MisEntrenosPage");
+        }
+
+        private async void CargarDatosRutina()
+        {
+            var uid = Preferences.Get("firebase_user_uid", null);
+            if (string.IsNullOrEmpty(uid) || string.IsNullOrEmpty(RutinaId))
+                return;
+
+            await _vm.CargarRutinaExistenteAsync(uid, RutinaId);
+            _vm.ModoEdicion = true;
+
+        }
+
     }
 }

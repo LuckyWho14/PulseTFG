@@ -16,7 +16,7 @@ public partial class CrearRutinaSelecTipoPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _vm.InitializeAsync(); // Aquí sí esperas el resultado
+        await _vm.InitializeAsync(); 
     }
     private async void OnElegirPredefinidoClicked(object sender, EventArgs e)
     {
@@ -29,9 +29,8 @@ public partial class CrearRutinaSelecTipoPage : ContentPage
     }
 
     // Funcion del boton cancelar
-    // TODO: Cambiar a MisEntrenamientos cuando esté hecho
     private async void OnCancelarClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//InicioPage");
+        await Shell.Current.GoToAsync("//MisEntrenosPage");
     }
 }

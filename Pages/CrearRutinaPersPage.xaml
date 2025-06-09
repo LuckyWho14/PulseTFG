@@ -123,7 +123,9 @@
                     TextColor="{StaticResource MoradoPrincipal}"
                     FontSize="20"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"/>
+                    VerticalOptions="Center"
+                    Clicked="OnGuardarRutina_Clicked"
+                    />
 
                 <!-- Listado de entrenamientos -->
                 <CollectionView
@@ -189,7 +191,7 @@
                                                 Grid.Column="1"
                                                 Grid.RowSpan="2"
                                                 HorizontalOptions="Center"
-                                                Spacing="10">
+                                                Spacing="20">
                                     <Button 
                                         Text="Cambiar nombre"
                                         BackgroundColor="{StaticResource MoradoPrincipal}" TextColor="White"
@@ -201,13 +203,13 @@
                                           Clicked="EditarDia_Clicked" BindingContext="{Binding .}"/>
                                     <Button 
                                         Text="Reset ejercicios"
-                                        BackgroundColor="{StaticResource NaranjaPausa}"
-                                        TextColor="White"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource NaranjaPausa}"
                                         Clicked="OnResetEjercicios_clicked"/>
                                     <Button
                                           Text="Borrar día"
-                                          BackgroundColor="{StaticResource RojoStop}"
-                                          TextColor="White"
+                                          BackgroundColor="Transparent"
+                                          TextColor="{StaticResource RojoStop}"
                                           Clicked="BorrarDia_Clicked"/>
                                 </VerticalStackLayout>
                             </Grid>

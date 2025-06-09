@@ -17,5 +17,7 @@ namespace PulseTFG.Models
         public bool Activo { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime Actualizado { get; set; }
+        public int DiasEntrenamientoCount { get; set; }
+
     }
 }

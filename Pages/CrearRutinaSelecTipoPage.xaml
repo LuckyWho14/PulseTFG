@@ -86,15 +86,23 @@
                            VerticalOptions="End" Margin="0,30,0,0"/>
                 </Grid>
             </Grid>
-             <!-- IsVisible="{Binding NoTieneRutinas}" -->
             <Button Text="Cancelar" Grid.Row="2"
-                    IsVisible="Visible"
                     Clicked="OnCancelarClicked"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
+                    IsVisible="{Binding TieneRutinas}"
                     BackgroundColor="{StaticResource RojoStop}"
                     TextColor="White"
                     Margin="20"/>
+
+            <Button Text="Cerrar sesión" Grid.Row="2"
+                    Command="{Binding LogoutCommand}"
+                    IsVisible="{Binding NoTieneRutinas}"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource RojoStop}"
+                    TextColor="White"
+                    Margin="0,10,0,0"/>
+
         </Grid>
         <!-- Menú Barra-->
         <elem:MenuBarra Grid.Row="2" IsVisible="{Binding TieneRutinas}"/>

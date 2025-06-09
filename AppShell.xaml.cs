@@ -17,6 +17,10 @@ namespace PulseTFG
 
             // Cargar el ViewModel de Logout
             BindingContext = new LoggoutViewModel();
+            Routing.RegisterRoute("CrearRutinaSelectTipoPage", typeof(Pages.CrearRutinaSelecTipoPage));
+            Routing.RegisterRoute("CrearRutinaPersPage", typeof(Pages.CrearRutinaPersPage));
+            Routing.RegisterRoute("InicioPage", typeof(Pages.InicioPage));
+            Routing.RegisterRoute("MisEntrenosPage", typeof(Pages.MisEntrenosPage));
 
 
         }
