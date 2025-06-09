@@ -7,6 +7,8 @@ public partial class MenuBarra : ContentView
 	{
 		InitializeComponent();
 	}
+    // Eventos para manejar los taps en los iconos de la barra de menú
+    // Cada evento navega a una página específica usando Shell
     private async void OnIcon1Tapped(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("///InicioPage");

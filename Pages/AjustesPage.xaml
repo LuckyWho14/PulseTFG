@@ -1,0 +1,90 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PulseTFG.Elementos"
+             x:Class="PulseTFG.Pages.AjustesPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource FondoApp}">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="25" Padding="30">
+
+                <Label Text="Ajustes"
+                       TextColor="{StaticResource MoradoPrincipal}"
+                       FontFamily="AntonRegular"
+                       HorizontalOptions="Center"
+                       FontSize="40"
+                       FontAttributes="Italic"
+                       Margin="0,30,0,10" />
+
+                <!-- Sección Tema -->
+                <Label Text="Tema"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="{StaticResource TextoPrincipal}" />
+
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource White}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{StaticResource FondoApp}"
+                        Padding="8">
+                    <Picker x:Name="ThemePicker"
+                            Title="Selecciona el tema"
+                            FontFamily="OpenSansRegular"
+                            FontSize="14"
+                            TextColor="{StaticResource TextoPrincipal}"
+                            BackgroundColor="Transparent"
+                            SelectedIndexChanged="ThemePicker_SelectedIndexChanged">
+                        <Picker.Items>
+                            <x:String>Automático</x:String>
+                            <x:String>Claro</x:String>
+                            <x:String>Oscuro</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </Border>
+
+                <BoxView HeightRequest="5" Color="{StaticResource VerdeLima}" Margin="0,10,0,0" />
+
+                <!-- Idioma -->
+                <Label Text="Idioma"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="{StaticResource TextoPrincipal}" />
+
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource White}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{StaticResource FondoApp}"
+                        Padding="8">
+                    <Picker Title="Próximamente"
+                            FontFamily="OpenSansRegular"
+                            FontSize="14"
+                            IsEnabled="False"
+                            TextColor="{StaticResource TextoPrincipal}"
+                            BackgroundColor="Transparent" />
+                </Border>
+
+                <BoxView HeightRequest="5" Color="{StaticResource VerdeLima}" Margin="0,10,0,0" />
+
+                <!-- Notificaciones -->
+                <Label Text="Notificaciones"
+                       FontAttributes="Bold"
+                       FontSize="20"
+                       TextColor="{StaticResource TextoPrincipal}" />
+
+                <HorizontalStackLayout>
+                    <Switch IsToggled="False" IsEnabled="False"/>
+
+                    <Label Text="Próximamente" VerticalOptions="Center" TextColor="Grey"/>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Menú fijo abajo de la página -->
+        <local:MenuBarra Grid.Row="1" HeightRequest="100" />
+
+    </Grid>
+</ContentPage>

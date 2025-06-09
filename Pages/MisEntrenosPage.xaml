@@ -1,114 +1,131 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage 
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:PulseTFG.Elementos"
-    x:Class="PulseTFG.Pages.MisEntrenosPage"
-    BackgroundColor="{StaticResource FondoNegro}">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PulseTFG.Elementos"
+             x:Class="PulseTFG.Pages.MisEntrenosPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource FondoNegro}}">
+    
+        <Grid RowDefinitions="*,4*,*" ColumnDefinitions="*">
 
-    <Grid RowDefinitions="*,4*,*" ColumnDefinitions="*">
+            <!-- Título -->
+            <Label 
+              Text="Mis entrenamientos"
+              TextColor="{StaticResource MoradoPrincipal}"
+              FontFamily="AntonRegular"
+              FontSize="40"
+              FontAttributes="Italic"
+              HorizontalOptions="Center"
+              VerticalOptions="Center"
+              Grid.Row="0" />
 
-        <!-- Título -->
-        <Label 
-      Text="Mis entrenamientos"
-      TextColor="{StaticResource MoradoPrincipal}"
-      FontFamily="AntonRegular"
-      FontSize="40"
-      FontAttributes="Italic"
-      HorizontalOptions="Center"
-      VerticalOptions="Center"
-      Grid.Row="0" />
+            <!-- Cuerpo: Añadir + Lista -->
+            <Grid 
+              Grid.Row="1"
+              RowDefinitions="Auto,*"
+              ColumnDefinitions="*"
+              Margin="10">
 
-        <!-- Cuerpo: Añadir + Lista -->
-        <Grid 
-      Grid.Row="1"
-      RowDefinitions="Auto,*"
-      ColumnDefinitions="*"
-      Margin="10">
+                <!-- Botón Añadir -->
+                <Button
+                Text="Añadir entrenamiento"
+                FontAttributes="Bold"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource MoradoPrincipal}"
+                Grid.Row="0"
+                Clicked="OnAñadirEntrenamiento_Clicked" />
 
-            <!-- Botón Añadir -->
-            <Button
-        Text="Añadir entrenamiento"
-        FontAttributes="Bold"
-        BackgroundColor="Transparent"
-        TextColor="{StaticResource MoradoPrincipal}"
-        Grid.Row="0"
-        Clicked="OnAñadirEntrenamiento_Clicked" />
+                <!-- Lista de Rutinas -->
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding Entrenos}"
+                    SelectionMode="None"
+                    Margin="0,10,0,0" HorizontalOptions="Center">
 
-            <!-- Lista de Rutinas -->
-            <CollectionView
-        Grid.Row="1"
-        ItemsSource="{Binding Entrenos}"
-        SelectionMode="None"
-        Margin="0,10,0,0">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Horizontal" Span="1"  HorizontalItemSpacing="20" VerticalItemSpacing="20"/>
+                    </CollectionView.ItemsLayout>
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="2" />
-                </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                BorderColor="{StaticResource MoradoPrincipal}"
+                                CornerRadius="12"
+                                Padding="10"
+                                >
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame
-              BorderColor="{StaticResource MoradoPrincipal}"
-              CornerRadius="12"
-              Padding="12"
-              Margin="6">
-
-                            <StackLayout Spacing="8">
+                            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="10">
 
                                 <!-- Nombre -->
                                 <Label
-                  Text="{Binding Nombre}"
-                  FontAttributes="Bold"
-                  FontSize="18"
-                  TextColor="{StaticResource MoradoPrincipal}" />
+        Text="{Binding Nombre}"
+        FontAttributes="Bold"
+        FontSize="18"
+        TextColor="{StaticResource MoradoPrincipal}"
+        Grid.Row="0" />
 
                                 <!-- Descripción -->
                                 <Label
-                  Text="{Binding Descripcion}"
-                  FontSize="14"
-                  TextColor="White" />
+        Text="{Binding Descripcion}"
+        FontSize="14"
+        TextColor="White"
+        Grid.Row="1" />
 
                                 <!-- Días de entrenamiento -->
                                 <Label
-                  Text="{Binding DiasEntrenamientoCount, StringFormat='Días de entrenamiento: {0}'}"
-                  FontSize="14"
-                  TextColor="White" />
+        Text="{Binding DiasEntrenamientoCount, StringFormat='Días de entrenamiento: {0}'}"
+        FontSize="14"
+        TextColor="White"
+        Grid.Row="2" />
 
-                                <!-- Botones: Editar / Activar / Borrar -->
-                                <StackLayout
-                  Orientation="Horizontal"
-                  HorizontalOptions="Center"
-                  Spacing="10">
+                                <!-- Espacio flexible para empujar los botones hacia abajo -->
+                                <BoxView Grid.Row="3" BackgroundColor="Transparent"/>
 
-                                    <Button
-                    Text="Editar"
-                    FontAttributes="Bold"
-                    CommandParameter="{Binding .}"
-                    Clicked="EditarButton_Clicked" />
-
-                                    <Button
-                    Text="Activar"
-                    FontAttributes="Bold"
-                    CommandParameter="{Binding .}"
-                    Clicked="ActivarButton_Clicked" />
+                                <!-- Botones -->
+                                <Grid Grid.Row="4" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
                                     <Button
-                    Text="Borrar"
-                    FontAttributes="Bold"
-                    CommandParameter="{Binding .}"
-                    Clicked="BorrarButton_Clicked" />
+                                        BackgroundColor="{StaticResource MoradoPrincipal}"
+                                        TextColor="White"
+                                        Text="Editar"
+                                        FontAttributes="Bold"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="EditarButton_Clicked"
+                                        Grid.Column="0" />
 
-                                </StackLayout>
-                            </StackLayout>
+                                    <Button
+                                        TextColor="{StaticResource MoradoPrincipal}"
+                                        BackgroundColor="{StaticResource VerdeLima}"
+                                        Text="Activar"
+                                        FontAttributes="Bold"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="ActivarButton_Clicked"
+                                        Grid.Column="1" />
+
+                                    <Button
+                                        TextColor="White"
+                                        BackgroundColor="{StaticResource RojoStop}"
+                                        Text="Borrar"
+                                        FontAttributes="Bold"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="BorrarButton_Clicked"
+                                        Grid.Column="2" />
+                                </Grid>
+
+                            </Grid>
+
                         </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <!-- Menú Barra inferior -->
+            <local:MenuBarra Grid.Row="2" />
+
         </Grid>
-
-        <!-- Menú Barra inferior -->
-        <local:MenuBarra Grid.Row="2" />
-
-    </Grid>
 </ContentPage>

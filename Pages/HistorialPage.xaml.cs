@@ -16,7 +16,6 @@ namespace PulseTFG.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            // Cada vez que la p�gina aparece en pantalla, volvemos a cargar datos
             if (_viewModel.CargarRegistrosCommand.CanExecute(null))
                 _viewModel.CargarRegistrosCommand.Execute(null);
         }

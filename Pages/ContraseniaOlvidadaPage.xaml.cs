@@ -14,13 +14,13 @@ public partial class ContraseniaOlvidadaPage : ContentPage
 
     private void Login_clicked(object sender, EventArgs e)
     {
-        // Navigate to the login page
+        // Navegación a la página de inicio de sesión
         Shell.Current.GoToAsync("//LoginPage");
     }
 
     private void Registro_clicked(object sender, EventArgs e)
     {
-        // Navigate to the registration page
+        // Navegación a la página de registro
         Shell.Current.GoToAsync("//RegistroPage");
     }
 }

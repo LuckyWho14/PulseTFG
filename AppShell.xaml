@@ -19,7 +19,7 @@
     
     <!-- Footer -->
     <Shell.FlyoutFooter >
-        <StackLayout Padding="15">
+        <StackLayout Padding="10">
             <Button
                   Text="Cerrar sesión"
                   Command="{Binding LogoutCommand}"
@@ -59,7 +59,11 @@
     <FlyoutItem Title="Información personal" >
         <ShellContent ContentTemplate="{DataTemplate local:InfoPersPage}" />
     </FlyoutItem>
-    
+
+    <FlyoutItem Title="Ajustes">
+        <ShellContent ContentTemplate="{DataTemplate local:AjustesPage}"/>
+    </FlyoutItem>
+
     <!-- Direcciones de las páginas(ocultas del flyout) -->
     <TabBar IsEnabled="False">
        
@@ -100,10 +104,7 @@
                 ContentTemplate="{DataTemplate local:CrearRutinaPredetPage}"
                 Route="CrearRutinaPredetPage" 
                 />
-        <ShellContent
-                ContentTemplate="{DataTemplate local:CrearRutinaPredetSinglePage}"
-                Route="CrearRutinaPredetSinglePage" 
-                />
+        
         <ShellContent
                 ContentTemplate="{DataTemplate local:CrearRutinaPersPage}"
                 Route="CrearRutinaPersPage" 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="PulseTFG.Pages.MensajePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    CanBeDismissedByTappingOutsideOfPopup="False">
+
+    <Grid>
+        <Frame BackgroundColor="{StaticResource MoradoPrincipal}" Padding="20" BorderColor="{StaticResource MoradoPrincipal}" CornerRadius="0"
+               HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <!-- Contenido del popup: frase motivacional y botón de cierre -->
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+                <Label x:Name="MessageLabel"
+                       Text="Frase motivacional"
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+                <!-- Botón para cerrar el popup -->
+                <Button Text="Cerrar"
+                        Clicked="CloseButton_Clicked"
+                        BackgroundColor="{StaticResource RojoStop}"
+                        TextColor="White"
+                        HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</toolkit:Popup>

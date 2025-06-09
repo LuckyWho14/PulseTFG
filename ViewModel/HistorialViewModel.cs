@@ -63,10 +63,13 @@ namespace PulseTFG.ViewModel
                 if (_fechaSeleccionada == value) return;
                 _fechaSeleccionada = value;
                 OnPropertyChanged(nameof(FechaSeleccionada));
-                if (!MostrarTodosDias)
-                    AplicarFiltro();
+
+                // Al seleccionar fecha, se desactiva MostrarTodosDias
+                MostrarTodosDias = false;
+                AplicarFiltro();
             }
         }
+
 
         public string EjercicioSeleccionado
         {
@@ -159,8 +162,12 @@ namespace PulseTFG.ViewModel
 
         private void EjecutarMostrarTodosDias()
         {
-            MostrarTodosDias = true;
+            
+            _mostrarTodosDias = true; 
+            OnPropertyChanged(nameof(MostrarTodosDias));
             FechaSeleccionada = DateTime.Today;
+            AplicarFiltro();
         }
+
     }
 }

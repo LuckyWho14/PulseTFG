@@ -15,17 +15,19 @@ public class FirebaseAuthService
     // Cliente HTTP para hacer peticiones a Firebase Auth y Firestore
     private readonly HttpClient _httpClient = new HttpClient();
 
-    // Clave de API de Firebase, reemplaza con tu propia clave
+    // Clave de API de Firebase
     private readonly string apiKey = "AIzaSyA6vA0XQcWhkIBjEA7Yrwo6wOZK-4-BPT4";
 
     // Keys para almacenar tokens en Preferences
     private const string PrefsIdTokenKey = "firebase_id_token";
+
     // Key para almacenar el refresh token
     private const string PrefsRefreshTokenKey = "firebase_refresh_token";
 
     // Key para almacenar el UID del usuario
     private const string PrefsUserUidKey = "firebase_user_uid";
 
+    // Clase para manejar la respuesta de autenticación
     public class AuthResponse
     {
         [JsonPropertyName("idToken")]
@@ -38,21 +40,22 @@ public class FirebaseAuthService
         public string RefreshToken { get; set; }
     }
 
+    // Clase para manejar el estado de verificación del email
     public class EmailVerificationStatus
     {
         [JsonPropertyName("users")]
         public UserInfo[] Users { get; set; }
     }
 
+    // Clase para manejar la información del usuario
     public class UserInfo
     {
         [JsonPropertyName("emailVerified")]
         public bool EmailVerified { get; set; }
     }
 
-    /// <summary>
-    /// Inicia sesión con email y contraseña.
-    /// </summary>
+
+    // Constructor que inicializa el servicio de autenticación de Firebase.    
     public async Task<string> LoginAsync(string email, string password)
     {
         var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={apiKey}";
@@ -81,9 +84,7 @@ public class FirebaseAuthService
         return result.IdToken;
     }
 
-    /// <summary>
-    /// Registra un nuevo usuario en Firebase Auth.
-    /// </summary>
+    // Registra un nuevo usuario en Firebase Auth.
     public async Task<AuthResponse> RegisterAsync(string email, string password)
     {
         var requestUri = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={apiKey}";
@@ -100,19 +101,17 @@ public class FirebaseAuthService
         var responseJson = await response.Content.ReadAsStringAsync();
         var result = JsonSerializer.Deserialize<AuthResponse>(responseJson);
 
-        // Guardar tokens localmente
+        // Guarda tokens localmente
         Preferences.Set(PrefsIdTokenKey, result.IdToken);
         Preferences.Set(PrefsRefreshTokenKey, result.RefreshToken);
 
-        // Guardar UID del usuario
+        // Guarda UID del usuario
         Preferences.Set(PrefsUserUidKey, result.LocalId);
 
         return result;
     }
 
-    /// <summary>
-    /// Comprueba si el token sigue siendo válido llamando al endpoint accounts:lookup.
-    /// </summary>
+    // Comprueba si el token sigue siendo válido llamando al endpoint accounts:lookup.
     public async Task<bool> TokenEsValidoAsync(string idToken)
     {
         var url = $"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={apiKey}";
@@ -128,9 +127,7 @@ public class FirebaseAuthService
         return status?.Users != null && status.Users.Length > 0;
     }
 
-    /// <summary>
-    /// Guarda la información del usuario en Firestore, incluyendo fecha de creación.
-    /// </summary>
+    // Guarda la información del usuario en Firestore, incluyendo fecha de creación.
     public async Task GuardarUsuarioAsync(Usuario usuario, string idToken)
     {
         var firestoreUrl = $"https://firestore.googleapis.com/v1/projects/pulsetfg-6642a/databases/(default)/documents/usuarios/{usuario.Uid}";
@@ -163,9 +160,7 @@ public class FirebaseAuthService
         }
     }
 
-    /// <summary>
-    /// Envía email de verificación.
-    /// </summary>
+    // Envía email de verificación.
     public async Task EnviarEmailVerificacionAsync(string idToken)
     {
         var url = $"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={apiKey}";
@@ -180,9 +175,7 @@ public class FirebaseAuthService
         }
     }
 
-    /// <summary>
-    /// Comprueba si el email ya está verificado.
-    /// </summary>
+    // Comprueba si el email ya está verificado.
     public async Task<bool> EstaVerificadoEmailAsync(string idToken)
     {
         var url = $"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={apiKey}";
@@ -200,9 +193,7 @@ public class FirebaseAuthService
         return userInfo?.Users?[0].EmailVerified ?? false;
     }
 
-    /// <summary>
-    /// Envía correo de recuperación de contraseña.
-    /// </summary>
+    // Envía correo de recuperación de contraseña.
     public async Task EnviarCorreoRecuperacionAsync(string email)
     {
         var url = $"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={apiKey}";
@@ -216,12 +207,10 @@ public class FirebaseAuthService
         }
     }
 
-    /// <summary>
-    /// Cierra sesión borrando tokens locales y revocando refresh token.
-    /// </summary>
+    // Cierra sesión borrando tokens locales y revocando refresh token.
     public async Task SignOutAsync()
     {
-        // Revocar refresh token en servidor (opcional)
+        // Revocar refresh token en servidor
         var refreshToken = Preferences.Get(PrefsRefreshTokenKey, null);
         if (!string.IsNullOrEmpty(refreshToken))
         {

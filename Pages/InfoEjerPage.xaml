@@ -4,8 +4,7 @@
              x:Class="PulseTFG.Pages.InfoEjerPage"
              xmlns:local="clr-namespace:PulseTFG.Elementos"
              Shell.NavBarIsVisible="False"
-             
-             BackgroundColor="{StaticResource FondoNegro}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource FondoNegro}}"
              FlyoutItem.IsVisible="True">
     
     <Grid 
